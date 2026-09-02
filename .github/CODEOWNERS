@@ -1,0 +1,32 @@
+# Code ownership. Replace the placeholder GitHub teams/usernames below with
+# real ones before this file has any effect - GitHub ignores unresolvable
+# owners silently, so an un-replaced placeholder means "no enforced review."
+
+# Default owners for everything not matched below.
+*                           @PLACEHOLDER_MOBILE_LEADS
+
+# Cross-cutting infrastructure - changes here affect every feature team.
+/src/services/              @PLACEHOLDER_MOBILE_LEADS
+/src/navigation/            @PLACEHOLDER_MOBILE_LEADS
+/src/context/               @PLACEHOLDER_MOBILE_LEADS
+/src/theme/                 @PLACEHOLDER_MOBILE_LEADS
+
+# Architecture/security/CI enforcement - keep review tight here.
+/scripts/                   @PLACEHOLDER_MOBILE_LEADS
+/.github/                   @PLACEHOLDER_MOBILE_LEADS
+/eslint.config.js           @PLACEHOLDER_MOBILE_LEADS
+/tsconfig.json              @PLACEHOLDER_MOBILE_LEADS
+
+# Release configuration.
+/eas.json                   @PLACEHOLDER_RELEASE_OWNERS
+/app.config.ts              @PLACEHOLDER_RELEASE_OWNERS
+
+# Feature folders - update with real per-domain team names as teams form.
+/src/features/attendance/   @PLACEHOLDER_ACADEMICS_TEAM
+/src/features/lms/          @PLACEHOLDER_ACADEMICS_TEAM
+/src/features/assessment/   @PLACEHOLDER_ACADEMICS_TEAM
+/src/features/finance/      @PLACEHOLDER_FINANCE_TEAM
+/src/features/wallet/       @PLACEHOLDER_FINANCE_TEAM
+/src/features/transport/    @PLACEHOLDER_OPERATIONS_TEAM
+/src/features/hostel/       @PLACEHOLDER_OPERATIONS_TEAM
+/src/features/health/       @PLACEHOLDER_OPERATIONS_TEAM
