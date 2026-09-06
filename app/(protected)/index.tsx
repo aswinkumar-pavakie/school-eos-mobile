@@ -49,6 +49,12 @@ export default function ProtectedHome() {
           </>
         )}
 
+        {me ? (
+          <Pressable onPress={() => router.push('/(protected)/online-classes')} style={styles.button}>
+            <Text style={styles.buttonText}>Online Classes</Text>
+          </Pressable>
+        ) : null}
+
         <Pressable onPress={handleSignOut} style={styles.button}>
           <Text style={styles.buttonText}>Sign out</Text>
         </Pressable>

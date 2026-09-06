@@ -13,6 +13,20 @@ export const colors = {
   white: '#FFFFFF',
 } as const;
 
+// Header gradient + icon-circle accent for the Parent Academics/Online Class hub
+// screens -- a brighter, more saturated royal blue than colors.primary, matching
+// the provided design.
+export const gradients = {
+  header: ['#3559E8', '#2545C4'] as const,
+} as const;
+
+// Vibrant royal-blue accent used across the Parent Academics/Online Class hub
+// screens (icon circles, Join buttons, links) -- distinct from the app's more
+// muted colors.primary navy used elsewhere (login, Faculty screens).
+export const accent = {
+  blue: '#3D63E4',
+} as const;
+
 // Weight scale matches web: 800 titles, 700 labels, 400 body, 500 error text.
 export const fonts = {
   regular: 'PlusJakartaSans_400Regular',
