@@ -1,13 +1,14 @@
-// Minimal placeholder home -- exists only because login needs somewhere real to land.
-// Per-role home tabs (Faculty/Parent/Warden/Principal) are each their own feature
-// track's job (see each src/features/<domain>/README.md) -- this is not that.
+// Home tab -- deliberately simple per plan (only My class + Fees are pixel-built
+// and fully wired). Real signed-in person + real linked-children names; no fake
+// attendance/fee/homework summary cards invented here.
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
-import { colors, fonts } from '@/lib/theme';
+import { useSelectedChild } from '@/hooks/useSelectedChild';
+import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
   data: { person: PersonSummary; roles: RoleSummary[] };
@@ -17,6 +18,7 @@ export default function ProtectedHome() {
   const router = useRouter();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { children, selected } = useSelectedChild();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -41,11 +43,19 @@ export default function ProtectedHome() {
         {error ? (
           <Text style={styles.subtitle}>{error}</Text>
         ) : !me ? (
-          <ActivityIndicator color={colors.primary} />
+          <ActivityIndicator color={parentColors.blue} />
         ) : (
           <>
-            <Text style={styles.title}>Welcome, {me.person.firstName}</Text>
-            <Text style={styles.subtitle}>{me.roles.map((r) => r.role_code).join(', ')}</Text>
+            <Text style={styles.title}>Hi, {me.person.firstName}</Text>
+            {selected ? (
+              <Text style={styles.subtitle}>
+                {selected.studentName} · {[selected.gradeName, selected.sectionName].filter(Boolean).join(' ')}
+              </Text>
+            ) : null}
+            {children.length > 1 ? (
+              <Text style={styles.hint}>{children.length} children linked to your account.</Text>
+            ) : null}
+            <Text style={styles.hint}>Open &ldquo;My class&rdquo; below for Fees and other services.</Text>
           </>
         )}
 
@@ -58,17 +68,18 @@ export default function ProtectedHome() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
-  content: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, padding: 20 },
-  title: { fontFamily: fonts.extraBold, fontSize: 24, color: colors.text },
-  subtitle: { fontFamily: fonts.regular, fontSize: 14, color: colors.textMuted },
+  safeArea: { flex: 1, backgroundColor: parentColors.background },
+  content: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 },
+  title: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 24, color: parentColors.ink },
+  subtitle: { fontFamily: 'PlusJakartaSans_600SemiBold', fontSize: 14, color: parentColors.muted },
+  hint: { fontFamily: 'PlusJakartaSans_500Medium', fontSize: 13, color: parentColors.muted, textAlign: 'center' },
   button: {
     marginTop: 12,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: parentColors.border,
     borderRadius: 8,
     paddingVertical: 12,
     paddingHorizontal: 24,
   },
-  buttonText: { fontFamily: fonts.bold, fontSize: 15, color: colors.text },
+  buttonText: { fontFamily: 'PlusJakartaSans_700Bold', fontSize: 15, color: parentColors.ink },
 });
