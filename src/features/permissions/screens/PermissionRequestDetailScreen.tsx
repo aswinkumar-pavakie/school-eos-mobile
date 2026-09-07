@@ -153,7 +153,7 @@ export function PermissionRequestDetailScreen({ requestId }: { requestId: string
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 14 },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', gap: 10 },
   title: { flex: 1, fontFamily: fonts.extraBold, fontSize: 18, color: colors.text },

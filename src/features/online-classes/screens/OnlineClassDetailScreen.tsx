@@ -37,7 +37,10 @@ interface OnlineClassDetailScreenProps {
   basePath?: string;
 }
 
-export function OnlineClassDetailScreen({ id, basePath = '/(protected)/online-classes' }: OnlineClassDetailScreenProps) {
+export function OnlineClassDetailScreen({
+  id,
+  basePath = '/(protected)/online-classes',
+}: OnlineClassDetailScreenProps) {
   const router = useRouter();
   const me = useMe();
   const isFaculty = hasRole(me.data?.roles, 'FACULTY');
@@ -220,7 +223,11 @@ function FacultyActions(props: {
       ) : null}
 
       {item.status === 'LIVE' && item.meetingUrl ? (
-        <PrimaryButton label="Join meeting" variant="accent" onPress={() => Linking.openURL(item.meetingUrl as string)} />
+        <PrimaryButton
+          label="Join meeting"
+          variant="accent"
+          onPress={() => Linking.openURL(item.meetingUrl as string)}
+        />
       ) : null}
 
       {item.status === 'SCHEDULED' ? (
@@ -305,15 +312,7 @@ function FacultyActions(props: {
   );
 }
 
-function ParentActions({
-  item,
-  onJoin,
-  joining,
-}: {
-  item: ParentOnlineClass;
-  onJoin: () => void;
-  joining: boolean;
-}) {
+function ParentActions({ item, onJoin, joining }: { item: ParentOnlineClass; onJoin: () => void; joining: boolean }) {
   if (canAttemptJoin(item)) {
     return (
       <View style={styles.actions}>
@@ -344,7 +343,7 @@ function ParentActions({
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 20, paddingBottom: 32 },
   card: {
     backgroundColor: colors.surface,

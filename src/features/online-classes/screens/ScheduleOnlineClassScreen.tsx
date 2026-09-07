@@ -123,7 +123,13 @@ export function ScheduleOnlineClassScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Schedule Online Class</Text>
 
-        <SelectField label="Class" value={selectedGrade} placeholder="Select class" options={grades} onSelect={handleGradeSelect} />
+        <SelectField
+          label="Class"
+          value={selectedGrade}
+          placeholder="Select class"
+          options={grades}
+          onSelect={handleGradeSelect}
+        />
 
         <SelectField
           label="Section"
@@ -145,7 +151,13 @@ export function ScheduleOnlineClassScreen() {
         ) : null}
 
         <Field label="Topic">
-          <TextInput value={topic} onChangeText={setTopic} style={styles.input} placeholder="Topic" placeholderTextColor={colors.textMuted} />
+          <TextInput
+            value={topic}
+            onChangeText={setTopic}
+            style={styles.input}
+            placeholder="Topic"
+            placeholderTextColor={colors.textMuted}
+          />
         </Field>
 
         <Field label="Description (optional)">
@@ -208,7 +220,7 @@ function Field({ label, children, style }: { label: string; children: ReactNode;
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 16 },
   title: { fontFamily: fonts.extraBold, fontSize: 20, color: colors.text },
   field: { gap: 6 },

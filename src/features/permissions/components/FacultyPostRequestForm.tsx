@@ -216,7 +216,7 @@ export function FacultyPostRequestForm({ onCreated }: { onCreated: () => void })
 
       {formError ? <Text style={styles.error}>{formError}</Text> : null}
 
-      <PrimaryButton label="Send request" onPress={handleSubmit} loading={create.isPending} />
+      <PrimaryButton label="Send request" onPress={handleSubmit} loading={create.isPending} variant="accent" />
     </View>
   );
 }

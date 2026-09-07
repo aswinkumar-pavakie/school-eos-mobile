@@ -8,9 +8,16 @@ interface ConversationRowProps {
   conversation: ConversationSummary;
   isFaculty: boolean;
   onPress: () => void;
+  /** Lowercased, trimmed search text currently active on the list, if any --
+   * lets a Parent's row show the specific teacher that matched (a subject
+   * teacher who isn't the default primary contact), the same way Faculty's row
+   * always shows the exact student name they searched for. Without this, a
+   * search that correctly matches a non-primary participant still displayed the
+   * unrelated primary contact's name, making the match look wrong. */
+  query?: string;
 }
 
-export function ConversationRow({ conversation, isFaculty, onPress }: ConversationRowProps) {
+export function ConversationRow({ conversation, isFaculty, onPress, query }: ConversationRowProps) {
   let name: string;
   let subtitle: string;
 
@@ -23,7 +30,8 @@ export function ConversationRow({ conversation, isFaculty, onPress }: Conversati
       ? `${parent.name} · ${conversation.grade.name}-${conversation.section.name}`
       : `${conversation.grade.name}-${conversation.section.name}`;
   } else {
-    const teacher = primaryTeacherContact(conversation.participants);
+    const matched = query ? conversation.participants.find((p) => p.name.toLowerCase().includes(query)) : undefined;
+    const teacher = matched ?? primaryTeacherContact(conversation.participants);
     name = teacher?.name ?? 'Conversation';
     subtitle = teacher ? ROLE_LABELS[teacher.role] : '';
   }

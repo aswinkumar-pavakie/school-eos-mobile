@@ -39,9 +39,7 @@ export function OnlineClassesListScreen() {
     if (isFaculty) {
       const facultyItem = item as FacultyOnlineClass;
       if (facultyItem.status === 'LIVE' && facultyItem.meetingUrl) {
-        return (
-          <PrimaryButton label="Join" size="compact" onPress={() => handleFacultyJoin(facultyItem)} />
-        );
+        return <PrimaryButton label="Join" size="compact" onPress={() => handleFacultyJoin(facultyItem)} />;
       }
       if (facultyItem.status === 'COMPLETED' && facultyItem.recordingUrl) {
         return (
@@ -136,7 +134,7 @@ export function OnlineClassesListScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
   header: {
     flexDirection: 'row',
     alignItems: 'center',

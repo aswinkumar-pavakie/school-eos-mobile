@@ -32,15 +32,19 @@ export interface ApiRequestOptions extends Omit<RequestInit, 'body' | 'headers'>
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const { body, headers, ...rest } = options;
 
+  // A real FormData body (the digital-signature upload is the one caller that
+  // needs this -- see permission-requests-api.ts) must NOT be JSON.stringify'd
+  // (that would serialize it to the useless string "[object FormData]") and
+  // must NOT get an explicit Content-Type: fetch sets multipart/form-data with
+  // the correct boundary itself only when Content-Type is left unset.
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
+
   let res: Response;
   try {
     res = await fetch(`${API_BASE_URL}${path}`, {
       ...rest,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers,
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      headers: isFormData ? { ...headers } : { 'Content-Type': 'application/json', ...headers },
+      body: isFormData ? (body as FormData) : body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch {
     throw new ApiError(0, 'Unable to reach the server. Check your connection.');

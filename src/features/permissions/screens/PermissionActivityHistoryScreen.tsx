@@ -61,7 +61,7 @@ function StudentRow({ item }: { item: StudentRequestSummary }) {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   listContent: { paddingVertical: 8 },
   row: {
     flexDirection: 'row',

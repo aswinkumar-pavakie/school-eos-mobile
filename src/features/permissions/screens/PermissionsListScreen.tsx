@@ -103,6 +103,6 @@ function FacultyPermissions() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   listContent: { paddingTop: 16, paddingBottom: 32 },
 });

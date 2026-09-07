@@ -62,10 +62,7 @@ export function ParentOnlineClassHubScreen() {
   const join = useJoinOnlineClass();
   const [inClassId, setInClassId] = useState<string | null>(null);
 
-  const upcomingItems = useMemo(
-    () => (upcoming.data as ParentOnlineClass[] | undefined) ?? [],
-    [upcoming.data],
-  );
+  const upcomingItems = useMemo(() => (upcoming.data as ParentOnlineClass[] | undefined) ?? [], [upcoming.data]);
   const completedItems = (completed.data as ParentOnlineClass[] | undefined) ?? [];
 
   const { todayItems, laterItems } = useMemo(() => {
@@ -243,7 +240,7 @@ function RecordingRow({ item, isLast }: { item: ParentOnlineClass; isLast: boole
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 20, paddingBottom: 32 },
   inClassBanner: {
     backgroundColor: '#12162B',

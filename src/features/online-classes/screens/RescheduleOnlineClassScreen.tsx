@@ -106,7 +106,7 @@ function Field({ label, children, style }: { label: string; children: ReactNode;
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: colors.background },
+  safeArea: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 16 },
   title: { fontFamily: fonts.extraBold, fontSize: 20, color: colors.text },
   field: { gap: 6 },

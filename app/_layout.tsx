@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   PlusJakartaSans_400Regular,
   PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
   PlusJakartaSans_800ExtraBold,
 } from '@expo-google-fonts/plus-jakarta-sans';
@@ -14,7 +15,9 @@ SplashScreen.preventAutoHideAsync();
 
 // Single app-wide QueryClient. No src/context/AppProviders.tsx exists yet (that
 // directory is still a README stub) -- this is the one real composition root, so the
-// provider lives here rather than inventing an unbuilt indirection layer.
+// provider lives here rather than inventing an unbuilt indirection layer. Also the
+// Parent app's Fees feature's (children, fee terms, fee summary, payment history)
+// query client.
 function makeQueryClient() {
   return new QueryClient({
     defaultOptions: {
@@ -28,6 +31,7 @@ export default function RootLayout() {
   const [fontsLoaded, fontsError] = useFonts({
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
     PlusJakartaSans_800ExtraBold,
   });

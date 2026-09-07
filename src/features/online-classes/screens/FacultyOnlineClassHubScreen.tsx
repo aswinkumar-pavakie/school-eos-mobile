@@ -45,7 +45,11 @@ export function FacultyOnlineClassHubScreen() {
 
   return (
     <View style={styles.screen}>
-      <GradientHeader title="Online class" subtitle="Manage your live and recorded sessions" onBack={() => router.back()} />
+      <GradientHeader
+        title="Online class"
+        subtitle="Manage your live and recorded sessions"
+        onBack={() => router.back()}
+      />
 
       <View style={styles.tabBar}>
         <TabButton label="Today classes" active={tab === 'today'} onPress={() => setTab('today')} />
@@ -74,10 +78,7 @@ function TodayClassesTab({ onOpenDetail }: { onOpenDetail: (id: string) => void 
   const upcoming = useOnlineClassesList('upcoming');
   const completed = useOnlineClassesList('completed');
 
-  const upcomingItems = useMemo(
-    () => (upcoming.data as FacultyOnlineClass[] | undefined) ?? [],
-    [upcoming.data],
-  );
+  const upcomingItems = useMemo(() => (upcoming.data as FacultyOnlineClass[] | undefined) ?? [], [upcoming.data]);
   const completedItems = (completed.data as FacultyOnlineClass[] | undefined) ?? [];
 
   const { todayItems, laterItems } = useMemo(() => {
@@ -188,7 +189,13 @@ function SessionCard({ item, onPress }: { item: FacultyOnlineClass; onPress: () 
             onPress={() => Linking.openURL(item.meetingUrl as string)}
           />
         ) : item.status === 'SCHEDULED' ? (
-          <PrimaryButton label="Start class" size="compact" variant="accent" loading={start.isPending} onPress={handleStart} />
+          <PrimaryButton
+            label="Start class"
+            size="compact"
+            variant="accent"
+            loading={start.isPending}
+            onPress={handleStart}
+          />
         ) : item.status === 'COMPLETED' && item.recordingUrl ? (
           <PrimaryButton
             label="Recording"
@@ -330,7 +337,13 @@ function ScheduleTab({ onScheduled }: { onScheduled: () => void }) {
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <View style={styles.formCard}>
-        <SelectField label="Class" value={selectedGrade} placeholder="Select class" options={grades} onSelect={handleGradeSelect} />
+        <SelectField
+          label="Class"
+          value={selectedGrade}
+          placeholder="Select class"
+          options={grades}
+          onSelect={handleGradeSelect}
+        />
 
         <SelectField
           label="Section"
@@ -421,7 +434,7 @@ function FormField({ label, children, style }: { label: string; children: ReactN
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   content: { padding: 20, gap: 20, paddingBottom: 32 },
   tabBar: { flexDirection: 'row', gap: 8, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 },
   tabButton: {

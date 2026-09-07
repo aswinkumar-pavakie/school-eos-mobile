@@ -25,12 +25,13 @@ export function MessagesListScreen() {
   const conversations = useConversations();
   const [query, setQuery] = useState('');
 
+  const trimmedQuery = query.trim().toLowerCase();
+
   const filtered = useMemo(() => {
     const items = conversations.data ?? [];
-    const q = query.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter((item) => matchesQuery(item, q, isFaculty));
-  }, [conversations.data, query, isFaculty]);
+    if (!trimmedQuery) return items;
+    return items.filter((item) => matchesQuery(item, trimmedQuery, isFaculty));
+  }, [conversations.data, trimmedQuery, isFaculty]);
 
   return (
     <View style={styles.screen}>
@@ -64,6 +65,7 @@ export function MessagesListScreen() {
             <ConversationRow
               conversation={item}
               isFaculty={isFaculty}
+              query={trimmedQuery || undefined}
               onPress={() => router.push(`/(protected)/my-class/messages/${item.id}` as never)}
             />
           )}
@@ -85,7 +87,7 @@ function matchesQuery(item: ConversationSummary, query: string, isFaculty: boole
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -1,0 +1,2655 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0&display=block" rel="stylesheet" />
+<style>
+  body { margin:0; background:#eef1f6; font-family:'Plus Jakarta Sans',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a { color:#2563eb; text-decoration:none; }
+  a:hover { color:#1d4ed8; }
+  .ms { font-family:'Material Symbols Rounded'; font-weight:400; font-style:normal; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; }
+  .sc::-webkit-scrollbar { width:0; height:0; }
+</style>
+</helmet>
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px 0;">
+<div style="width:390px; height:844px; background:#f7f8fb; border-radius:38px; overflow:hidden; position:relative; box-shadow:0 24px 60px rgba(15,23,42,.22); display:flex; flex-direction:column;">
+
+  <!-- HOME HEADER -->
+  <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+    <div style="background:linear-gradient(105deg,#1e3fae 0%,#2563eb 100%); padding:52px 20px 22px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="width:38px; height:38px; border-radius:11px; background:#fff; color:#1e3fae; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center;">PP</div>
+        <div style="color:#fff; font-size:17px; font-weight:700;">Pavakie Public School</div>
+      </div>
+      <div onClick="{{ openNotifications }}" style="position:relative; width:38px; height:38px; border-radius:50%; background:rgba(255,255,255,.16); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+        <span class="ms" style="font-size:21px; color:#fff;">notifications</span>
+        <div style="position:absolute; top:2px; right:2px; width:9px; height:9px; border-radius:50%; background:#60a5fa; border:2px solid #2563eb;"></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- SUB-PAGE HEADER -->
+  <sc-if value="{{ subHeader }}" hint-placeholder-val="{{ false }}">
+    <div style="background:linear-gradient(105deg,#1e3fae 0%,#2563eb 100%); padding:46px 20px 26px; display:flex; align-items:flex-start; gap:12px;">
+      <div onClick="{{ goBack }}" style="width:34px; height:34px; flex:none; border-radius:11px; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+        <span class="ms" style="font-size:20px; color:#fff;">arrow_back</span>
+      </div>
+      <div style="min-width:0;">
+        <div style="color:#fff; font-size:21px; font-weight:700; line-height:1.15;">{{ pageTitle }}</div>
+        <div style="color:rgba(255,255,255,.78); font-size:12.5px; font-weight:500; margin-top:3px;">{{ pageSub }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <div class="sc" style="flex:1; overflow-y:auto; scrollbar-width:none;">
+
+    <!-- ============ HOME ============ -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:0 0 20px;">
+        <div style="background:#fff; padding:14px 18px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #edf0f6;">
+          <div style="width:46px; height:46px; border-radius:50%; background:#dbeafe; border:2px solid #bfdbfe; display:flex; align-items:center; justify-content:center;">
+            <span class="ms" style="font-size:24px; color:#2563eb;">person</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:18px; font-weight:800; color:#1d4ed8;">Hi, {{ facultyName }}</div>
+            <div style="font-size:12px; color:#64748b; font-weight:500; margin-top:2px;">{{ facultyMeta }}</div>
+          </div>
+          <div onClick="{{ switchProfile }}" style="border:1px solid #d8dee9; border-radius:9px; padding:7px 11px; font-size:12.5px; font-weight:600; color:#334155; display:flex; align-items:center; gap:4px; cursor:pointer;">
+            Switch <span class="ms" style="font-size:16px; color:#64748b;">expand_more</span>
+          </div>
+        </div>
+
+        <div style="padding:16px 18px 0; display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="ms" style="font-size:19px; color:#1e293b;">campaign</span>
+            <div style="font-size:17px; font-weight:800; color:#0f172a;">Announcements</div>
+          </div>
+          <div onClick="{{ openAnnouncements }}" style="font-size:13px; font-weight:700; color:#2563eb; cursor:pointer;">View All</div>
+        </div>
+
+        <div style="margin:12px 18px 0; background:#e5ecfb; border-radius:14px; padding:18px 16px; display:flex; align-items:center; gap:12px;">
+          <div style="flex:1;">
+            <div style="font-size:15.5px; font-weight:800; color:#0f172a; line-height:1.35;">{{ ann.title }}</div>
+            <div style="font-size:13px; color:#475569; font-weight:600; margin-top:9px;">{{ ann.place }}</div>
+            <div style="font-size:12.5px; color:#64748b; margin-top:9px;">{{ ann.date }}</div>
+          </div>
+          <div onClick="{{ nextAnn }}" style="width:30px; height:30px; flex:none; border-radius:50%; background:#c9d8f7; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <span class="ms" style="font-size:18px; color:#1e3fae;">chevron_right</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:5px; justify-content:center; padding:12px 0 0;">
+          <sc-for list="{{ annDots }}" as="d" hint-placeholder-count="3">
+            <div onClick="{{ d.onClick }}" style="height:5px; border-radius:3px; cursor:pointer; width:{{ d.w }}; background:{{ d.bg }};"></div>
+          </sc-for>
+        </div>
+
+        <div style="margin:14px 12px 0; background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:34px; height:34px; border-radius:9px; background:#eef2fb; color:#1e3fae; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center;">PP</div>
+            <div style="flex:1;">
+              <div style="font-size:14.5px; font-weight:800; color:#0f172a;">Pavakie Public School</div>
+              <div style="font-size:11.5px; color:#7c8698; margin-top:2px;">Media Room · 1 Sept 2026</div>
+            </div>
+            <div style="background:#dcfce7; color:#15803d; font-size:11.5px; font-weight:700; padding:4px 10px; border-radius:999px;">Event</div>
+          </div>
+          <div style="font-size:15.5px; font-weight:800; color:#0f172a; margin-top:14px;">Annual Day rehearsals begin</div>
+          <div style="font-size:13.5px; color:#8a6b4f; line-height:1.5; margin-top:8px;">Grades 6–10 report to the auditorium at 3 PM on Tuesday and Thursday until 20 September.</div>
+          <div style="margin-top:14px; border-radius:10px; overflow:hidden; background:#1e3fae; position:relative;">
+            <div style="padding:9px 12px; display:flex; justify-content:space-between; font-size:9.5px; color:#fff; font-weight:600;">
+              <span>Pavakie Public School</span><span style="opacity:.7;">Cultural Committee</span>
+            </div>
+            <div style="background:#fff; padding:16px 14px 18px;">
+              <div style="font-size:21px; font-weight:800; color:#0f172a; letter-spacing:-.4px;">ANNUAL DAY</div>
+              <div style="font-size:21px; font-weight:800; color:#2563eb; letter-spacing:-.4px;">REHEARSALS</div>
+              <div style="font-size:10px; color:#475569; font-weight:600; margin-top:8px;">Grades 6–10 · Auditorium · 3:00 PM</div>
+              <div style="font-size:10px; color:#475569; font-weight:600; margin-top:3px;">Tuesdays and Thursdays until 20 September</div>
+              <div style="margin-top:14px; height:52px; border-radius:8px; background-image:repeating-linear-gradient(45deg,#eef2f8 0 6px,#e3e9f3 6px 12px); display:flex; align-items:center; justify-content:center;">
+                <span style="font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:9px; color:#94a3b8;">sample poster — drop a real photo here</span>
+              </div>
+            </div>
+            <div style="position:absolute; top:9px; right:12px; background:rgba(15,23,42,.75); color:#fff; font-size:10px; font-weight:700; padding:3px 8px; border-radius:999px;">1/2</div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ ERP ============ -->
+    <sc-if value="{{ isErp }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px;">
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:2px 0 14px 4px;">STUDENT</div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px 6px;">
+          <sc-for list="{{ studentTiles }}" as="t" hint-placeholder-count="10">
+            <div onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;">
+              <div style="width:56px; height:56px; border-radius:50%; background:#2f6ae0; display:flex; align-items:center; justify-content:center;">
+                <span class="ms" style="font-size:26px; color:#fff;">{{ t.icon }}</span>
+              </div>
+              <div style="font-size:11.5px; color:#1e293b; font-weight:600; text-align:center; line-height:1.3;">{{ t.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:28px 0 14px 4px;">EMPLOYEE</div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:18px 6px;">
+          <sc-for list="{{ employeeTiles }}" as="t" hint-placeholder-count="8">
+            <div onClick="{{ t.onClick }}" style="display:flex; flex-direction:column; align-items:center; gap:8px; cursor:pointer;">
+              <div style="width:56px; height:56px; border-radius:50%; background:#2f6ae0; display:flex; align-items:center; justify-content:center;">
+                <span class="ms" style="font-size:26px; color:#fff;">{{ t.icon }}</span>
+              </div>
+              <div style="font-size:11.5px; color:#1e293b; font-weight:600; text-align:center; line-height:1.3;">{{ t.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ STUDENT ATTENDANCE ============ -->
+    <sc-if value="{{ isAttendance }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 96px;">
+        <div onClick="{{ toggleCls }}" style="background:#fff; border:1px solid #dbe2ee; border-radius:16px; padding:13px 14px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+          <div style="width:40px; height:40px; flex:none; border-radius:12px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+            <span class="ms" style="font-size:22px; color:#2563eb;">groups</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">CLASS</div>
+            <div style="font-size:14.5px; font-weight:700; color:#0f172a; margin-top:2px;">{{ clsLabel }}</div>
+          </div>
+          <span class="ms" style="font-size:22px; color:#64748b;">unfold_more</span>
+        </div>
+        <sc-if value="{{ clsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:6px; background:#fff; border:1px solid #dbe2ee; border-radius:14px; overflow:hidden; box-shadow:0 12px 28px rgba(15,23,42,.1);">
+            <sc-for list="{{ clsOptions }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.onClick }}" style="padding:13px 16px; border-bottom:1px solid #f1f4f9; font-size:14px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="margin-top:12px; background:#fff; border:1px solid #e8ecf3; border-radius:16px; overflow:hidden;">
+          <div style="padding:16px 16px 14px; display:flex; align-items:center; gap:16px;">
+            <div style="position:relative; width:74px; height:74px; flex:none; border-radius:50%; background:conic-gradient(#16a34a {{ attSummary.pctWidth }}, #fde2e2 0); display:flex; align-items:center; justify-content:center;">
+              <div style="width:58px; height:58px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div style="font-size:17px; font-weight:800; color:#0f172a; line-height:1;">{{ attSummary.pct }}%</div>
+                <div style="font-size:8.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px; margin-top:2px;">PRESENT</div>
+              </div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:9px;">
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#16a34a;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Present</div>
+                <div style="font-size:16px; font-weight:800; color:#15803d;">{{ attSummary.present }}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#dc2626;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Absent</div>
+                <div style="font-size:16px; font-weight:800; color:#b91c1c;">{{ attSummary.absent }}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#cbd5e1;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Class strength</div>
+                <div style="font-size:16px; font-weight:800; color:#334155;">{{ attSummary.total }}</div>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #f1f4f9; display:flex;">
+            <div onClick="{{ markAllPresent }}" style="flex:1; padding:13px 0; text-align:center; font-size:12.5px; font-weight:700; color:#2563eb; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <span class="ms" style="font-size:17px;">done_all</span>Mark all present
+            </div>
+            <div style="width:1px; background:#f1f4f9;"></div>
+            <div onClick="{{ togglePast }}" style="flex:1; padding:13px 0; text-align:center; font-size:12.5px; font-weight:700; color:#64748b; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <span class="ms" style="font-size:17px;">history</span>Past records
+            </div>
+          </div>
+          <sc-if value="{{ pastOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="border-top:1px solid #f1f4f9; background:#fafbfe; padding:14px 14px 16px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <div onClick="{{ pastPrev }}" style="width:30px; height:30px; border-radius:9px; border:1px solid #e2e8f2; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                  <span class="ms" style="font-size:18px; color:#2563eb;">chevron_left</span>
+                </div>
+                <div style="font-size:14px; font-weight:800; color:#0f172a;">{{ pastMonthName }}</div>
+                <div onClick="{{ pastNext }}" style="width:30px; height:30px; border-radius:9px; border:1px solid #e2e8f2; background:#fff; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                  <span class="ms" style="font-size:18px; color:#2563eb;">chevron_right</span>
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(7,1fr); margin-top:12px;">
+                <sc-for list="{{ dowLabels }}" as="w" hint-placeholder-count="7">
+                  <div style="text-align:center; font-size:10.5px; font-weight:700; color:#a8b1c1; padding-bottom:6px;">{{ w.l }}</div>
+                </sc-for>
+              </div>
+              <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:2px 0;">
+                <sc-for list="{{ pastCells }}" as="c" hint-placeholder-count="35">
+                  <div onClick="{{ c.onClick }}" style="height:34px; display:flex; align-items:center; justify-content:center; cursor:{{ c.cursor }};">
+                    <div style="width:28px; height:28px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:600; background:{{ c.bg }}; color:{{ c.fg }};">{{ c.d }}</div>
+                  </div>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ pastPrompt }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:10px; text-align:center; font-size:12px; font-weight:600; color:#94a3b8;">Pick a date to see that day's attendance</div>
+              </sc-if>
+
+              <sc-if value="{{ pastDetail }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top:12px; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:14px;">
+                  <div style="font-size:14px; font-weight:800; color:#0f172a;">{{ pastDetail.label }}</div>
+                  <div style="font-size:11.5px; color:#94a3b8; font-weight:600; margin-top:3px;">{{ pastDetail.dateLine }}</div>
+                  <sc-if value="{{ pastDetail.isDay }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex; gap:8px; margin-top:12px;">
+                      <div style="flex:1; background:#f0fdf4; border-radius:10px; padding:9px 10px;">
+                        <div style="font-size:9.5px; font-weight:800; color:#16a34a; letter-spacing:.8px;">PRESENT</div>
+                        <div style="font-size:17px; font-weight:800; color:#15803d; margin-top:2px;">{{ pastDetail.present }}</div>
+                      </div>
+                      <div style="flex:1; background:#fef2f2; border-radius:10px; padding:9px 10px;">
+                        <div style="font-size:9.5px; font-weight:800; color:#dc2626; letter-spacing:.8px;">ABSENT</div>
+                        <div style="font-size:17px; font-weight:800; color:#b91c1c; margin-top:2px;">{{ pastDetail.absent }}</div>
+                      </div>
+                      <div style="flex:1; background:#f1f5fb; border-radius:10px; padding:9px 10px;">
+                        <div style="font-size:9.5px; font-weight:800; color:#64748b; letter-spacing:.8px;">RATE</div>
+                        <div style="font-size:17px; font-weight:800; color:#334155; margin-top:2px;">{{ pastDetail.pct }}%</div>
+                      </div>
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ pastDetail.hasAbsentees }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:14px 0 8px;">ABSENTEES</div>
+                    <div style="display:flex; flex-direction:column; gap:7px;">
+                      <sc-for list="{{ pastDetail.absentees }}" as="ab" hint-placeholder-count="2">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                          <span class="ms" style="font-size:16px; color:#dc2626;">cancel</span>
+                          <div style="flex:1; font-size:13px; font-weight:600; color:#0f172a;">{{ ab.name }}</div>
+                          <div style="font-size:11.5px; font-weight:700; color:#94a3b8;">{{ ab.roll }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">ROLL LIST</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ roster }}" as="r" hint-placeholder-count="6">
+            <div style="border:1px solid #e8ecf3; border-radius:14px; padding:11px 12px; display:flex; align-items:center; gap:12px; background:{{ r.rowBg }};">
+              <div style="width:36px; height:36px; flex:none; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800; background:{{ r.avaBg }}; color:{{ r.avaFg }};">{{ r.initials }}</div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:700; color:#0f172a;">{{ r.name }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:2px;">Roll {{ r.roll }}</div>
+              </div>
+              <div style="display:flex; gap:4px; background:#f1f4f9; border-radius:12px; padding:4px;">
+                <div onClick="{{ r.onP }}" style="width:40px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:800; cursor:pointer; background:{{ r.pBg }}; color:{{ r.pFg }};">P</div>
+                <div onClick="{{ r.onA }}" style="width:40px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:800; cursor:pointer; background:{{ r.aBg }}; color:{{ r.aFg }};">A</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:69px; padding:12px 14px 14px; background:linear-gradient(180deg,rgba(247,248,251,0) 0%,#f7f8fb 45%); display:flex; align-items:center; gap:12px;">
+        <div style="flex:1; font-size:12px; font-weight:600; color:#64748b;">{{ attSummary.present }} present · {{ attSummary.absent }} absent</div>
+        <div onClick="{{ submitAttendance }}" style="color:#fff; font-size:13.5px; font-weight:700; padding:13px 22px; border-radius:14px; cursor:pointer; box-shadow:0 8px 18px rgba(37,99,235,.28); background:{{ submitBg }};">{{ submitLabel }}</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ STUDENT LEAVE (class teacher) ============ -->
+    <sc-if value="{{ isLeave }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; gap:6px; background:#eaedf3; border-radius:12px; padding:4px;">
+          <sc-for list="{{ leaveFilters }}" as="f" hint-placeholder-count="3">
+            <div onClick="{{ f.onClick }}" style="flex:1; text-align:center; padding:9px 4px; border-radius:9px; font-size:12.5px; font-weight:700; cursor:pointer; background:{{ f.bg }}; color:{{ f.fg }};">{{ f.label }}</div>
+          </sc-for>
+        </div>
+
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:20px 0 12px 4px;">LEAVE REQUESTS · CLASS 8-B</div>
+        <sc-if value="{{ leaveEmpty }}" hint-placeholder-val="{{ false }}">
+          <div style="background:#fff; border:1px dashed #dbe2ee; border-radius:16px; padding:34px 16px; text-align:center;">
+            <span class="ms" style="font-size:30px; color:#c0c8d6;">inbox</span>
+            <div style="font-size:13.5px; font-weight:600; color:#94a3b8; margin-top:8px;">{{ leaveEmptyMsg }}</div>
+          </div>
+        </sc-if>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ leaveList }}" as="l" hint-placeholder-count="2">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+              <div style="display:flex; align-items:flex-start; gap:10px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:15px; font-weight:800; color:#0f172a;">{{ l.name }}</div>
+                  <div style="font-size:11.5px; font-weight:700; color:#94a3b8; margin-top:3px;">Roll {{ l.roll }}</div>
+                </div>
+                <div style="font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ l.statusBg }}; color:{{ l.statusFg }};">{{ l.status }}</div>
+              </div>
+              <div style="font-size:13.5px; color:#334155; line-height:1.5; margin-top:10px;">{{ l.reason }}</div>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:12.5px; color:#64748b; font-weight:600;">
+                <span class="ms" style="font-size:16px; color:#94a3b8;">date_range</span>{{ l.dates }} · {{ l.days }}
+              </div>
+              <sc-if value="{{ l.hasFile }}" hint-placeholder-val="{{ false }}">
+                <div onClick="{{ l.onFile }}" style="display:flex; align-items:center; gap:6px; margin-top:8px; font-size:12.5px; color:#2563eb; font-weight:700; cursor:pointer;">
+                  <span class="ms" style="font-size:16px;">attach_file</span>{{ l.file }}
+                </div>
+              </sc-if>
+              <sc-if value="{{ l.isPending }}" hint-placeholder-val="{{ true }}">
+                <div style="display:flex; gap:10px; margin-top:14px;">
+                  <div onClick="{{ l.onApprove }}" style="flex:1; text-align:center; padding:11px 0; border-radius:11px; background:#2563eb; color:#fff; font-size:13px; font-weight:700; cursor:pointer;">Approve</div>
+                  <div onClick="{{ l.onReject }}" style="flex:1; text-align:center; padding:11px 0; border-radius:11px; border:1px solid #dbe2ee; color:#475569; font-size:13px; font-weight:700; cursor:pointer;">Reject</div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ ACADEMICS ============ -->
+    <sc-if value="{{ isAcademics }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px; display:flex; flex-direction:column; gap:12px;">
+        <sc-for list="{{ academicsItems }}" as="a" hint-placeholder-count="3">
+          <div onClick="{{ a.onClick }}" style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px; cursor:pointer;">
+            <div style="width:46px; height:46px; flex:none; border-radius:13px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+              <span class="ms" style="font-size:24px; color:#2563eb;">{{ a.icon }}</span>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:15.5px; font-weight:800; color:#0f172a;">{{ a.label }}</div>
+              <div style="font-size:12.5px; color:#64748b; margin-top:3px;">{{ a.sub }}</div>
+            </div>
+            <span class="ms" style="font-size:20px; color:#c0c8d6;">chevron_right</span>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ============ CURRENT TERM — SUBJECT LIST ============ -->
+    <sc-if value="{{ isTerm }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px;">
+        <div style="display:flex; gap:10px;">
+          <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">SUBJECTS</div>
+            <div style="font-size:24px; font-weight:800; color:#0f172a; margin-top:4px;">{{ subjectCount }}</div>
+          </div>
+          <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px 14px;">
+            <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">PENDING</div>
+            <div style="font-size:24px; font-weight:800; color:#0f172a; margin-top:4px;">{{ pendingCount }}</div>
+          </div>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 12px 4px;">MY SUBJECTS</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="4">
+            <div onClick="{{ s.onOpen }}" style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px; cursor:pointer;">
+              <div style="display:flex; align-items:flex-start; gap:12px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:15.5px; font-weight:800; color:#0f172a; line-height:1.3;">{{ s.name }}</div>
+                  <div style="font-size:12.5px; color:#64748b; margin-top:4px;">{{ s.meta }}</div>
+                </div>
+                <div style="background:#eaf0fd; color:#1d4ed8; font-size:11px; font-weight:800; padding:5px 10px; border-radius:999px;">{{ s.code }}</div>
+              </div>
+              <div style="height:1px; background:#eef1f6; margin:14px 0 12px;"></div>
+              <div style="display:flex; gap:8px;">
+                <sc-for list="{{ s.chips }}" as="c" hint-placeholder-count="3">
+                  <div style="flex:1; border-radius:10px; padding:8px 6px; text-align:center; background:{{ c.bg }};">
+                    <div style="font-size:10px; font-weight:800; letter-spacing:.6px; color:{{ c.fg }};">{{ c.label }}</div>
+                    <div style="font-size:11px; font-weight:700; color:{{ c.fg }}; margin-top:3px;">{{ c.value }}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ SUBJECT DETAIL ============ -->
+    <sc-if value="{{ isSubject }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 28px;">
+        <div style="display:flex; gap:6px; background:#eaedf3; border-radius:12px; padding:4px;">
+          <sc-for list="{{ tabs }}" as="tb" hint-placeholder-count="3">
+            <div onClick="{{ tb.onClick }}" style="flex:1; text-align:center; padding:9px 4px; border-radius:9px; font-size:12.5px; font-weight:700; cursor:pointer; background:{{ tb.bg }}; color:{{ tb.fg }};">{{ tb.label }}</div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:20px 4px 12px;">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px;">{{ tabHeading }}</div>
+          <div onClick="{{ openPost }}" style="background:#2563eb; color:#fff; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:999px; display:flex; align-items:center; gap:5px; cursor:pointer;">
+            <span class="ms" style="font-size:16px;">add</span>{{ postLabel }}
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ entries }}" as="e" hint-placeholder-count="3">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+              <div style="display:flex; align-items:flex-start; gap:10px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:15px; font-weight:800; color:#0f172a; line-height:1.35;">{{ e.title }}</div>
+                  <div style="font-size:12.5px; color:#64748b; margin-top:5px;">{{ e.meta }}</div>
+                </div>
+                <div style="font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ e.statusBg }}; color:{{ e.statusFg }};">{{ e.status }}</div>
+              </div>
+              <div style="height:1px; background:#eef1f6; margin:13px 0 11px;"></div>
+              <div style="display:flex; align-items:center; gap:16px;">
+                <div onClick="{{ e.onFile }}" style="display:flex; align-items:center; gap:5px; font-size:12px; color:#475569; font-weight:600; cursor:pointer;">
+                  <span class="ms" style="font-size:16px; color:#94a3b8;">attach_file</span>{{ e.file }}
+                </div>
+                <div style="flex:1;"></div>
+                <div onClick="{{ e.onEdit }}" style="font-size:12.5px; font-weight:700; color:#2563eb; cursor:pointer;">Edit</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ TIMETABLE ============ -->
+    <sc-if value="{{ isTimetable }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:0 0 24px;">
+        <div style="background:linear-gradient(105deg,#2563eb,#2f6ae0); padding:0 14px 18px; display:flex; gap:8px;">
+          <sc-for list="{{ days }}" as="d" hint-placeholder-count="6">
+            <div onClick="{{ d.onClick }}" style="flex:1; border-radius:12px; padding:9px 2px; text-align:center; cursor:pointer; background:{{ d.bg }};">
+              <div style="font-size:10.5px; font-weight:800; letter-spacing:.6px; color:{{ d.fg }};">{{ d.dow }}</div>
+              <div style="font-size:16px; font-weight:800; color:{{ d.fg }}; margin-top:2px;">{{ d.num }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding:16px 14px 0; display:flex; gap:10px;">
+          <sc-for list="{{ ttStats }}" as="st" hint-placeholder-count="3">
+            <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px 12px;">
+              <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:1px;">{{ st.label }}</div>
+              <div style="font-size:22px; font-weight:800; color:#0f172a; margin-top:4px;">{{ st.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 12px 18px;">FORENOON</div>
+        <div style="padding:0 14px; display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ periods }}" as="p" hint-placeholder-count="2">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:14px; display:flex; gap:14px; position:relative; overflow:hidden;">
+              <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#2563eb;"></div>
+              <div style="width:58px; flex:none; padding-left:6px;">
+                <div style="font-size:14px; font-weight:800; color:#0f172a; line-height:1.2;">{{ p.time }}</div>
+                <div style="font-size:11.5px; color:#94a3b8; font-weight:600; margin-top:4px;">{{ p.slot }}</div>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14.5px; font-weight:800; color:#0f172a; line-height:1.35;">{{ p.subject }}</div>
+                <div style="font-size:12.5px; color:#64748b; margin-top:4px;">{{ p.room }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ ACADEMIC CALENDAR ============ -->
+    <sc-if value="{{ isCalendar }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px;">
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:18px; padding:16px 14px 20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div onClick="{{ prevMonth }}" style="width:32px; height:32px; border-radius:10px; border:1px solid #e2e8f2; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <span class="ms" style="font-size:19px; color:#2563eb;">chevron_left</span>
+            </div>
+            <div style="text-align:center;">
+              <div style="font-size:17px; font-weight:800; color:#0f172a;">{{ monthName }}</div>
+              <div style="font-size:10.5px; font-weight:700; color:#94a3b8; letter-spacing:1px; margin-top:3px;">{{ monthEventCount }}</div>
+            </div>
+            <div onClick="{{ nextMonth }}" style="width:32px; height:32px; border-radius:10px; border:1px solid #e2e8f2; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+              <span class="ms" style="font-size:19px; color:#2563eb;">chevron_right</span>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); margin-top:18px;">
+            <sc-for list="{{ dowLabels }}" as="w" hint-placeholder-count="7">
+              <div style="text-align:center; font-size:11.5px; font-weight:700; color:#a8b1c1; padding-bottom:8px;">{{ w.l }}</div>
+            </sc-for>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px 0;">
+            <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="35">
+              <div style="height:36px; display:flex; align-items:center; justify-content:center;">
+                <div style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13.5px; font-weight:600; background:{{ c.bg }}; color:{{ c.fg }};">{{ c.d }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 12px 4px;">THIS MONTH</div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <sc-for list="{{ calEvents }}" as="ev" hint-placeholder-count="2">
+            <div onClick="{{ ev.onClick }}" style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; gap:14px; align-items:center; cursor:pointer;">
+              <div style="width:44px; flex:none; text-align:center;">
+                <div style="font-size:18px; font-weight:800; color:#2563eb;">{{ ev.day }}</div>
+                <div style="font-size:10.5px; font-weight:700; color:#94a3b8; letter-spacing:.8px;">{{ ev.short }}</div>
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14.5px; font-weight:800; color:#0f172a;">{{ ev.title }}</div>
+                <div style="font-size:12.5px; color:#64748b; margin-top:3px;">{{ ev.sub }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ EMPLOYEE LEAVE ============ -->
+    <sc-if value="{{ isEmpLeave }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; gap:6px; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:5px;">
+          <sc-for list="{{ subTabs }}" as="t" hint-placeholder-count="2">
+            <div onClick="{{ t.onClick }}" style="flex:1; text-align:center; padding:11px 4px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; background:{{ t.bg }}; color:{{ t.fg }};">{{ t.label }}</div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ leaveTabApply }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:12px; background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+            <div style="font-size:12.5px; font-weight:700; color:#334155;">Leave type</div>
+            <div onClick="{{ toggleLeaveType }}" style="margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <div style="flex:1; font-size:14px; font-weight:700; color:#0f172a;">{{ leaveTypeLabel }}</div>
+              <span class="ms" style="font-size:20px; color:#64748b;">expand_more</span>
+            </div>
+            <sc-if value="{{ leaveTypeOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:6px; border:1px solid #dbe2ee; border-radius:12px; overflow:hidden;">
+                <sc-for list="{{ leaveTypeOptions }}" as="o" hint-placeholder-count="4">
+                  <div onClick="{{ o.onClick }}" style="padding:12px 14px; border-bottom:1px solid #f1f4f9; font-size:13.5px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">From date</div>
+                <input type="date" value="{{ f.lvFrom.value }}" onChange="{{ f.lvFrom.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px 12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">To date</div>
+                <input type="date" value="{{ f.lvTo.value }}" onChange="{{ f.lvTo.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px 12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+            </div>
+
+            <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">{{ reasonCount }}</div>
+            <textarea value="{{ f.lvReason.value }}" onChange="{{ f.lvReason.onChange }}" rows="4" placeholder="Describe the reason for leave" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none; resize:none;"></textarea>
+
+            <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">Supporting document (optional)</div>
+            <div style="margin-top:7px; border:1px dashed #b9cbf0; border-radius:12px; padding:14px; text-align:center; font-size:13.5px; font-weight:700; color:#2563eb; cursor:pointer;">Attach medical certificate</div>
+
+            <div onClick="{{ submitLeave }}" style="margin-top:16px; text-align:center; padding:14px 0; border-radius:14px; background:#2563eb; color:#fff; font-size:14.5px; font-weight:700; cursor:pointer;">Submit request</div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:14px;">
+            <sc-for list="{{ leaveBalances }}" as="b" hint-placeholder-count="3">
+              <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+                <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px;">{{ b.label }}</div>
+                <div style="font-size:17px; font-weight:800; color:#0f172a; margin-top:5px;">{{ b.value }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ leaveTabApply }}" hint-placeholder-val="{{ false }}">
+        </sc-if>
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+          <sc-if value="{{ leaveTabApply }}" hint-placeholder-val="{{ false }}"></sc-if>
+          <sc-for list="{{ myLeaveHistory }}" as="l" hint-placeholder-count="0"></sc-for>
+        </div>
+
+        <sc-if value="{{ leaveTabHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+            <sc-for list="{{ myLeaveList }}" as="l" hint-placeholder-count="3">
+              <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px;">
+                <div style="display:flex; align-items:flex-start; gap:10px;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:11px; font-weight:700; color:#94a3b8;">{{ l.id }}</div>
+                    <div style="font-size:15px; font-weight:800; color:#0f172a; margin-top:4px;">{{ l.type }}</div>
+                  </div>
+                  <div style="flex:none; white-space:nowrap; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ l.statusBg }}; color:{{ l.statusFg }};">{{ l.status }}</div>
+                </div>
+                <div style="font-size:13px; color:#334155; line-height:1.5; margin-top:9px;">{{ l.reason }}</div>
+                <div style="display:flex; align-items:center; gap:7px; margin-top:10px; font-size:12.5px; font-weight:600; color:#64748b;">
+                  <span class="ms" style="font-size:16px; color:#94a3b8;">date_range</span>{{ l.dates }} · {{ l.days }}
+                </div>
+                <div style="display:flex; align-items:center; gap:7px; margin-top:7px; font-size:12.5px; font-weight:600; color:#64748b;">
+                  <span class="ms" style="font-size:16px; color:#94a3b8;">swap_horiz</span>Cover: {{ l.cover }}
+                </div>
+                <div style="font-size:11.5px; color:#94a3b8; margin-top:9px;">{{ l.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ============ HR PAYROLL ============ -->
+    <sc-if value="{{ isPayroll }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+          <div style="font-size:12.5px; font-weight:700; color:#334155;">Request category</div>
+          <div onClick="{{ toggleHrCat }}" style="margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+            <div style="flex:1; font-size:14px; font-weight:700; color:{{ hrCatColor }};">{{ hrCatLabel }}</div>
+            <span class="ms" style="font-size:20px; color:#64748b;">expand_more</span>
+          </div>
+          <sc-if value="{{ hrCatOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top:6px; border:1px solid #dbe2ee; border-radius:12px; overflow:hidden;">
+              <sc-for list="{{ hrCatOptions }}" as="o" hint-placeholder-count="6">
+                <div onClick="{{ o.onClick }}" style="padding:12px 14px; border-bottom:1px solid #f1f4f9; font-size:13.5px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">Subject</div>
+          <input value="{{ f.hrSubject.value }}" onChange="{{ f.hrSubject.onChange }}" placeholder="e.g. Revised PF contribution query" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+          <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">Description</div>
+          <textarea value="{{ f.hrDesc.value }}" onChange="{{ f.hrDesc.onChange }}" rows="4" placeholder="Describe your request in detail" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none; resize:none;"></textarea>
+
+          <div style="margin-top:12px; border:1px dashed #b9cbf0; border-radius:12px; padding:14px; text-align:center; font-size:13.5px; font-weight:700; color:#2563eb; cursor:pointer;">Attach a file (optional)</div>
+          <div onClick="{{ submitHr }}" style="margin-top:16px; text-align:center; padding:14px 0; border-radius:14px; background:#2563eb; color:#fff; font-size:14.5px; font-weight:700; cursor:pointer;">Submit request</div>
+        </div>
+
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">REQUEST STATUS</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ hrRequests }}" as="r" hint-placeholder-count="2">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px;">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="flex:1; font-size:11.5px; font-weight:700; color:#94a3b8;">{{ r.id }}</div>
+                <div style="flex:none; white-space:nowrap; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ r.statusBg }}; color:{{ r.statusFg }};">{{ r.status }}</div>
+              </div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a; margin-top:8px; line-height:1.35;">{{ r.subject }}</div>
+              <div style="height:1px; background:#f1f4f9; margin:12px 0 11px;"></div>
+              <div style="display:flex; gap:12px;">
+                <div style="flex:1;">
+                  <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px;">SUBMITTED</div>
+                  <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:3px;">{{ r.submitted }}</div>
+                </div>
+                <div style="flex:1;">
+                  <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px;">HR ASSIGNED</div>
+                  <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:3px;">{{ r.assigned }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ PAYSLIP ============ -->
+    <sc-if value="{{ isPayslip }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; gap:10px;">
+          <sc-for list="{{ payslipSummary }}" as="st" hint-placeholder-count="3">
+            <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+              <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px; white-space:nowrap;">{{ st.label }}</div>
+              <div style="font-size:16px; font-weight:800; color:#0f172a; margin-top:5px; white-space:nowrap;">{{ st.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">MY PAYSLIPS</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ payslips }}" as="p" hint-placeholder-count="4">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; align-items:center; gap:12px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14.5px; font-weight:800; color:#0f172a;">{{ p.month }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:3px;">{{ p.meta }}</div>
+              </div>
+              <div style="flex:none; font-size:14px; font-weight:800; color:#0f172a; white-space:nowrap;">{{ p.net }}</div>
+              <div onClick="{{ p.onDownload }}" style="width:36px; height:36px; flex:none; border-radius:11px; background:#eaf0fd; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                <span class="ms" style="font-size:19px; color:#2563eb;">download</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">TAX DOCUMENTS</div>
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; overflow:hidden;">
+          <sc-for list="{{ payslipDocs }}" as="d" hint-placeholder-count="2">
+            <div onClick="{{ d.onClick }}" style="padding:14px 15px; border-bottom:1px solid #f1f4f9; display:flex; align-items:center; gap:12px; cursor:pointer;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:700; color:#0f172a;">{{ d.title }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:3px;">{{ d.meta }}</div>
+              </div>
+              <div style="flex:none; font-size:12.5px; font-weight:800; color:#1d4ed8; white-space:nowrap;">{{ d.right }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ APPRAISAL ============ -->
+    <sc-if value="{{ isAppraisal }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; overflow:hidden;">
+          <div style="padding:15px 15px 12px;">
+            <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">CURRENT CYCLE</div>
+            <div style="font-size:16px; font-weight:800; color:#0f172a; margin-top:5px;">Cycle 2026–2027</div>
+          </div>
+          <sc-for list="{{ appraisalStages }}" as="st" hint-placeholder-count="3">
+            <div style="padding:12px 15px; border-top:1px solid #f1f4f9; display:flex; align-items:center; gap:12px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:13.5px; font-weight:700; color:#0f172a;">{{ st.title }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:2px;">{{ st.meta }}</div>
+              </div>
+              <div style="flex:none; font-size:12px; font-weight:800; color:#1d4ed8; white-space:nowrap;">{{ st.right }}</div>
+            </div>
+          </sc-for>
+          <div onClick="{{ requestAppraisal }}" style="margin:12px 15px 15px; text-align:center; padding:13px 0; border-radius:12px; background:#2563eb; color:#fff; font-size:13.5px; font-weight:700; cursor:pointer;">Request appraisal review</div>
+        </div>
+
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">MY APPRAISALS</div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <sc-for list="{{ appraisals }}" as="a" hint-placeholder-count="3">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px;">
+              <div style="font-size:14.5px; font-weight:800; color:#0f172a; line-height:1.35;">{{ a.name }}</div>
+              <div style="display:flex; align-items:center; gap:10px; margin-top:9px;">
+                <div style="flex:1; font-size:14px; font-weight:800; color:#0f172a;">{{ a.cycle }}</div>
+                <div style="flex:none; white-space:nowrap; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ a.statusBg }}; color:{{ a.statusFg }};">{{ a.status }}</div>
+              </div>
+              <div style="font-size:12px; font-weight:600; color:#94a3b8; margin-top:8px;">{{ a.submitted }}</div>
+              <sc-if value="{{ a.hasScore }}" hint-placeholder-val="{{ false }}">
+                <div style="font-size:13.5px; font-weight:800; color:#2563eb; margin-top:8px;">{{ a.score }}</div>
+              </sc-if>
+              <div onClick="{{ a.onFile }}" style="display:flex; align-items:center; gap:7px; margin-top:9px; font-size:12.5px; font-weight:700; color:#2563eb; cursor:pointer;">
+                <span class="ms" style="font-size:16px;">attach_file</span>{{ a.file }}
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ LIBRARY ============ -->
+    <sc-if value="{{ isLibrary }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; flex-wrap:wrap; gap:7px;">
+          <sc-for list="{{ libTabs }}" as="t" hint-placeholder-count="4">
+            <div onClick="{{ t.onClick }}" style="border-radius:999px; padding:9px 15px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; background:{{ t.bg }}; color:{{ t.fg }}; border:1px solid {{ t.border }};">{{ t.label }}</div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ libIsSearch }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:14px; background:#fff; border:1px solid #dbe2ee; border-radius:14px; padding:12px 13px; display:flex; align-items:center; gap:10px;">
+            <span class="ms" style="font-size:20px; color:#94a3b8;">search</span>
+            <input value="{{ f.libQ.value }}" onChange="{{ f.libQ.onChange }}" placeholder="Search by book, author or subject" style="flex:1; min-width:0; border:none; outline:none; font-size:14px; font-family:inherit; color:#0f172a; background:transparent;" />
+          </div>
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">CATALOGUE</div>
+          <sc-if value="{{ libEmpty }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#fff; border:1px dashed #dbe2ee; border-radius:16px; padding:30px 16px; text-align:center; font-size:13.5px; font-weight:600; color:#94a3b8;">No titles match</div>
+          </sc-if>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ libCatalogue }}" as="b" hint-placeholder-count="4">
+              <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px;">
+                <div style="font-size:14.5px; font-weight:800; color:#0f172a; line-height:1.35;">{{ b.title }}</div>
+                <div style="font-size:12px; font-weight:600; color:#94a3b8; margin-top:5px;">{{ b.author }}</div>
+                <div style="font-size:12.5px; font-weight:700; color:#2563eb; margin-top:8px;">{{ b.code }} · {{ b.copies }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ libIsEres }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">E-RESOURCES</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ libEres }}" as="r" hint-placeholder-count="5">
+              <div onClick="{{ r.onClick }}" style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:14px; font-weight:800; color:#0f172a; line-height:1.35;">{{ r.title }}</div>
+                  <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:4px;">{{ r.kind }}</div>
+                </div>
+                <span class="ms" style="font-size:20px; color:#2563eb;">open_in_new</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ libIsBorrowed }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">ISSUED TO ME</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ libBorrowed }}" as="r" hint-placeholder-count="3">
+              <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; align-items:center; gap:12px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:14px; font-weight:800; color:#0f172a; line-height:1.35;">{{ r.title }}</div>
+                  <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:4px;">{{ r.meta }}</div>
+                </div>
+                <div onClick="{{ r.onClick }}" style="flex:none; font-size:12.5px; font-weight:800; color:#1d4ed8; cursor:pointer; white-space:nowrap;">{{ r.right }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ libIsHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">RETURNED</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ libHistory }}" as="r" hint-placeholder-count="2">
+              <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; align-items:center; gap:12px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:14px; font-weight:800; color:#0f172a; line-height:1.35;">{{ r.title }}</div>
+                  <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:4px;">{{ r.meta }}</div>
+                </div>
+                <div style="flex:none; font-size:12px; font-weight:800; color:#64748b; white-space:nowrap;">{{ r.right }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ============ VENUE ============ -->
+    <sc-if value="{{ isVenue }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; gap:6px; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:5px;">
+          <sc-for list="{{ subTabs }}" as="t" hint-placeholder-count="2">
+            <div onClick="{{ t.onClick }}" style="flex:1; text-align:center; padding:11px 4px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; background:{{ t.bg }}; color:{{ t.fg }};">{{ t.label }}</div>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ leaveTabApply }}" hint-placeholder-val="{{ true }}">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">NEW VENUE REQUEST</div>
+          <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+            <div style="font-size:12.5px; font-weight:700; color:#334155;">Venue</div>
+            <div onClick="{{ toggleVn }}" style="margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+              <div style="flex:1; font-size:14px; font-weight:700; color:{{ vnColor }};">{{ vnLabel }}</div>
+              <span class="ms" style="font-size:20px; color:#64748b;">expand_more</span>
+            </div>
+            <sc-if value="{{ vnOpen }}" hint-placeholder-val="{{ false }}">
+              <div style="margin-top:6px; border:1px solid #dbe2ee; border-radius:12px; overflow:hidden;">
+                <sc-for list="{{ vnOptions }}" as="o" hint-placeholder-count="6">
+                  <div onClick="{{ o.onClick }}" style="padding:12px 14px; border-bottom:1px solid #f1f4f9; font-size:13.5px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">From date</div>
+                <input type="date" value="{{ f.vnFrom.value }}" onChange="{{ f.vnFrom.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">To date</div>
+                <input type="date" value="{{ f.vnTo.value }}" onChange="{{ f.vnTo.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:14px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">From time</div>
+                <input type="time" value="{{ f.vnFromT.value }}" onChange="{{ f.vnFromT.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:12.5px; font-weight:700; color:#334155;">To time</div>
+                <input type="time" value="{{ f.vnToT.value }}" onChange="{{ f.vnToT.onChange }}" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:12px; font-size:13.5px; font-family:inherit; color:#0f172a; outline:none;" />
+              </div>
+            </div>
+
+            <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">Purpose</div>
+            <input value="{{ f.vnPurpose.value }}" onChange="{{ f.vnPurpose.onChange }}" placeholder="e.g. Maths club activity for Class 8-B" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+            <div style="font-size:12.5px; font-weight:700; color:#334155; margin-top:14px;">Capacity required</div>
+            <input value="{{ f.vnCap.value }}" onChange="{{ f.vnCap.onChange }}" placeholder="e.g. 42" style="width:100%; box-sizing:border-box; margin-top:7px; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+            <div onClick="{{ submitVenue }}" style="margin-top:16px; text-align:center; padding:14px 0; border-radius:14px; background:#2563eb; color:#fff; font-size:14.5px; font-weight:700; cursor:pointer;">Submit booking request</div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ leaveTabHistory }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:18px 0 10px 4px;">ALREADY BOOKED VENUES</div>
+          <div style="display:flex; flex-direction:column; gap:10px;">
+            <sc-for list="{{ venueBooked }}" as="v" hint-placeholder-count="3">
+              <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; align-items:center; gap:12px;">
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:14.5px; font-weight:800; color:#0f172a;">{{ v.title }}</div>
+                  <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:4px;">{{ v.meta }}</div>
+                </div>
+                <div style="flex:none; font-size:12px; font-weight:800; color:#1d4ed8; white-space:nowrap;">{{ v.right }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <!-- ============ MY ATTENDANCE ============ -->
+    <sc-if value="{{ isMyAttendance }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <div style="width:42px; height:42px; flex:none; border-radius:13px; background:#dcfce7; display:flex; align-items:center; justify-content:center;">
+              <span class="ms" style="font-size:22px; color:#15803d;">how_to_reg</span>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">TODAY</div>
+              <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:2px;">{{ myPunch.date }}</div>
+            </div>
+            <div style="flex:none; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:#dcfce7; color:#15803d;">{{ myPunch.status }}</div>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:13px;">
+            <div style="flex:1; background:#fafbfe; border:1px solid #eef1f6; border-radius:11px; padding:10px 11px;">
+              <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">PUNCH IN</div>
+              <div style="font-size:15px; font-weight:800; color:#0f172a; margin-top:3px;">{{ myPunch.inT }}</div>
+            </div>
+            <div style="flex:1; background:#fafbfe; border:1px solid #eef1f6; border-radius:11px; padding:10px 11px;">
+              <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">PUNCH OUT</div>
+              <div style="font-size:15px; font-weight:800; margin-top:3px; color:{{ myPunch.outColor }};">{{ myPunch.outT }}</div>
+            </div>
+          </div>
+          <div onClick="{{ punchOut }}" style="margin-top:12px; text-align:center; padding:12px 0; border-radius:12px; font-size:13.5px; font-weight:700; cursor:pointer; background:{{ myPunch.btnBg }}; color:{{ myPunch.btnFg }};">{{ myPunch.btnLabel }}</div>
+        </div>
+
+        <div style="margin-top:12px; background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="position:relative; width:74px; height:74px; flex:none; border-radius:50%; background:conic-gradient(#2563eb {{ myRate.pctWidth }}, #e5e9f2 0); display:flex; align-items:center; justify-content:center;">
+              <div style="width:58px; height:58px; border-radius:50%; background:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+                <div style="font-size:16px; font-weight:800; color:#0f172a; line-height:1;">{{ myRate.pct }}</div>
+                <div style="font-size:8.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px; margin-top:2px;">RATE</div>
+              </div>
+            </div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:9px;">
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#16a34a;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Present</div>
+                <div style="font-size:15px; font-weight:800; color:#15803d;">{{ myRate.present }}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#f59e0b;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Late marks</div>
+                <div style="font-size:15px; font-weight:800; color:#a16207;">{{ myRate.late }}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:9px;">
+                <div style="width:9px; height:9px; border-radius:50%; background:#cbd5e1;"></div>
+                <div style="flex:1; font-size:12.5px; font-weight:600; color:#475569;">Leave taken</div>
+                <div style="font-size:15px; font-weight:800; color:#334155;">{{ myRate.leave }}</div>
+              </div>
+            </div>
+          </div>
+          <div style="border-top:1px solid #f1f4f9; margin-top:14px; padding-top:11px; display:flex; align-items:center; justify-content:space-between;">
+            <div style="font-size:12px; font-weight:600; color:#64748b;">Working days · September 2026</div>
+            <div style="font-size:13px; font-weight:800; color:#0f172a;">{{ myRate.working }}</div>
+          </div>
+        </div>
+
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px;">RECENT DAYS</div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ myDays }}" as="r" hint-placeholder-count="6">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px 13px; display:flex; align-items:center; gap:12px;">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:13.5px; font-weight:800; color:#0f172a;">{{ r.d }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:3px;">In {{ r.inT }} · Out {{ r.outT }} · {{ r.hrs }}</div>
+              </div>
+              <div style="flex:none; white-space:nowrap; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ r.bg }}; color:{{ r.fg }};">{{ r.status }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ HOMEWORK ============ -->
+    <sc-if value="{{ isHomework }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div style="display:flex; gap:10px;">
+          <sc-for list="{{ hwStats }}" as="st" hint-placeholder-count="3">
+            <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+              <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px; white-space:nowrap;">{{ st.label }}</div>
+              <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:5px;">{{ st.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div class="sc" style="display:flex; gap:7px; margin-top:14px; overflow-x:auto;">
+          <sc-for list="{{ hwFilters }}" as="f" hint-placeholder-count="5">
+            <div onClick="{{ f.onClick }}" style="flex:none; border-radius:999px; padding:8px 14px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap; background:{{ f.bg }}; color:{{ f.fg }}; border:1px solid {{ f.border }};">{{ f.label }}</div>
+          </sc-for>
+        </div>
+
+        <div onClick="{{ openHwComposer }}" style="margin-top:14px; background:#2563eb; border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 8px 18px rgba(37,99,235,.22);">
+          <span class="ms" style="font-size:20px; color:#fff;">add</span>
+          <div style="flex:1; font-size:14px; font-weight:700; color:#fff;">Post new assignment</div>
+          <span class="ms" style="font-size:20px; color:rgba(255,255,255,.75);">chevron_right</span>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:10px; margin-top:16px;">
+          <sc-for list="{{ hwList }}" as="h" hint-placeholder-count="4">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; overflow:hidden;">
+              <div onClick="{{ h.onToggle }}" style="padding:15px 15px 14px; cursor:pointer;">
+                <div style="display:flex; align-items:flex-start; gap:10px;">
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:14.5px; font-weight:800; color:#0f172a; line-height:1.35;">{{ h.title }}</div>
+                    <div style="font-size:12px; font-weight:600; color:#94a3b8; margin-top:4px;">{{ h.subject }}</div>
+                  </div>
+                  <div style="flex:none; white-space:nowrap; font-size:10.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ h.dueBg }}; color:{{ h.dueFg }};">{{ h.due }}</div>
+                  <span class="ms" style="font-size:19px; color:#c0c8d6;">{{ h.chev }}</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; margin-top:13px;">
+                  <div style="flex:1; height:7px; border-radius:999px; background:#eef1f6; overflow:hidden;">
+                    <div style="height:100%; border-radius:999px; width:{{ h.pctWidth }}; background:{{ h.barColor }};"></div>
+                  </div>
+                  <div style="flex:none; font-size:12px; font-weight:800; color:#334155; white-space:nowrap;">{{ h.submitted }}</div>
+                </div>
+              </div>
+              <sc-if value="{{ h.open }}" hint-placeholder-val="{{ false }}">
+                <div style="border-top:1px solid #f1f4f9; background:#fafbfe; padding:13px 15px 15px;">
+                  <div style="display:flex; gap:8px;">
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">SUBMITTED</div>
+                      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:3px;">{{ h.pct }}</div>
+                    </div>
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">PENDING</div>
+                      <div style="font-size:14px; font-weight:800; color:#b91c1c; margin-top:3px;">{{ h.pending }}</div>
+                    </div>
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">GRADED</div>
+                      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:3px;">{{ h.graded }}</div>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:6px; margin-top:11px; font-size:12.5px; color:#475569; font-weight:600;">
+                    <span class="ms" style="font-size:16px; color:#94a3b8;">attach_file</span>{{ h.file }} · {{ h.dueIn }}
+                  </div>
+
+                  <div style="display:flex; gap:6px; background:#eaedf3; border-radius:11px; padding:4px; margin-top:13px;">
+                    <div onClick="{{ h.onTabSub }}" style="flex:1; text-align:center; padding:8px 4px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; background:{{ h.tabSubBg }}; color:{{ h.tabSubFg }};">Completed</div>
+                    <div onClick="{{ h.onTabPend }}" style="flex:1; text-align:center; padding:8px 4px; border-radius:8px; font-size:12px; font-weight:700; cursor:pointer; background:{{ h.tabPendBg }}; color:{{ h.tabPendFg }};">Not submitted</div>
+                  </div>
+                  <sc-if value="{{ h.rosterEmpty }}" hint-placeholder-val="{{ false }}">
+                    <div style="margin-top:10px; text-align:center; font-size:12.5px; font-weight:600; color:#94a3b8; padding:14px 0;">{{ h.rosterEmptyMsg }}</div>
+                  </sc-if>
+                  <div style="display:flex; flex-direction:column; gap:7px; margin-top:10px;">
+                    <sc-for list="{{ h.roster }}" as="st" hint-placeholder-count="3">
+                      <div style="background:#fff; border:1px solid #eef1f6; border-radius:12px; padding:10px 11px; display:flex; align-items:center; gap:10px;">
+                        <div style="width:32px; height:32px; flex:none; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:800; background:{{ st.avaBg }}; color:{{ st.avaFg }};">{{ st.initials }}</div>
+                        <div style="flex:1; min-width:0;">
+                          <div style="font-size:13.5px; font-weight:700; color:#0f172a;">{{ st.name }}</div>
+                          <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:2px;">Roll {{ st.roll }} · {{ st.note }}</div>
+                        </div>
+                        <span class="ms" style="font-size:19px; color:{{ st.iconColor }};">{{ st.icon }}</span>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="display:flex; gap:10px; margin-top:13px;">
+                    <div onClick="{{ h.onMarkDone }}" style="flex:1; text-align:center; padding:11px 0; border-radius:11px; background:#2563eb; color:#fff; font-size:13px; font-weight:700; cursor:pointer;">Mark completed</div>
+                    <div onClick="{{ h.onRemind }}" style="flex:1; text-align:center; padding:11px 0; border-radius:11px; border:1px solid #dbe2ee; color:#475569; font-size:13px; font-weight:700; cursor:pointer;">Remind</div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ GENERIC ERP PAGE ============ -->
+    <sc-if value="{{ isPage }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px;">
+        <div style="display:flex; gap:10px;">
+          <sc-for list="{{ pageStats }}" as="st" hint-placeholder-count="3">
+            <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+              <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.9px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ st.label }}</div>
+              <div style="font-size:17px; font-weight:800; color:#0f172a; margin-top:5px; white-space:nowrap;">{{ st.value }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ showSearch }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:12px; background:#fff; border:1px solid #dbe2ee; border-radius:14px; padding:11px 13px; display:flex; align-items:center; gap:10px;">
+            <span class="ms" style="font-size:20px; color:#94a3b8;">search</span>
+            <input value="{{ pageQuery }}" onChange="{{ onPageQuery }}" placeholder="Search a student" style="flex:1; min-width:0; border:none; outline:none; font-size:14px; font-family:inherit; color:#0f172a; background:transparent;" />
+            <sc-if value="{{ hasPageQuery }}" hint-placeholder-val="{{ false }}">
+              <span onClick="{{ clearPageQuery }}" class="ms" style="font-size:19px; color:#94a3b8; cursor:pointer;">close</span>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ pageNoResults }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px; background:#fff; border:1px dashed #dbe2ee; border-radius:16px; padding:32px 16px; text-align:center;">
+            <span class="ms" style="font-size:28px; color:#c0c8d6;">person_search</span>
+            <div style="font-size:13.5px; font-weight:600; color:#94a3b8; margin-top:8px;">No students match</div>
+          </div>
+        </sc-if>
+        <sc-for list="{{ pageSections }}" as="sec" hint-placeholder-count="2">
+          <div>
+            <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 10px 4px; white-space:nowrap;">{{ sec.label }}</div>
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; overflow:hidden;">
+              <sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="3">
+                <div style="border-bottom:1px solid #f1f4f9;">
+                  <div onClick="{{ r.onClick }}" style="padding:13px 15px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+                    <div style="flex:1; min-width:0;">
+                      <div style="font-size:14px; font-weight:700; color:#0f172a; line-height:1.35;">{{ r.title }}</div>
+                      <div style="font-size:12px; font-weight:600; color:#94a3b8; margin-top:3px;">{{ r.meta }}</div>
+                    </div>
+                    <sc-if value="{{ r.hasRight }}" hint-placeholder-val="{{ true }}">
+                      <div style="flex:none; white-space:nowrap; font-size:12.5px; font-weight:800; color:#1d4ed8;">{{ r.right }}</div>
+                    </sc-if>
+                    <span class="ms" style="font-size:19px; color:#c0c8d6;">{{ r.chev }}</span>
+                  </div>
+                  <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                    <div style="background:#fafbfe; border-top:1px solid #f1f4f9; padding:12px 15px 14px;">
+                      <sc-if value="{{ r.hasDetail }}" hint-placeholder-val="{{ true }}">
+                        <sc-for list="{{ r.detail }}" as="d" hint-placeholder-count="3">
+                          <div style="display:flex; align-items:center; gap:10px; padding:5px 0;">
+                            <div style="flex:1; font-size:12.5px; font-weight:600; color:#64748b;">{{ d.label }}</div>
+                            <div style="font-size:12.5px; font-weight:800; color:#0f172a; white-space:nowrap;">{{ d.value }}</div>
+                          </div>
+                        </sc-for>
+                      </sc-if>
+                      <sc-if value="{{ r.hasList }}" hint-placeholder-val="{{ false }}">
+                        <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:0 0 7px;">STUDENTS</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                          <sc-for list="{{ r.list }}" as="n" hint-placeholder-count="4">
+                            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:999px; padding:6px 11px; font-size:11.5px; font-weight:700; color:#334155;">{{ n.x }}</div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ============ MARKS ENTRY ============ -->
+    <sc-if value="{{ isMarksEntry }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 96px;">
+        <div onClick="{{ toggleCls }}" style="background:#fff; border:1px solid #dbe2ee; border-radius:16px; padding:13px 14px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+          <div style="width:40px; height:40px; flex:none; border-radius:12px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+            <span class="ms" style="font-size:22px; color:#2563eb;">edit_note</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">SUBJECT · CLASS</div>
+            <div style="font-size:14.5px; font-weight:700; color:#0f172a; margin-top:2px;">{{ clsLabel }}</div>
+          </div>
+          <span class="ms" style="font-size:22px; color:#64748b;">unfold_more</span>
+        </div>
+        <sc-if value="{{ clsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:6px; background:#fff; border:1px solid #dbe2ee; border-radius:14px; overflow:hidden; box-shadow:0 12px 28px rgba(15,23,42,.1);">
+            <sc-for list="{{ clsOptions }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.onClick }}" style="padding:13px 16px; border-bottom:1px solid #f1f4f9; font-size:14px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; gap:6px; background:#eaedf3; border-radius:12px; padding:4px; margin-top:12px;">
+          <sc-for list="{{ examTabs }}" as="tb" hint-placeholder-count="3">
+            <div onClick="{{ tb.onClick }}" style="flex:1; text-align:center; padding:9px 4px; border-radius:9px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; background:{{ tb.bg }}; color:{{ tb.fg }};">{{ tb.label }}</div>
+          </sc-for>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:20px 4px 10px;">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; white-space:nowrap;">ENTRY</div>
+          <div style="font-size:11px; font-weight:700; color:#c0c8d6; white-space:nowrap;">{{ examMax }}</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ entryRows }}" as="r" hint-placeholder-count="6">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:11px 12px; display:flex; align-items:center; gap:12px;">
+              <div style="width:36px; height:36px; flex:none; border-radius:12px; background:#eaf0fd; color:#1d4ed8; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800;">{{ r.initials }}</div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:700; color:#0f172a;">{{ r.name }}</div>
+                <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:2px;">Roll {{ r.roll }}</div>
+              </div>
+              <input value="{{ r.value }}" onChange="{{ r.onInput }}" style="width:56px; flex:none; box-sizing:border-box; text-align:center; border:1px solid #dbe2ee; border-radius:10px; padding:9px 6px; font-size:14px; font-weight:700; font-family:inherit; color:#0f172a; outline:none;" />
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="position:absolute; left:0; right:0; bottom:69px; padding:12px 14px 14px; background:linear-gradient(180deg,rgba(247,248,251,0) 0%,#f7f8fb 45%); display:flex; align-items:center; gap:12px;">
+        <div style="flex:1; font-size:12px; font-weight:600; color:#64748b;">{{ examMax }} · {{ clsLabel }}</div>
+        <div onClick="{{ saveMarks }}" style="background:#2563eb; color:#fff; font-size:13.5px; font-weight:700; padding:13px 22px; border-radius:14px; cursor:pointer; box-shadow:0 8px 18px rgba(37,99,235,.28);">Save</div>
+      </div>
+    </sc-if>
+
+    <!-- ============ SUBJECT RECORDS ============ -->
+    <sc-if value="{{ isRecords }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:14px 14px 24px;">
+        <div onClick="{{ toggleCls }}" style="background:#fff; border:1px solid #dbe2ee; border-radius:16px; padding:13px 14px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+          <div style="width:40px; height:40px; flex:none; border-radius:12px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+            <span class="ms" style="font-size:22px; color:#2563eb;">menu_book</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:10.5px; font-weight:800; color:#94a3b8; letter-spacing:1px;">SUBJECT · CLASS</div>
+            <div style="font-size:14.5px; font-weight:700; color:#0f172a; margin-top:2px;">{{ clsLabel }}</div>
+          </div>
+          <span class="ms" style="font-size:22px; color:#64748b;">unfold_more</span>
+        </div>
+        <sc-if value="{{ clsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:6px; background:#fff; border:1px solid #dbe2ee; border-radius:14px; overflow:hidden; box-shadow:0 12px 28px rgba(15,23,42,.1);">
+            <sc-for list="{{ clsOptions }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.onClick }}" style="padding:13px 16px; border-bottom:1px solid #f1f4f9; font-size:14px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="display:flex; gap:10px; margin-top:12px;">
+          <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:1px;">STUDENTS</div>
+            <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px;">{{ recordSummary.count }}</div>
+          </div>
+          <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:1px;">CLASS AVG</div>
+            <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px;">{{ recordSummary.avg }}</div>
+          </div>
+          <div style="flex:1; background:#fff; border:1px solid #e8ecf3; border-radius:14px; padding:12px;">
+            <div style="font-size:10px; font-weight:800; color:#94a3b8; letter-spacing:1px;">HIGHEST</div>
+            <div style="font-size:20px; font-weight:800; color:#0f172a; margin-top:4px;">{{ recordSummary.top }}</div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:22px 4px 10px;">
+          <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; white-space:nowrap;">MARKS</div>
+          <div style="font-size:10.5px; font-weight:700; color:#c0c8d6; letter-spacing:.5px; white-space:nowrap;">TERM 1</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ records }}" as="r" hint-placeholder-count="6">
+            <div style="background:#fff; border:1px solid #e8ecf3; border-radius:14px; overflow:hidden;">
+              <div onClick="{{ r.onToggle }}" style="padding:12px; display:flex; align-items:center; gap:12px; cursor:pointer;">
+                <div style="width:36px; height:36px; flex:none; border-radius:12px; background:#eaf0fd; color:#1d4ed8; display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:800;">{{ r.initials }}</div>
+                <div style="flex:1; min-width:0;">
+                  <div style="font-size:14px; font-weight:700; color:#0f172a;">{{ r.name }}</div>
+                  <div style="font-size:11.5px; font-weight:600; color:#94a3b8; margin-top:2px;">Roll {{ r.roll }} · {{ r.total }}</div>
+                </div>
+                <div style="flex:none; white-space:nowrap; font-size:11.5px; font-weight:800; padding:5px 10px; border-radius:999px; background:{{ r.gradeBg }}; color:{{ r.gradeFg }};">{{ r.grade }} · {{ r.pct }}</div>
+                <span class="ms" style="font-size:20px; color:#c0c8d6;">{{ r.chev }}</span>
+              </div>
+              <sc-if value="{{ r.open }}" hint-placeholder-val="{{ false }}">
+                <div style="border-top:1px solid #f1f4f9; background:#fafbfe; padding:13px 12px;">
+                  <div style="display:flex; gap:8px;">
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">UNIT TEST 1</div>
+                      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:3px;">{{ r.ut1 }}</div>
+                    </div>
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">UNIT TEST 2</div>
+                      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:3px;">{{ r.ut2 }}</div>
+                    </div>
+                    <div style="flex:1; background:#fff; border:1px solid #eef1f6; border-radius:10px; padding:9px 10px;">
+                      <div style="font-size:9.5px; font-weight:800; color:#94a3b8; letter-spacing:.8px;">ASSIGNMENT</div>
+                      <div style="font-size:14px; font-weight:800; color:#0f172a; margin-top:3px;">{{ r.assign }}</div>
+                    </div>
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-top:11px; font-size:12.5px; color:#475569; font-weight:600;">
+                    <span class="ms" style="font-size:16px; color:#94a3b8;">event_available</span>Attendance {{ r.attendance }}
+                  </div>
+                  <div style="display:flex; align-items:center; gap:8px; margin-top:7px; font-size:12.5px; color:#475569; font-weight:600;">
+                    <span class="ms" style="font-size:16px; color:#94a3b8;">call</span>Guardian {{ r.guardian }}
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ BUS ============ -->
+    <sc-if value="{{ isBus }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px;">
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px; display:flex; align-items:center; gap:14px;">
+          <div style="width:46px; height:46px; flex:none; border-radius:13px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+            <span class="ms" style="font-size:25px; color:#2563eb;">directions_bus</span>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:15.5px; font-weight:800; color:#0f172a;">Route 7 · Staff shuttle</div>
+            <div style="font-size:12.5px; color:#64748b; margin-top:3px;">Vehicle TN 37 BX 4412 · Murugan S</div>
+          </div>
+          <div onClick="{{ callDriver }}" style="width:40px; height:40px; flex:none; border-radius:12px; background:#16a34a; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <span class="ms" style="font-size:21px; color:#fff;">call</span>
+          </div>
+        </div>
+        <div style="font-size:11.5px; font-weight:800; color:#94a3b8; letter-spacing:1.2px; margin:22px 0 12px 4px;">MORNING STOPS</div>
+        <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:6px 16px;">
+          <sc-for list="{{ busStops }}" as="b" hint-placeholder-count="4">
+            <div style="display:flex; gap:14px; padding:12px 0; border-bottom:1px solid #f1f4f9;">
+              <div style="width:62px; flex:none; font-size:12.5px; font-weight:800; color:#2563eb;">{{ b.time }}</div>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:700; color:#0f172a;">{{ b.name }}</div>
+                <div style="font-size:11.5px; color:#94a3b8; font-weight:600; margin-top:2px;">{{ b.note }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ============ NOTIFICATIONS ============ -->
+    <sc-if value="{{ isNotifications }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px; display:flex; flex-direction:column; gap:12px;">
+        <sc-for list="{{ notifications }}" as="n" hint-placeholder-count="3">
+          <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:15px; display:flex; gap:13px; align-items:flex-start;">
+            <div style="width:40px; height:40px; flex:none; border-radius:12px; background:#eaf0fd; display:flex; align-items:center; justify-content:center;">
+              <span class="ms" style="font-size:21px; color:#2563eb;">{{ n.icon }}</span>
+            </div>
+            <div style="flex:1; min-width:0;">
+              <div style="font-size:14px; font-weight:700; color:#0f172a; line-height:1.4;">{{ n.title }}</div>
+              <div style="font-size:12px; color:#94a3b8; font-weight:600; margin-top:4px;">{{ n.meta }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <!-- ============ ANNOUNCEMENTS ============ -->
+    <sc-if value="{{ isAnnouncements }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:16px 14px 24px; display:flex; flex-direction:column; gap:12px;">
+        <div onClick="{{ openAnnComposer }}" style="background:#2563eb; border-radius:14px; padding:14px 16px; display:flex; align-items:center; gap:10px; cursor:pointer; box-shadow:0 8px 18px rgba(37,99,235,.22);">
+          <span class="ms" style="font-size:20px; color:#fff;">add</span>
+          <div style="flex:1; font-size:14px; font-weight:700; color:#fff;">Post an announcement</div>
+          <span class="ms" style="font-size:20px; color:rgba(255,255,255,.75);">chevron_right</span>
+        </div>
+        <sc-for list="{{ announcementsAll }}" as="a" hint-placeholder-count="3">
+          <div style="background:#fff; border:1px solid #e8ecf3; border-radius:16px; padding:16px;">
+            <div style="font-size:15px; font-weight:800; color:#0f172a; line-height:1.35;">{{ a.title }}</div>
+            <sc-if value="{{ a.hasBody }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:13.5px; color:#334155; line-height:1.5; margin-top:8px;">{{ a.body }}</div>
+            </sc-if>
+            <div style="font-size:12.5px; color:#64748b; font-weight:600; margin-top:8px;">{{ a.place }}</div>
+            <div style="font-size:12px; color:#94a3b8; margin-top:6px;">{{ a.date }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </sc-if>
+
+  </div>
+
+  <!-- ASSIGNMENT COMPOSER -->
+  <sc-if value="{{ hwNewOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; background:rgba(15,23,42,.45); display:flex; align-items:flex-end;">
+      <div class="sc" style="width:100%; max-height:88%; overflow-y:auto; background:#fff; border-radius:22px 22px 0 0; padding:20px 18px 24px;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="flex:1;">
+            <div style="font-size:17px; font-weight:800; color:#0f172a;">New assignment</div>
+            <div style="font-size:12.5px; color:#64748b; margin-top:3px;">Posted to the class you select</div>
+          </div>
+          <div onClick="{{ closeHwComposer }}" style="width:32px; height:32px; border-radius:10px; background:#f1f4f9; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <span class="ms" style="font-size:19px; color:#64748b;">close</span>
+          </div>
+        </div>
+
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:18px 0 7px;">TITLE</div>
+        <input value="{{ hwTitle }}" onChange="{{ onHwTitle }}" placeholder="e.g. Worksheet 5 — Graphs" style="width:100%; box-sizing:border-box; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:16px 0 7px;">CLASS</div>
+        <div onClick="{{ toggleHwCls }}" style="border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; display:flex; align-items:center; gap:10px; cursor:pointer;">
+          <div style="flex:1; font-size:14px; font-weight:700; color:#0f172a;">{{ hwClsLabel }}</div>
+          <span class="ms" style="font-size:20px; color:#64748b;">unfold_more</span>
+        </div>
+        <sc-if value="{{ hwClsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:6px; border:1px solid #dbe2ee; border-radius:12px; overflow:hidden;">
+            <sc-for list="{{ hwClsOptions }}" as="o" hint-placeholder-count="4">
+              <div onClick="{{ o.onClick }}" style="padding:12px 14px; border-bottom:1px solid #f1f4f9; font-size:13.5px; cursor:pointer; background:{{ o.bg }}; color:{{ o.fg }}; font-weight:{{ o.weight }};">{{ o.label }}</div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:16px 0 7px;">DUE DATE</div>
+        <input value="{{ hwDue }}" onChange="{{ onHwDue }}" placeholder="e.g. 12 Sept" style="width:100%; box-sizing:border-box; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+        <div style="display:flex; align-items:center; gap:8px; margin-top:12px; border:1px dashed #dbe2ee; border-radius:12px; padding:13px 14px; font-size:13px; color:#64748b; font-weight:600; cursor:pointer;">
+          <span class="ms" style="font-size:18px; color:#94a3b8;">upload_file</span>Attach a file
+        </div>
+
+        <div onClick="{{ postHomework }}" style="margin-top:18px; text-align:center; padding:14px 0; border-radius:14px; color:#fff; font-size:14px; font-weight:700; cursor:pointer; background:{{ postHwBg }};">Post assignment</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ANNOUNCEMENT COMPOSER -->
+  <sc-if value="{{ annOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; background:rgba(15,23,42,.45); display:flex; align-items:flex-end;">
+      <div class="sc" style="width:100%; max-height:88%; overflow-y:auto; background:#fff; border-radius:22px 22px 0 0; padding:20px 18px 24px;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="flex:1;">
+            <div style="font-size:17px; font-weight:800; color:#0f172a;">New announcement</div>
+            <div style="font-size:12.5px; color:#64748b; margin-top:3px;">Visible to the audiences you select</div>
+          </div>
+          <div onClick="{{ closeAnnComposer }}" style="width:32px; height:32px; border-radius:10px; background:#f1f4f9; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <span class="ms" style="font-size:19px; color:#64748b;">close</span>
+          </div>
+        </div>
+
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:18px 0 7px;">TITLE</div>
+        <input value="{{ annTitle }}" onChange="{{ onAnnTitle }}" placeholder="e.g. Bring graph sheets tomorrow" style="width:100%; box-sizing:border-box; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:16px 0 7px;">DETAILS</div>
+        <textarea value="{{ annBody }}" onChange="{{ onAnnBody }}" rows="3" placeholder="Optional message" style="width:100%; box-sizing:border-box; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none; resize:none;"></textarea>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; margin:18px 0 8px;">
+          <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px;">TARGET AUDIENCE</div>
+          <div style="font-size:11px; font-weight:700; color:#2563eb;">{{ audienceCount }}</div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <sc-for list="{{ audienceOptions }}" as="a" hint-placeholder-count="6">
+            <div onClick="{{ a.onClick }}" style="border-radius:12px; padding:12px 13px; display:flex; align-items:center; gap:11px; cursor:pointer; background:{{ a.bg }}; border:1px solid {{ a.border }};">
+              <span class="ms" style="font-size:21px; color:{{ a.iconColor }};">{{ a.icon }}</span>
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:13.5px; font-weight:700; color:{{ a.fg }};">{{ a.label }}</div>
+                <div style="font-size:11px; font-weight:600; color:#94a3b8; margin-top:2px;">{{ a.note }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div onClick="{{ postAnnouncement }}" style="margin-top:18px; text-align:center; padding:14px 0; border-radius:14px; color:#fff; font-size:14px; font-weight:700; cursor:pointer; background:{{ postAnnBg }};">Post announcement</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- POST COMPOSER -->
+  <sc-if value="{{ composerOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; inset:0; background:rgba(15,23,42,.45); display:flex; align-items:flex-end;">
+      <div style="width:100%; background:#fff; border-radius:22px 22px 0 0; padding:20px 18px 24px;">
+        <div style="display:flex; align-items:flex-start; gap:10px;">
+          <div style="flex:1;">
+            <div style="font-size:17px; font-weight:800; color:#0f172a;">{{ composerHeading }}</div>
+            <div style="font-size:12.5px; color:#64748b; margin-top:3px;">{{ composerSub }}</div>
+          </div>
+          <div onClick="{{ closeComposer }}" style="width:32px; height:32px; border-radius:10px; background:#f1f4f9; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+            <span class="ms" style="font-size:19px; color:#64748b;">close</span>
+          </div>
+        </div>
+        <div style="font-size:11px; font-weight:800; color:#94a3b8; letter-spacing:1px; margin:18px 0 7px;">TITLE</div>
+        <input value="{{ composerTitle }}" onChange="{{ onComposerInput }}" placeholder="e.g. Unit 5 — Data Handling" style="width:100%; box-sizing:border-box; border:1px solid #dbe2ee; border-radius:12px; padding:13px 14px; font-size:14px; font-family:inherit; color:#0f172a; outline:none;" />
+        <div style="display:flex; align-items:center; gap:8px; margin-top:12px; border:1px dashed #dbe2ee; border-radius:12px; padding:13px 14px; font-size:13px; color:#64748b; font-weight:600; cursor:pointer;">
+          <span class="ms" style="font-size:18px; color:#94a3b8;">upload_file</span>Attach a file
+        </div>
+        <div onClick="{{ saveComposer }}" style="margin-top:16px; text-align:center; padding:14px 0; border-radius:14px; background:#2563eb; color:#fff; font-size:14px; font-weight:700; cursor:pointer;">Post</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- TOAST -->
+  <sc-if value="{{ showToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute; left:16px; right:16px; bottom:132px; background:#0f172a; color:#fff; font-size:12.5px; font-weight:600; padding:12px 15px; border-radius:12px; box-shadow:0 10px 24px rgba(15,23,42,.28);">{{ toastMsg }}</div>
+  </sc-if>
+
+  <!-- CHAT FAB (home only) -->
+  <sc-if value="{{ showFab }}" hint-placeholder-val="{{ true }}">
+    <div onClick="{{ openChat }}" style="position:absolute; right:16px; bottom:88px; width:50px; height:50px; border-radius:50%; background:#fff; box-shadow:0 8px 20px rgba(30,64,175,.22); display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <span class="ms" style="font-size:24px; color:#2563eb;">chat</span>
+    </div>
+  </sc-if>
+
+  <!-- FOOTER NAV -->
+  <div style="background:#fff; border-top:1px solid #e8ecf3; padding:10px 8px 14px; display:flex;">
+    <sc-for list="{{ nav }}" as="n" hint-placeholder-count="4">
+      <div onClick="{{ n.onClick }}" style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer;">
+        <span class="ms" style="font-size:23px; color:{{ n.color }};">{{ n.icon }}</span>
+        <div style="font-size:11px; font-weight:{{ n.weight }}; color:{{ n.color }};">{{ n.label }}</div>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:440,&quot;height&quot;:900},&quot;facultyName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;R. Subha&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;facultyMeta&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Mathematics Dept · Class Teacher 8-B&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showChat&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+const SUBJECTS = [
+  { code: "8B", name: "Mathematics · Class 8-B", meta: "42 students · 6 periods/week",
+    syllabus: [
+      { title: "Unit 3 — Rational Numbers", meta: "Posted 28 Aug 2026 · Term 1", status: "Published", file: "maths-8b-unit3.pdf" },
+      { title: "Unit 4 — Linear Equations", meta: "Draft saved 1 Sept 2026", status: "Draft", file: "maths-8b-unit4.docx" }
+    ],
+    lesson: [
+      { title: "Week 6 — Solving equations in one variable", meta: "2–6 Sept 2026 · 6 periods", status: "Published", file: "lp-week6.pdf" },
+      { title: "Week 7 — Word problems", meta: "9–13 Sept 2026 · 6 periods", status: "Draft", file: "lp-week7.pdf" }
+    ],
+    assignment: [
+      { title: "Worksheet 4 — Linear equations", meta: "Due 10 Sept 2026 · 38/42 submitted", status: "Open", file: "worksheet-4.pdf" },
+      { title: "Unit 3 practice set", meta: "Closed 30 Aug 2026 · 42/42 graded", status: "Closed", file: "practice-3.pdf" }
+    ] },
+  { code: "8B", name: "Science · Class 8-B", meta: "42 students · 5 periods/week",
+    syllabus: [{ title: "Unit 3 — Force and Pressure", meta: "Posted 25 Aug 2026 · Term 1", status: "Published", file: "sci-8b-unit3.pdf" }],
+    lesson: [{ title: "Week 6 — Pressure in liquids (lab)", meta: "2–6 Sept 2026 · 5 periods", status: "Published", file: "lp-sci-week6.pdf" }],
+    assignment: [{ title: "Lab record — Pressure experiments", meta: "Due 12 Sept 2026 · 20/42 submitted", status: "Open", file: "lab-record.pdf" }] },
+  { code: "9A", name: "Mathematics · Class 9-A", meta: "40 students · 6 periods/week",
+    syllabus: [{ title: "Unit 2 — Polynomials", meta: "Posted 20 Aug 2026 · Term 1", status: "Published", file: "maths-9a-unit2.pdf" }],
+    lesson: [{ title: "Week 6 — Factorisation methods", meta: "2–6 Sept 2026 · 6 periods", status: "Draft", file: "lp-9a-week6.pdf" }],
+    assignment: [{ title: "Polynomials problem set", meta: "Due 8 Sept 2026 · 31/40 submitted", status: "Open", file: "poly-set.pdf" }] },
+  { code: "10C", name: "Mathematics · Class 10-C", meta: "38 students · 7 periods/week",
+    syllabus: [{ title: "Unit 4 — Quadratic Equations", meta: "Posted 27 Aug 2026 · Term 1", status: "Published", file: "maths-10c-unit4.pdf" }],
+    lesson: [{ title: "Week 6 — Roots and discriminant", meta: "2–6 Sept 2026 · 7 periods", status: "Published", file: "lp-10c-week6.pdf" }],
+    assignment: [{ title: "Board practice — Set B", meta: "Due 9 Sept 2026 · 35/38 submitted", status: "Open", file: "board-set-b.pdf" }] }
+];
+
+const STUDENT_TILES = [
+  { icon: "event_available", label: "Student Attendance", screen: "attendance" },
+  { icon: "logout", label: "Leave", screen: "leave" },
+  { icon: "menu_book", label: "Subject Records", screen: "records" },
+  { icon: "edit_note", label: "Marks Entry", screen: "marksEntry" },
+  { icon: "campaign", label: "Announcements", screen: "announcements" }, { icon: "bar_chart", label: "Class Results" },
+  { icon: "assignment", label: "Homework", screen: "homework" },
+  { icon: "person_add", label: "Class Teacher" }, { icon: "diversity_3", label: "Parent Meetings" }
+];
+
+const EMPLOYEE_TILES = [
+  { icon: "calendar_month", label: "Attendance", screen: "myAttendance" },
+  { icon: "flight", label: "Leave", screen: "empLeave" },
+  { icon: "person", label: "OD" }, { icon: "place", label: "Venue", screen: "venue" },
+  { icon: "payments", label: "HR Payroll", screen: "payroll" },
+  { icon: "receipt_long", label: "Payslip", screen: "payslip" },
+  { icon: "workspace_premium", label: "Appraisal", screen: "appraisal" },
+  { icon: "local_library", label: "Library", screen: "library" }
+];
+
+const SCREENS = {
+  "Announcements": { key: "announcements" },
+  "Student Attendance": { key: "attendance" },
+  "Leave": { key: "leave" },
+  "Subject Records": { key: "records" },
+  "Marks Entry": { key: "marksEntry" }
+};
+
+// Data-driven ERP screens: title, subtitle, stat strip, sections of rows
+const ERP_PAGES = {
+  "Class Results": {
+    sub: "Class 8-B · Class teacher · Unit Test 2",
+    stats: [["CLASS AVG", "72%"], ["PASS", "40/42"], ["TOPPER", "96%"]],
+    sections: [
+      { label: "CLASS 8-B · GRADE DISTRIBUTION", rows: [
+        { title: "A+ · 90% and above", meta: "6 students", right: "14%", detail: [],
+          list: ["Aarav S · 96%", "Harini L · 94%", "Divya M · 93%", "Bhavna R · 92%", "Farhana A · 91%", "Gokul V · 90%"] },
+        { title: "A · 80–89%", meta: "11 students", right: "26%", detail: [],
+          list: ["Eshan P · 89%", "Janani B · 87%", "Kiran D · 85%", "Meera J · 84%", "Lakshya N · 84%", "Oviya S · 83%",
+                 "Rahul V · 83%", "Sanjay T · 82%", "Tarun M · 81%", "Usha P · 81%", "Vidya S · 80%"] },
+        { title: "B · 70–79%", meta: "13 students", right: "31%", detail: [],
+          list: ["Nikhil R · 79%", "Anitha J · 78%", "Bharath L · 77%", "Chitra V · 76%", "Dinesh K · 76%", "Elango R · 75%",
+                 "Geetha M · 74%", "Hari P · 73%", "Indira S · 72%", "Jeeva T · 72%", "Kavya N · 71%", "Lalitha B · 70%", "Manoj D · 70%"] },
+        { title: "C · 60–69%", meta: "10 students", right: "24%", detail: [],
+          list: ["Naveen S · 69%", "Charan K · 64%", "Priya N · 61%", "Ramya G · 68%", "Shiva K · 67%",
+                 "Thara V · 66%", "Uma R · 64%", "Vinoth A · 63%", "Yamini P · 62%", "Zahir H · 60%"] },
+        { title: "D · below 60%", meta: "2 students", right: "5%", detail: [],
+          list: ["Vikram A · 58%", "Yazhini K · 54%"] }
+      ] },
+      { label: "CLASS 8-B · TOPPERS", rows: [
+        { title: "Aarav S · Roll 8B-04", meta: "Total 481/500", right: "96%",
+          detail: [["Mathematics", "98/100"], ["Science", "97/100"], ["English", "94/100"], ["Social Science", "96/100"], ["Tamil", "96/100"]] },
+        { title: "Harini L · Roll 8B-19", meta: "Total 472/500", right: "94%",
+          detail: [["Mathematics", "95/100"], ["Science", "96/100"], ["English", "93/100"], ["Social Science", "94/100"], ["Tamil", "94/100"]] },
+        { title: "Divya M · Roll 8B-07", meta: "Total 465/500", right: "93%",
+          detail: [["Mathematics", "94/100"], ["Science", "93/100"], ["English", "92/100"], ["Social Science", "93/100"], ["Tamil", "93/100"]] }
+      ] }
+    ]
+  },
+
+  "Class Teacher": {
+    sub: "Class 8-B · 42 students",
+    stats: [["STRENGTH", "42"], ["TODAY", "40"], ["ON LEAVE", "2"] ],
+    sections: [
+      { label: "CLASS DUTIES", rows: [
+        { title: "Attendance register", meta: "Submitted for 2 Sept", right: "Done",
+          detail: [["Submitted at", "8:45 AM"], ["Present", "40 of 42"], ["Absent", "2"], ["Next due", "3 Sept · 8:30 AM"]],
+          list: ["Charan K · absent", "Priya N · absent"] },
+        { title: "Leave approvals", meta: "2 requests pending", right: "2",
+          detail: [["Pending", "2 requests"], ["Approved this month", "2"], ["Rejected", "1"]],
+          list: ["Charan K · 3–5 Sept · fever", "Priya N · 8–9 Sept · wedding"] },
+        { title: "Discipline notes", meta: "1 note added this week", right: "1",
+          detail: [["This week", "1 note"], ["This term", "4 notes"], ["Escalated", "0"]],
+          list: ["Sanjay T · repeated late arrival · 1 Sept"] },
+        { title: "Fee follow-up list", meta: "5 students pending", right: "5",
+          detail: [["Term 1 fee due", "5 students"], ["Amount pending", "₹62,500"], ["Last reminder", "28 Aug 2026"]],
+          list: ["Charan K · ₹12,500", "Nikhil R · ₹12,500", "Oviya S · ₹12,500", "Sanjay T · ₹12,500", "Yazhini K · ₹12,500"] }
+      ] },
+      { label: "CLASS OFFICERS", rows: [
+        { title: "Aarav S · Class leader", meta: "Roll 8B-04", right: "",
+          detail: [["Roll", "8B-04"], ["Attendance", "97%"], ["Unit Test 2", "96%"], ["Guardian", "Suresh S · +91 98430 21145"], ["Duty", "Attendance and assembly line-up"]] },
+        { title: "Harini L · Assistant", meta: "Roll 8B-19", right: "",
+          detail: [["Roll", "8B-19"], ["Attendance", "95%"], ["Unit Test 2", "94%"], ["Guardian", "Lalitha L · +91 98940 33218"], ["Duty", "Notice board and homework diary"]] }
+      ] }
+    ]
+  },
+  "Parent Meetings": {
+    sub: "PTM · 12 September 2026",
+    stats: [["SLOTS", "12"], ["BOOKED", "8"], ["OPEN", "4"]],
+    sections: [
+      { label: "CONFIRMED", rows: [
+        { title: "9:00 AM · Aarav S", meta: "Parent: Suresh S", right: "Confirmed" },
+        { title: "9:20 AM · Bhavna R", meta: "Parent: Latha R", right: "Confirmed" },
+        { title: "9:40 AM · Charan K", meta: "Parent: Kumar K", right: "Confirmed" }
+      ] },
+      { label: "OPEN SLOTS", rows: [
+        { title: "10:20 AM", meta: "Unassigned", right: "Assign" },
+        { title: "10:40 AM", meta: "Unassigned", right: "Assign" }
+      ] }
+    ]
+  },
+
+  "Leave ": {
+    sub: "My leave · 2026–27",
+    stats: [["CASUAL", "6/12"], ["EARNED", "9/15"], ["MEDICAL", "3/5"]],
+    sections: [
+      { label: "MY REQUESTS", rows: [
+        { title: "Casual leave · 31 Aug", meta: "Applied 28 Aug", right: "Approved" },
+        { title: "Medical leave · 12–13 Aug", meta: "Applied 11 Aug", right: "Approved" },
+        { title: "Casual leave · 18 Sept", meta: "Applied 2 Sept", right: "Pending" }
+      ] },
+      { label: "SUBSTITUTION", rows: [
+        { title: "18 Sept · 3 periods", meta: "Cover: K. Ramesh", right: "Set" }
+      ] }
+    ]
+  },
+  "OD": {
+    sub: "On-duty requests",
+    stats: [["THIS TERM", "3"], ["APPROVED", "2"], ["PENDING", "1"]],
+    sections: [
+      { label: "REQUESTS", rows: [
+        { title: "District Maths olympiad escort", meta: "22 Sept · full day", right: "Pending" },
+        { title: "CBSE workshop, Coimbatore", meta: "14 Aug · full day", right: "Approved" },
+        { title: "Inter-school quiz judging", meta: "29 Jul · forenoon", right: "Approved" }
+      ] }
+    ]
+  },
+  "Venue": {
+    sub: "Room and lab booking",
+    stats: [["MY BOOKINGS", "2"], ["TODAY", "1"], ["FREE NOW", "5"]],
+    sections: [
+      { label: "MY BOOKINGS", rows: [
+        { title: "Science Lab 2", meta: "Today · 11:10 AM – 12:00 PM", right: "Class 8-B" },
+        { title: "Media Room", meta: "5 Sept · 2:00 PM – 3:00 PM", right: "Class 10-C" }
+      ] },
+      { label: "AVAILABLE NOW", rows: [
+        { title: "Auditorium", meta: "Capacity 400", right: "Book" },
+        { title: "Computer Lab 1", meta: "Capacity 40", right: "Book" },
+        { title: "Seminar Hall", meta: "Capacity 120", right: "Book" }
+      ] }
+    ]
+  },
+  "HR Payroll": {
+    sub: "Employee ID PPS-1042",
+    stats: [["GROSS", "₹68,400"], ["NET", "₹59,120"], ["PF", "₹4,320"]],
+    sections: [
+      { label: "EARNINGS", rows: [
+        { title: "Basic pay", meta: "Monthly", right: "₹42,000" },
+        { title: "House rent allowance", meta: "30% of basic", right: "₹12,600" },
+        { title: "Special allowance", meta: "Fixed", right: "₹9,800" },
+        { title: "Class teacher allowance", meta: "Class 8-B", right: "₹4,000" }
+      ] },
+      { label: "DEDUCTIONS", rows: [
+        { title: "Provident fund", meta: "12% of basic", right: "₹4,320" },
+        { title: "Professional tax", meta: "Monthly", right: "₹208" },
+        { title: "Income tax (TDS)", meta: "Monthly", right: "₹4,752" }
+      ] }
+    ]
+  },
+  "Payslip": {
+    sub: "August 2026",
+    stats: [["NET PAID", "₹59,120"], ["PAID ON", "31 Aug"], ["MODE", "NEFT"]],
+    sections: [
+      { label: "RECENT PAYSLIPS", rows: [
+        { title: "August 2026", meta: "Credited 31 Aug · HDFC ••4471", right: "₹59,120" },
+        { title: "July 2026", meta: "Credited 31 Jul · HDFC ••4471", right: "₹59,120" },
+        { title: "June 2026", meta: "Credited 30 Jun · HDFC ••4471", right: "₹57,860" }
+      ] },
+      { label: "TAX DOCUMENTS", rows: [
+        { title: "Form 16 · FY 2025–26", meta: "Issued 15 Jun 2026", right: "Download" },
+        { title: "Investment declaration", meta: "Due 30 Sept 2026", right: "Submit" }
+      ] }
+    ]
+  },
+  "Appraisal": {
+    sub: "Cycle 2026–27",
+    stats: [["SELF", "Done"], ["HOD", "Pending"], ["SCORE", "—"]],
+    sections: [
+      { label: "STAGES", rows: [
+        { title: "Self appraisal", meta: "Submitted 20 Aug 2026", right: "Done" },
+        { title: "HOD review", meta: "With Dr. Meenakshi V", right: "Pending" },
+        { title: "Principal sign-off", meta: "Opens after HOD review", right: "Locked" }
+      ] },
+      { label: "LAST CYCLE", rows: [
+        { title: "2025–26 overall rating", meta: "Exceeds expectations", right: "4.3/5" },
+        { title: "Student feedback", meta: "Average of 3 classes", right: "4.5/5" }
+      ] }
+    ]
+  },
+  "Library": {
+    sub: "Faculty borrowing",
+    stats: [["ISSUED", "3"], ["DUE SOON", "1"], ["FINE", "₹0"]],
+    sections: [
+      { label: "ISSUED TO ME", rows: [
+        { title: "NCERT Exemplar — Mathematics 9", meta: "Issued 20 Aug · due 10 Sept", right: "Renew" },
+        { title: "Teaching Secondary Mathematics", meta: "Issued 12 Aug · due 12 Sept", right: "Renew" },
+        { title: "Physics for Middle School", meta: "Issued 28 Aug · due 28 Sept", right: "Renew" }
+      ] },
+      { label: "RESERVED", rows: [
+        { title: "Mathematical Circles", meta: "Available 8 Sept", right: "Queued" }
+      ] }
+    ]
+  }
+};
+
+const MY_DAYS = [
+  { d: "Wed, 2 Sept", inT: "8:12 AM", outT: "4:05 PM", hrs: "7h 53m", status: "Present" },
+  { d: "Tue, 1 Sept", inT: "8:09 AM", outT: "4:02 PM", hrs: "7h 53m", status: "Present" },
+  { d: "Mon, 31 Aug", inT: "—", outT: "—", hrs: "—", status: "Leave" },
+  { d: "Fri, 28 Aug", inT: "8:41 AM", outT: "4:10 PM", hrs: "7h 29m", status: "Late" },
+  { d: "Thu, 27 Aug", inT: "8:05 AM", outT: "4:00 PM", hrs: "7h 55m", status: "Present" },
+  { d: "Wed, 26 Aug", inT: "8:11 AM", outT: "4:08 PM", hrs: "7h 57m", status: "Present" }
+];
+
+const LEAVE_TYPES = ["Casual leave", "Medical leave", "Earned leave", "On-duty"];
+
+const MY_LEAVE = [
+  { id: "LV-2026-214", type: "Casual leave", dates: "18 Sept 2026", days: "1 day", reason: "Family function at home town", status: "Pending", sub: "Applied 2 Sept 2026", cover: "K. Ramesh · 3 periods" },
+  { id: "LV-2026-198", type: "Casual leave", dates: "31 Aug 2026", days: "1 day", reason: "Personal work", status: "Approved", sub: "Applied 28 Aug 2026", cover: "S. Deepa · 4 periods" },
+  { id: "LV-2026-176", type: "Medical leave", dates: "12–13 Aug 2026", days: "2 days", reason: "Viral fever, doctor advised rest", status: "Approved", sub: "Applied 11 Aug 2026", cover: "K. Ramesh · 9 periods" },
+  { id: "LV-2026-151", type: "Earned leave", dates: "22 Jul 2026", days: "1 day", reason: "Not stated", status: "Rejected", sub: "Applied 21 Jul 2026", cover: "—" }
+];
+
+const HR_CATEGORIES = ["Salary query", "PF / ESI", "Income tax declaration", "Increment / arrears", "Bank account change", "Service certificate"];
+
+const HR_REQUESTS = [
+  { id: "HRM-2026-118", subject: "Correction in July PF contribution", status: "Under Review", submitted: "28 Aug 2026", assigned: "HR · Mrs. Vasanthi" },
+  { id: "HRM-2026-104", subject: "Service certificate for bank loan", status: "Closed", submitted: "12 Aug 2026", assigned: "HR · Mr. Selvam" }
+];
+
+const APPRAISALS = [
+  { name: "R. Subha · PG Assistant, Mathematics", cycle: "Cycle 2026–2027", status: "HoD Reviewed", submitted: "Submitted 20 Aug 2026", score: "", file: "self-appraisal-2026.pdf" },
+  { name: "R. Subha · PG Assistant, Mathematics", cycle: "Cycle 2025–2026", status: "Scored", submitted: "Submitted 18 Aug 2025", score: "Score: 86/100", file: "appraisal-evidence-2025.pdf" },
+  { name: "R. Subha · PG Assistant, Mathematics", cycle: "Cycle 2024–2025", status: "Scored", submitted: "Submitted 22 Aug 2024", score: "Score: 81/100", file: "appraisal-evidence-2024.pdf" }
+];
+
+const LIB_CATALOGUE = [
+  { title: "NCERT Exemplar Problems — Mathematics 9", author: "NCERT · Mathematics", code: "LIB-MA-0014", copies: "2 copies free" },
+  { title: "Teaching Secondary School Mathematics", author: "Chambers · Pedagogy", code: "LIB-PD-0031", copies: "1 copy free" },
+  { title: "Mathematical Circles", author: "Fomin, Genkin · Enrichment", code: "LIB-MA-0062", copies: "3 copies free" },
+  { title: "Physics for Middle School", author: "Verma · Science", code: "LIB-SC-0007", copies: "All issued" },
+  { title: "Lakhmir Singh Science — Class 8", author: "Lakhmir Singh · Science", code: "LIB-SC-0028", copies: "2 copies free" }
+];
+
+const LIB_ERESOURCES = [
+  { title: "NCERT Mathematics Class 8 (E-Book)", kind: "pdf" },
+  { title: "NCERT Mathematics Class 9 (E-Book)", kind: "pdf" },
+  { title: "CBSE Sample Question Papers 2026", kind: "pdf" },
+  { title: "Science Practical Manual — Class 8", kind: "pdf" },
+  { title: "Geogebra classroom activity pack", kind: "zip" }
+];
+
+const LIB_BORROWED = [
+  { title: "NCERT Exemplar Problems — Mathematics 9", meta: "Issued 20 Aug · due 10 Sept", right: "Renew" },
+  { title: "Teaching Secondary School Mathematics", meta: "Issued 12 Aug · due 12 Sept", right: "Renew" },
+  { title: "Physics for Middle School", meta: "Issued 28 Aug · due 28 Sept", right: "Renew" }
+];
+
+const LIB_HISTORY = [
+  { title: "Mathematical Circles", meta: "Returned 8 Aug 2026 · no fine", right: "Returned" },
+  { title: "Lakhmir Singh Science — Class 8", meta: "Returned 24 Jul 2026 · no fine", right: "Returned" }
+];
+
+const VENUES = ["Auditorium", "Media Room", "Science Lab 1", "Science Lab 2", "Computer Lab 1", "Seminar Hall", "Play Ground"];
+
+const VENUE_BOOKED = [
+  { title: "Science Lab 2", meta: "Today · 11:10 AM – 12:00 PM", right: "Class 8-B" },
+  { title: "Media Room", meta: "5 Sept · 2:00 PM – 3:00 PM", right: "Class 10-C" },
+  { title: "Auditorium", meta: "12 Sept · 10:00 AM – 1:00 PM", right: "PTM" }
+];
+
+const PAYSLIPS = [
+  { month: "August 2026", meta: "Credited 31 Aug · HDFC ••4471", net: "₹59,120" },
+  { month: "July 2026", meta: "Credited 31 Jul · HDFC ••4471", net: "₹59,120" },
+  { month: "June 2026", meta: "Credited 30 Jun · HDFC ••4471", net: "₹57,860" },
+  { month: "May 2026", meta: "Credited 31 May · HDFC ••4471", net: "₹57,860" }
+];
+
+const HOMEWORK = [
+  { title: "Worksheet 4 — Linear equations", cls: "8B-M", subject: "Mathematics · Class 8-B", due: "10 Sept", dueIn: "in 5 days",
+    submitted: 38, strength: 42, graded: 12, state: "open", file: "worksheet-4.pdf" },
+  { title: "Polynomials problem set", cls: "9A-M", subject: "Mathematics · Class 9-A", due: "8 Sept", dueIn: "in 3 days",
+    submitted: 31, strength: 40, graded: 0, state: "open", file: "poly-set.pdf" },
+  { title: "Lab record — Pressure experiments", cls: "8B-S", subject: "Science · Class 8-B", due: "Today", dueIn: "due today",
+    submitted: 20, strength: 42, graded: 0, state: "open", file: "lab-record.pdf" },
+  { title: "Board practice — Set B", cls: "10C-M", subject: "Mathematics · Class 10-C", due: "9 Sept", dueIn: "in 4 days",
+    submitted: 35, strength: 38, graded: 35, state: "open", file: "board-set-b.pdf" },
+  { title: "Unit 3 practice set", cls: "8B-M", subject: "Mathematics · Class 8-B", due: "30 Aug", dueIn: "graded 30 Aug",
+    submitted: 42, strength: 42, graded: 42, state: "done", file: "practice-3.pdf" }
+];
+
+const NAV = [
+  { key: "home", icon: "home", label: "Home" },
+  { key: "erp", icon: "work", label: "ERP" },
+  { key: "academics", icon: "school", label: "Academics" },
+  { key: "bus", icon: "directions_bus", label: "Bus" }
+];
+
+const PERIODS_BY_DAY = {
+  24: [
+    { time: "8:40 AM", slot: "P1", subject: "Mathematics · Class 9-A", room: "Room 9A" },
+    { time: "9:50 AM", slot: "P2", subject: "Mathematics · Class 8-B", room: "Room 8B" },
+    { time: "11:10 AM", slot: "P4", subject: "Science · Class 8-B", room: "Science Lab 2" }
+  ],
+  25: [
+    { time: "9:50 AM", slot: "P2", subject: "Mathematics · Class 10-C", room: "Room 10C" },
+    { time: "12:20 PM", slot: "P5", subject: "Mathematics · Class 8-B", room: "Room 8B" }
+  ],
+  26: [
+    { time: "9:50 AM", slot: "P2", subject: "Science · Class 8-B", room: "Science Lab 2" },
+    { time: "12:20 PM", slot: "P5", subject: "Mathematics · Class 9-A", room: "Room 9A" }
+  ],
+  27: [
+    { time: "8:40 AM", slot: "P1", subject: "Mathematics · Class 10-C", room: "Room 10C" },
+    { time: "11:10 AM", slot: "P4", subject: "Mathematics · Class 8-B", room: "Room 8B" },
+    { time: "12:20 PM", slot: "P5", subject: "Science · Class 8-B", room: "Science Lab 2" }
+  ],
+  28: [
+    { time: "9:50 AM", slot: "P2", subject: "Mathematics · Class 9-A", room: "Room 9A" }
+  ],
+  29: [
+    { time: "8:40 AM", slot: "P1", subject: "Mathematics · Class 10-C", room: "Room 10C" },
+    { time: "9:50 AM", slot: "P2", subject: "Mathematics · Class 8-B", room: "Room 8B" }
+  ]
+};
+
+const DAYS = [
+  { dow: "MON", num: 24 }, { dow: "TUE", num: 25 }, { dow: "WED", num: 26 },
+  { dow: "THU", num: 27 }, { dow: "FRI", num: 28 }, { dow: "SAT", num: 29 }
+];
+
+const CLASSES = [
+  { key: "8B-M", label: "Class 8-B · Mathematics", strength: 42, present: 39 },
+  { key: "8B-S", label: "Class 8-B · Science", strength: 42, present: 40 },
+  { key: "9A-M", label: "Class 9-A · Mathematics", strength: 40, present: 37 },
+  { key: "10C-M", label: "Class 10-C · Mathematics", strength: 38, present: 36 }
+];
+
+const ROLL_LISTS = {
+  "8B-M": [
+    { roll: "8B-04", name: "Aarav S", status: "Present" },
+    { roll: "8B-05", name: "Bhavna R", status: "Present" },
+    { roll: "8B-06", name: "Charan K", status: "Absent" },
+    { roll: "8B-07", name: "Divya M", status: "Present" },
+    { roll: "8B-08", name: "Eshan P", status: "Late" },
+    { roll: "8B-09", name: "Farhana A", status: "Present" }
+  ],
+  "8B-S": [
+    { roll: "8B-04", name: "Aarav S", status: "Present" },
+    { roll: "8B-05", name: "Bhavna R", status: "Absent" },
+    { roll: "8B-06", name: "Charan K", status: "Present" },
+    { roll: "8B-07", name: "Divya M", status: "Present" },
+    { roll: "8B-08", name: "Eshan P", status: "Present" }
+  ],
+  "9A-M": [
+    { roll: "9A-11", name: "Gokul V", status: "Present" },
+    { roll: "9A-12", name: "Harini L", status: "Present" },
+    { roll: "9A-13", name: "Ishan T", status: "Absent" },
+    { roll: "9A-14", name: "Janani B", status: "Present" },
+    { roll: "9A-15", name: "Kiran D", status: "Late" }
+  ],
+  "10C-M": [
+    { roll: "10C-02", name: "Lakshya N", status: "Present" },
+    { roll: "10C-03", name: "Meera J", status: "Present" },
+    { roll: "10C-04", name: "Nikhil R", status: "Absent" },
+    { roll: "10C-05", name: "Oviya S", status: "Present" }
+  ]
+};
+
+const LEAVE_REQUESTS = [
+  { roll: "8B-06", name: "Charan K", reason: "Fever — advised rest by doctor", dates: "3 Sept – 5 Sept 2026", days: "3 days", status: "Pending", file: "medical-note.pdf" },
+  { roll: "8B-18", name: "Priya N", reason: "Sister's wedding, out of station", dates: "8 Sept – 9 Sept 2026", days: "2 days", status: "Pending", file: "" },
+  { roll: "8B-22", name: "Rahul V", reason: "State-level chess tournament", dates: "1 Sept 2026", days: "1 day", status: "Approved", file: "invite-letter.pdf" },
+  { roll: "8B-09", name: "Farhana A", reason: "Family function", dates: "27 Aug 2026", days: "1 day", status: "Approved", file: "" },
+  { roll: "8B-31", name: "Sanjay T", reason: "No reason stated", dates: "24 Aug 2026", days: "1 day", status: "Rejected", file: "" }
+];
+
+const MONTHS = [
+  { name: "July 2026", short: "JUL", offset: 3, days: 31, events: [
+    { day: 6, title: "Semester 1 begins", sub: "All grades · Assembly 8:15 AM" },
+    { day: 24, title: "Staff development day", sub: "No classes · Workshop 9 AM" }
+  ] },
+  { name: "August 2026", short: "AUG", offset: 6, days: 31, events: [
+    { day: 15, title: "Independence Day", sub: "Holiday · Flag hoisting 8:00 AM" },
+    { day: 26, title: "Unit Test 2 begins", sub: "Grades 8–10 · Forenoon sessions" }
+  ] },
+  { name: "September 2026", short: "SEP", offset: 2, days: 30, events: [
+    { day: 12, title: "Parent–Teacher Meeting", sub: "Principal's Office · 10 AM" },
+    { day: 20, title: "Annual Day rehearsals end", sub: "Grades 6–10 · Auditorium" }
+  ] }
+];
+
+const PAST_MONTHS = [
+  { name: "August 2026", short: "Aug", offset: 6, days: 31, lastMarked: 31 },
+  { name: "September 2026", short: "Sept", offset: 2, days: 30, lastMarked: 1 }
+];
+const DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+function attendanceFor(clsKey, mi, day, strength) {
+  const m = PAST_MONTHS[mi];
+  const dow = (m.offset + day - 1) % 7;
+  if (dow === 0) return { holiday: "Sunday · no classes" };
+  if (mi === 0 && day === 15) return { holiday: "Independence Day · holiday" };
+  if (day > m.lastMarked) return null;
+  let h = 0;
+  const seed = clsKey + "-" + mi + "-" + day;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) % 9973;
+  const absent = h % 5;
+  const roster = ROLL_LISTS[clsKey] || [];
+  const names = [];
+  for (let i = 0; i < absent; i++) names.push(roster[(h + i * 3) % roster.length]);
+  return {
+    dow: DOW_NAMES[dow], absent, present: strength - absent, strength,
+    pct: Math.round(((strength - absent) / strength) * 100),
+    absentees: names.filter(Boolean).map(r => ({ name: r.name, roll: r.roll })),
+    markedBy: "Marked at 8:45 AM"
+  };
+}
+
+function hashOf(seed, mult) {
+  let h = 7;
+  for (let i = 0; i < seed.length; i++) h = (h * mult + seed.charCodeAt(i) * 131) % 100003;
+  return h;
+}
+
+function marksFor(clsKey, roll) {
+  const seed = clsKey + "|" + roll;
+  const ut1 = 14 + (hashOf(seed + "ut1", 53) % 12);
+  const ut2 = 14 + (hashOf(seed + "ut2", 97) % 12);
+  const assign = 11 + (hashOf(seed + "asg", 149) % 10);
+  const h = hashOf(seed, 31);
+  const total = ut1 + ut2 + assign;
+  const pct = Math.round((total / 70) * 100);
+  const grade = pct >= 90 ? "A+" : pct >= 80 ? "A" : pct >= 70 ? "B" : pct >= 60 ? "C" : "D";
+  return { ut1, ut2, assign, total, pct, grade, attendance: 86 + (h % 14), guardian: "+91 9" + (400000000 + (h * 7919) % 99999999) };
+}
+
+const ANNOUNCEMENTS = [
+  { title: "Parent–Teacher Meeting · 12 September", place: "Principal's Office", date: "2 Sept 2026" },
+  { title: "Unit Test 2 invigilation duty list out", place: "Staff Room notice board", date: "31 Aug 2026" },
+  { title: "Library stock-taking · submit issued books", place: "Central Library", date: "29 Aug 2026" }
+];
+
+const NOTIFICATIONS = [
+  { icon: "assignment_turned_in", title: "38 of 42 submitted Worksheet 4", meta: "Mathematics · Class 8-B · 2h ago" },
+  { icon: "logout", title: "New leave request from Charan K", meta: "Class 8-B · 5h ago" },
+  { icon: "event", title: "PTM scheduled for 12 September", meta: "Administration · Yesterday" }
+];
+
+const BUS_STOPS = [
+  { time: "7:05 AM", name: "Ganapathy Signal", note: "Boarding point" },
+  { time: "7:18 AM", name: "Sathy Road Junction", note: "" },
+  { time: "7:32 AM", name: "Peelamedu Bus Stand", note: "" },
+  { time: "7:50 AM", name: "Pavakie Public School", note: "Arrival" }
+];
+
+class Component extends DCLogic {
+  state = { screen: "home", subjectIndex: 0, tab: "syllabus", day: 26, cls: "8B-M", clsOpen: false,
+    leaveFilter: "Pending", leaveState: {}, marks: {}, submitted: {}, pastOpen: false,
+    month: 1, annIdx: 0, pastMonth: 0, pastDay: null, composerOpen: false, composerTitle: "", added: {}, toast: "", sheet: "",
+    page: "", exam: "ut1", entryMarks: {}, openRoll: null };
+
+  go(screen) { this.setState({ screen, clsOpen: false, pastOpen: false, composerOpen: false, sheet: "" }); }
+
+  toast(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: "" }), 2200);
+  }
+
+  componentWillUnmount() { clearTimeout(this._t); }
+
+  renderVals() {
+    const s = this.state;
+    const screen = s.screen;
+    const facultyName = this.props.facultyName ?? "R. Subha";
+    const subj = SUBJECTS[s.subjectIndex];
+
+    const titles = {
+      erp: ["ERP", "Faculty services"],
+      academics: ["Academics", "Semester 1 · Jul 2026 – Dec 2026"],
+      term: ["Current Term", "Semester 1 · " + SUBJECTS.length + " subjects"],
+      subject: [subj.name.split(" · ")[0], subj.name.split(" · ")[1] + " · " + subj.meta.split(" · ")[0]],
+      timetable: ["Timetable", "Wednesday, 26 August"],
+      calendar: ["Academic Calendar", "Semester 1 · Jul 2026 – Dec 2026"],
+      attendance: ["Student Attendance", "Wednesday, 2 September 2026"],
+      leave: ["Student Leave", "Class 8-B · Class Teacher"],
+      records: ["Subject Records", "Term 1 · marks and student details"],
+      marksEntry: ["Marks Entry", "Term 1 · enter and save marks"],
+      homework: ["Homework", "Assigned across my classes"],
+      myAttendance: ["My Attendance", "September 2026"],
+      empLeave: ["Leave", "My leave · 2026–27"],
+      venue: ["Venue", "Booking requests"],
+      payroll: ["HR Payroll", "Payroll and HR queries"],
+      payslip: ["Payslip", "Employee ID PPS-1042"],
+      appraisal: ["Appraisal", "Self appraisal and review"],
+      library: ["Library", "Central Library · Staff account"],
+      page: [(s.page || "").trim(), (ERP_PAGES[s.page] || {}).sub || ""],
+      notifications: ["Notifications", NOTIFICATIONS.length + " updates"],
+      announcements: ["Announcements", (ANNOUNCEMENTS.length + (s.postedAnn || []).length) + " active"],
+      bus: ["My Bus", "Route 7 · Staff shuttle"]
+    };
+    const t = titles[screen];
+
+    const backTo = { erp: "home", academics: "home", term: "academics", timetable: "academics", calendar: "academics", subject: "term", bus: "home", attendance: "erp", leave: "erp", records: "erp", marksEntry: "erp", homework: "erp", myAttendance: "erp", empLeave: "erp", venue: "erp", payroll: "erp", payslip: "erp",
+      appraisal: "erp", library: "erp", page: "erp", notifications: "home", announcements: "home" };
+
+    const navTab = { home: "home", erp: "erp", bus: "bus", attendance: "erp", leave: "erp", records: "erp", marksEntry: "erp", homework: "erp", myAttendance: "erp", empLeave: "erp", venue: "erp", payroll: "erp", payslip: "erp",
+      appraisal: "erp", library: "erp", page: "erp", notifications: "home", announcements: "home" }[screen] || (screen === "academics" || screen === "term" || screen === "subject" || screen === "timetable" || screen === "calendar" ? "academics" : "home");
+
+    const tabDefs = [["syllabus", "Syllabus"], ["lesson", "Lesson Plan"], ["assignment", "Assignments"]];
+    const entriesByTab = { syllabus: subj.syllabus, lesson: subj.lesson, assignment: subj.assignment };
+    const headingByTab = { syllabus: "POSTED SYLLABUS", lesson: "LESSON PLANS", assignment: "ASSIGNMENTS" };
+    const postByTab = { syllabus: "Post Syllabus", lesson: "Post Plan", assignment: "Post Assignment" };
+    const statusColor = {
+      Published: ["#dcfce7", "#15803d"], Draft: ["#fef3c7", "#a16207"],
+      Open: ["#dbeafe", "#1d4ed8"], Closed: ["#eef1f6", "#64748b"]
+    };
+
+    const month = MONTHS[s.month];
+    const cells = [];
+    for (let i = 0; i < month.offset; i++) cells.push({ d: "", bg: "transparent", fg: "#0f172a" });
+    for (let d = 1; d <= month.days; d++) {
+      const ev = month.events.some(e => e.day === d);
+      cells.push({ d: String(d), bg: ev ? "#2563eb" : "transparent", fg: ev ? "#fff" : "#334155" });
+    }
+
+    const dayPeriods = PERIODS_BY_DAY[s.day] || [];
+
+    return {
+      facultyName,
+      facultyMeta: this.props.facultyMeta ?? "Mathematics Dept · Class Teacher 8-B",
+      isHome: screen === "home",
+      isErp: screen === "erp",
+      isAcademics: screen === "academics",
+      isTerm: screen === "term",
+      isSubject: screen === "subject",
+      isTimetable: screen === "timetable",
+      isCalendar: screen === "calendar",
+      subHeader: screen !== "home",
+      showFab: screen === "home" && (this.props.showChat ?? true),
+      pageTitle: t ? t[0] : "",
+      pageSub: t ? t[1] : "",
+      goBack: () => this.go((screen === "announcements" && s.from) || backTo[screen] || "home"),
+
+      isAttendance: screen === "attendance",
+      isLeave: screen === "leave",
+      isRecords: screen === "records",
+      recordSummary: (() => {
+        const list = ROLL_LISTS[s.cls] || [];
+        const rows = list.map(r => marksFor(s.cls, r.roll));
+        const avg = rows.length ? Math.round(rows.reduce((a, b) => a + b.pct, 0) / rows.length) : 0;
+        const top = rows.length ? Math.max(...rows.map(r => r.pct)) : 0;
+        const cl = CLASSES.find(x => x.key === s.cls) || CLASSES[0];
+        return { avg: avg + "%", top: top + "%", count: cl.strength };
+      })(),
+      records: (ROLL_LISTS[s.cls] || []).map(r => {
+        const m = marksFor(s.cls, r.roll);
+        const open = s.openRoll === r.roll;
+        return {
+          name: r.name, roll: r.roll,
+          initials: r.name.split(" ").map(w => w[0]).join("").slice(0, 2),
+          ut1: m.ut1 + "/25", ut2: m.ut2 + "/25", assign: m.assign + "/20",
+          total: m.total + "/70", pct: m.pct + "%", grade: m.grade,
+          attendance: m.attendance + "%", guardian: m.guardian,
+          gradeBg: m.pct >= 80 ? "#dcfce7" : m.pct >= 65 ? "#dbeafe" : "#fef3c7",
+          gradeFg: m.pct >= 80 ? "#15803d" : m.pct >= 65 ? "#1d4ed8" : "#a16207",
+          open,
+          chev: open ? "expand_less" : "expand_more",
+          onToggle: () => this.setState({ openRoll: open ? null : r.roll })
+        };
+      }),
+      isBus: screen === "bus",
+      isNotifications: screen === "notifications",
+      isAnnouncements: screen === "announcements",
+
+      toastMsg: s.toast,
+      showToast: !!s.toast,
+
+      openChat: () => this.toast("Staff chat — not in this prototype"),
+      openNotifications: () => this.go("notifications"),
+      openAnnouncements: () => { this.setState({ from: "home" }); this.go("announcements"); },
+      notifications: NOTIFICATIONS,
+      announcementsAll: [...(s.postedAnn || []), ...ANNOUNCEMENTS].map(a => ({ ...a, hasBody: !!a.body })),
+      openAnnComposer: () => this.setState({ annOpen: true, annTitle: "", annBody: "", annAudience: [] }),
+      closeAnnComposer: () => this.setState({ annOpen: false }),
+      annOpen: !!s.annOpen,
+      annTitle: s.annTitle || "",
+      annBody: s.annBody || "",
+      onAnnTitle: e => this.setState({ annTitle: e.target.value }),
+      onAnnBody: e => this.setState({ annBody: e.target.value }),
+      audienceOptions: [
+        ...CLASSES.map(c => ({ key: c.key, label: c.label, note: "Subject teacher" })),
+        { key: "CT-8B", label: "Class 8-B · All students", note: "Class teacher" }
+      ].map(o => {
+        const on = (s.annAudience || []).indexOf(o.key) > -1;
+        return {
+          label: o.label, note: o.note, on,
+          bg: on ? "#eaf0fd" : "#fff",
+          border: on ? "#2563eb" : "#dbe2ee",
+          fg: on ? "#1d4ed8" : "#334155",
+          icon: on ? "check_circle" : "radio_button_unchecked",
+          iconColor: on ? "#2563eb" : "#c0c8d6",
+          onClick: () => this.setState(p => {
+            const list = p.annAudience || [];
+            return { annAudience: on ? list.filter(k => k !== o.key) : [...list, o.key] };
+          })
+        };
+      }),
+      audienceCount: (s.annAudience || []).length + " selected",
+      canPostAnn: (s.annTitle || "").trim().length > 2 && (s.annAudience || []).length > 0,
+      postAnnBg: ((s.annTitle || "").trim().length > 2 && (s.annAudience || []).length > 0) ? "#2563eb" : "#c3cddf",
+      postAnnouncement: () => {
+        const title = (s.annTitle || "").trim();
+        const aud = s.annAudience || [];
+        if (title.length < 3 || aud.length === 0) return;
+        const names = [
+          ...CLASSES.map(c => ({ key: c.key, label: c.label })),
+          { key: "CT-8B", label: "Class 8-B · All students" }
+        ].filter(o => aud.indexOf(o.key) > -1).map(o => o.label);
+        const item = { title, body: (s.annBody || "").trim(), place: names.join(" · "), date: "5 Sept 2026 · by " + facultyName };
+        this.setState(p => ({ postedAnn: [item, ...(p.postedAnn || [])], annOpen: false, annTitle: "", annBody: "", annAudience: [] }));
+        this.toast("Announcement posted to " + names.length + (names.length === 1 ? " audience" : " audiences"));
+      },
+      switchProfile: () => this.toast("Only one assigned profile: " + facultyName),
+
+      ann: ANNOUNCEMENTS[s.annIdx],
+      annDots: ANNOUNCEMENTS.map((a, i) => ({
+        onClick: () => this.setState({ annIdx: i }),
+        w: s.annIdx === i ? "18px" : "5px",
+        bg: s.annIdx === i ? "#2563eb" : "#c7cedb"
+      })),
+      nextAnn: () => this.setState(p => ({ annIdx: (p.annIdx + 1) % ANNOUNCEMENTS.length })),
+
+      studentTiles: STUDENT_TILES.map(tl => ({
+        icon: tl.icon, label: tl.label,
+        onClick: tl.screen
+          ? () => { this.setState({ from: "erp" }); this.go(tl.screen); }
+          : () => this.setState({ screen: "page", page: tl.label, from: "erp", clsOpen: false })
+      })),
+      employeeTiles: EMPLOYEE_TILES.map(tl => ({
+        icon: tl.icon, label: tl.label,
+        onClick: tl.screen
+          ? () => { this.setState({ from: "erp" }); this.go(tl.screen); }
+          : () => this.setState({ screen: "page", page: tl.label === "Leave" ? "Leave " : tl.label, from: "erp", clsOpen: false })
+      })),
+
+      f: ["lvFrom", "lvTo", "lvReason", "hrSubject", "hrDesc", "vnFrom", "vnTo", "vnFromT", "vnToT", "vnPurpose", "vnCap", "libQ"]
+        .reduce((acc, n) => {
+          acc[n] = { value: (s.form || {})[n] || "", onChange: e => this.setState(p => ({ form: { ...(p.form || {}), [n]: e.target.value } })) };
+          return acc;
+        }, {}),
+      tabOf: t => t,
+
+      isEmpLeave: screen === "empLeave",
+      leaveTabApply: (s.subTab || "apply") === "apply",
+      subTabs: [["apply", "Apply"], ["history", "History"]].map(([k, label]) => ({
+        label, onClick: () => this.setState({ subTab: k }),
+        bg: (s.subTab || "apply") === k ? "#2563eb" : "transparent",
+        fg: (s.subTab || "apply") === k ? "#fff" : "#64748b"
+      })),
+      leaveTypeLabel: s.lvType || "Casual leave",
+      leaveTypeOpen: !!s.lvTypeOpen,
+      toggleLeaveType: () => this.setState(p => ({ lvTypeOpen: !p.lvTypeOpen })),
+      leaveTypeOptions: LEAVE_TYPES.map(t => ({
+        label: t, onClick: () => this.setState({ lvType: t, lvTypeOpen: false }),
+        bg: (s.lvType || "Casual leave") === t ? "#eaf0fd" : "#fff",
+        fg: (s.lvType || "Casual leave") === t ? "#1d4ed8" : "#334155",
+        weight: (s.lvType || "Casual leave") === t ? 700 : 500
+      })),
+      reasonCount: "Reason (" + ((s.form || {}).lvReason || "").length + "/200)",
+      submitLeave: () => {
+        const fm = s.form || {};
+        if (!fm.lvFrom || !fm.lvTo || !(fm.lvReason || "").trim()) { this.toast("Fill dates and reason"); return; }
+        const item = { id: "LV-2026-" + (215 + (s.myLeave || []).length), type: s.lvType || "Casual leave",
+          dates: fm.lvFrom + " → " + fm.lvTo, days: "—", reason: fm.lvReason.trim(), status: "Pending",
+          sub: "Applied 5 Sept 2026", cover: "Not assigned" };
+        this.setState(p => ({ myLeave: [item, ...(p.myLeave || [])], subTab: "history",
+          form: { ...(p.form || {}), lvFrom: "", lvTo: "", lvReason: "" } }));
+        this.toast("Leave request submitted");
+      },
+      leaveBalances: [["CASUAL", "6/12"], ["EARNED", "9/15"], ["MEDICAL", "3/5"]].map(b => ({ label: b[0], value: b[1] })),
+      myLeaveList: [...(s.myLeave || []), ...MY_LEAVE].map(l => ({
+        ...l,
+        statusBg: l.status === "Pending" ? "#fef3c7" : l.status === "Approved" ? "#dcfce7" : "#fee2e2",
+        statusFg: l.status === "Pending" ? "#a16207" : l.status === "Approved" ? "#15803d" : "#b91c1c"
+      })),
+
+      isPayroll: screen === "payroll",
+      hrCatLabel: s.hrCat || "Select a category",
+      hrCatColor: s.hrCat ? "#0f172a" : "#94a3b8",
+      hrCatOpen: !!s.hrCatOpen,
+      toggleHrCat: () => this.setState(p => ({ hrCatOpen: !p.hrCatOpen })),
+      hrCatOptions: HR_CATEGORIES.map(c => ({
+        label: c, onClick: () => this.setState({ hrCat: c, hrCatOpen: false }),
+        bg: s.hrCat === c ? "#eaf0fd" : "#fff",
+        fg: s.hrCat === c ? "#1d4ed8" : "#334155",
+        weight: s.hrCat === c ? 700 : 500
+      })),
+      submitHr: () => {
+        const fm = s.form || {};
+        if (!s.hrCat || !(fm.hrSubject || "").trim()) { this.toast("Pick a category and add a subject"); return; }
+        const item = { id: "HRM-2026-" + (119 + (s.hrNew || []).length), subject: fm.hrSubject.trim(),
+          status: "Submitted", submitted: "5 Sept 2026", assigned: "Awaiting assignment" };
+        this.setState(p => ({ hrNew: [item, ...(p.hrNew || [])], hrCat: "", form: { ...(p.form || {}), hrSubject: "", hrDesc: "" } }));
+        this.toast("Request submitted to HR");
+      },
+      hrRequests: [...(s.hrNew || []), ...HR_REQUESTS].map(r => ({
+        ...r,
+        statusBg: r.status === "Closed" ? "#eef1f6" : r.status === "Under Review" ? "#dbeafe" : "#fef3c7",
+        statusFg: r.status === "Closed" ? "#64748b" : r.status === "Under Review" ? "#1d4ed8" : "#a16207"
+      })),
+
+      isPayslip: screen === "payslip",
+      payslipSummary: [["NET PAID", "₹59,120"], ["PAID ON", "31 Aug"], ["MODE", "NEFT"]].map(x => ({ label: x[0], value: x[1] })),
+      payslips: PAYSLIPS.map(p => ({ ...p, onDownload: () => this.toast("Downloading payslip · " + p.month) })),
+      payslipDocs: [
+        { title: "Form 16 · FY 2025–26", meta: "Issued 15 Jun 2026", right: "Download" },
+        { title: "Investment declaration", meta: "Due 30 Sept 2026", right: "Submit" }
+      ].map(d => ({ ...d, onClick: () => this.toast(d.title + " · " + d.right) })),
+
+      isAppraisal: screen === "appraisal",
+      appraisals: APPRAISALS.map(a => ({
+        ...a, hasScore: !!a.score,
+        statusBg: a.status === "Scored" ? "#f3e8ff" : a.status === "HoD Reviewed" ? "#dbeafe" : "#fef3c7",
+        statusFg: a.status === "Scored" ? "#7e22ce" : a.status === "HoD Reviewed" ? "#1d4ed8" : "#a16207",
+        onFile: () => this.toast("Opening " + a.file)
+      })),
+      appraisalStages: [
+        { title: "Self appraisal", meta: "Submitted 20 Aug 2026", right: "Done" },
+        { title: "HoD review", meta: "Dr. Meenakshi V", right: "Reviewed" },
+        { title: "Principal sign-off", meta: "Opens 15 Sept 2026", right: "Locked" }
+      ],
+      requestAppraisal: () => this.toast("Appraisal review requested"),
+
+      isLibrary: screen === "library",
+      libTabs: [["search", "Search"], ["eres", "E-Resources"], ["borrowed", "Borrowed"], ["history", "History"]].map(([k, label]) => ({
+        label, onClick: () => this.setState({ libTab: k }),
+        bg: (s.libTab || "search") === k ? "#2563eb" : "#fff",
+        fg: (s.libTab || "search") === k ? "#fff" : "#475569",
+        border: (s.libTab || "search") === k ? "#2563eb" : "#dbe2ee"
+      })),
+      libIsSearch: (s.libTab || "search") === "search",
+      libIsEres: s.libTab === "eres",
+      libIsBorrowed: s.libTab === "borrowed",
+      libIsHistory: s.libTab === "history",
+      libCatalogue: (() => {
+        const q = ((s.form || {}).libQ || "").trim().toLowerCase();
+        return LIB_CATALOGUE.filter(b => !q || (b.title + " " + b.author + " " + b.code).toLowerCase().indexOf(q) > -1);
+      })(),
+      libEmpty: (() => {
+        const q = ((s.form || {}).libQ || "").trim().toLowerCase();
+        return !!q && LIB_CATALOGUE.filter(b => (b.title + " " + b.author + " " + b.code).toLowerCase().indexOf(q) > -1).length === 0;
+      })(),
+      libEres: LIB_ERESOURCES.map(r => ({ ...r, onClick: () => this.toast("Opening " + r.title) })),
+      libBorrowed: LIB_BORROWED.map(r => ({ ...r, onClick: () => this.toast(r.title + " renewed to 25 Sept") })),
+      libHistory: LIB_HISTORY,
+
+      isVenue: screen === "venue",
+      vnLabel: s.vnName || "Select venue",
+      vnColor: s.vnName ? "#0f172a" : "#94a3b8",
+      vnOpen: !!s.vnOpen,
+      toggleVn: () => this.setState(p => ({ vnOpen: !p.vnOpen })),
+      vnOptions: VENUES.map(v => ({
+        label: v, onClick: () => this.setState({ vnName: v, vnOpen: false }),
+        bg: s.vnName === v ? "#eaf0fd" : "#fff",
+        fg: s.vnName === v ? "#1d4ed8" : "#334155",
+        weight: s.vnName === v ? 700 : 500
+      })),
+      submitVenue: () => {
+        const fm = s.form || {};
+        if (!s.vnName || !fm.vnFrom || !fm.vnFromT) { this.toast("Pick venue, date and time"); return; }
+        const item = { title: s.vnName, meta: fm.vnFrom + " · " + fm.vnFromT + " – " + (fm.vnToT || "—"), right: "Requested" };
+        this.setState(p => ({ vnBooked: [item, ...(p.vnBooked || [])], subTab: "history", vnName: "",
+          form: { ...(p.form || {}), vnFrom: "", vnTo: "", vnFromT: "", vnToT: "", vnPurpose: "", vnCap: "" } }));
+        this.toast("Booking request submitted");
+      },
+      venueBooked: [...(s.vnBooked || []), ...VENUE_BOOKED],
+
+      isMyAttendance: screen === "myAttendance",
+      myPunch: {
+        inT: "8:12 AM",
+        outT: s.punchedOut || "Not marked",
+        outColor: s.punchedOut ? "#0f172a" : "#94a3b8",
+        status: "Present", date: "Wednesday, 2 September",
+        btnLabel: s.punchedOut ? "Punched out " + s.punchedOut : "Punch out",
+        btnBg: s.punchedOut ? "#eef1f6" : "#2563eb",
+        btnFg: s.punchedOut ? "#94a3b8" : "#fff"
+      },
+      myRate: { pct: "95%", pctWidth: "95%", present: "21", leave: "1", late: "1", working: "22" },
+      myDays: MY_DAYS.map(r => (r.d === "Wed, 2 Sept"
+        ? { ...r, outT: s.punchedOut || "—", hrs: s.punchedOut ? r.hrs : "in progress" } : r)).map(r => ({
+        d: r.d, inT: r.inT, outT: r.outT, hrs: r.hrs, status: r.status,
+        bg: r.status === "Present" ? "#dcfce7" : r.status === "Leave" ? "#eef1f6" : "#fef3c7",
+        fg: r.status === "Present" ? "#15803d" : r.status === "Leave" ? "#64748b" : "#a16207"
+      })),
+      punchOut: () => {
+        if (s.punchedOut) return;
+        this.setState({ punchedOut: "4:05 PM" });
+        this.toast("Punched out at 4:05 PM");
+      },
+
+      isHomework: screen === "homework",
+      hwFilters: [["all", "All"], ...CLASSES.map(c => {
+        const [cls, sub] = c.label.split(" · ");
+        return [c.key, cls.replace("Class ", "") + " " + (sub === "Mathematics" ? "Maths" : sub)];
+      })].map(([k, label]) => ({
+        label, onClick: () => this.setState({ hwFilter: k }),
+        bg: (s.hwFilter || "all") === k ? "#2563eb" : "#fff",
+        fg: (s.hwFilter || "all") === k ? "#fff" : "#475569",
+        border: (s.hwFilter || "all") === k ? "#2563eb" : "#dbe2ee"
+      })),
+      hwStats: (() => {
+        const open = HOMEWORK.filter(h => h.state === "open");
+        const ungraded = open.reduce((a, h) => a + (h.submitted - h.graded), 0);
+        return [
+          { label: "OPEN", value: String(open.length) },
+          { label: "DUE TODAY", value: String(open.filter(h => h.due === "Today").length) },
+          { label: "UNGRADED", value: String(ungraded) }
+        ];
+      })(),
+      hwNewOpen: !!s.hwNewOpen,
+      openHwComposer: () => this.setState({ hwNewOpen: true, hwTitle: "", hwCls: s.cls, hwDue: "", hwClsOpen: false }),
+      closeHwComposer: () => this.setState({ hwNewOpen: false }),
+      hwTitle: s.hwTitle || "",
+      hwDue: s.hwDue || "",
+      onHwTitle: e => this.setState({ hwTitle: e.target.value }),
+      onHwDue: e => this.setState({ hwDue: e.target.value }),
+      hwClsLabel: (CLASSES.find(c => c.key === (s.hwCls || s.cls)) || CLASSES[0]).label,
+      hwClsOpen: !!s.hwClsOpen,
+      toggleHwCls: () => this.setState(p => ({ hwClsOpen: !p.hwClsOpen })),
+      hwClsOptions: CLASSES.map(c => ({
+        label: c.label,
+        onClick: () => this.setState({ hwCls: c.key, hwClsOpen: false }),
+        bg: (s.hwCls || s.cls) === c.key ? "#eaf0fd" : "#fff",
+        fg: (s.hwCls || s.cls) === c.key ? "#1d4ed8" : "#334155",
+        weight: (s.hwCls || s.cls) === c.key ? 700 : 500
+      })),
+      canPostHw: (s.hwTitle || "").trim().length > 2 && (s.hwDue || "").trim().length > 0,
+      postHwBg: ((s.hwTitle || "").trim().length > 2 && (s.hwDue || "").trim().length > 0) ? "#2563eb" : "#c3cddf",
+      postHomework: () => {
+        const title = (s.hwTitle || "").trim();
+        const due = (s.hwDue || "").trim();
+        if (title.length < 3 || !due) return;
+        const cl = CLASSES.find(c => c.key === (s.hwCls || s.cls)) || CLASSES[0];
+        const item = { title, cls: cl.key, subject: cl.label, due, dueIn: "just assigned",
+          submitted: 0, strength: cl.strength, graded: 0, state: "open", file: "no attachment" };
+        this.setState(p => ({ postedHw: [item, ...(p.postedHw || [])], hwNewOpen: false, hwTitle: "", hwDue: "" }));
+        this.toast("Assignment posted to " + cl.label);
+      },
+      hwList: [...(s.postedHw || []), ...HOMEWORK].filter(h => (s.hwFilter || "all") === "all" || h.cls === s.hwFilter).map((h, i) => {
+        const pct = Math.round((h.submitted / h.strength) * 100);
+        const open = s.openHw === i;
+        const urgent = h.due === "Today";
+        return {
+          title: h.title, subject: h.subject, file: h.file,
+          due: h.state === "done" ? "Completed" : "Due " + h.due,
+          dueIn: h.dueIn,
+          dueBg: h.state === "done" ? "#eef1f6" : urgent ? "#fee2e2" : "#dbeafe",
+          dueFg: h.state === "done" ? "#64748b" : urgent ? "#b91c1c" : "#1d4ed8",
+          submitted: h.submitted + "/" + h.strength,
+          pct: pct + "%", pctWidth: pct + "%",
+          barColor: pct === 100 ? "#16a34a" : pct >= 75 ? "#2563eb" : "#f59e0b",
+          pending: String(h.strength - h.submitted),
+          graded: h.graded + "/" + h.submitted,
+          open, chev: open ? "expand_less" : "expand_more",
+          onToggle: () => this.setState({ openHw: open ? null : i }),
+          rosterTab: (s.hwTab || "submitted") === "submitted" ? "Submitted" : "Not submitted",
+          tabSubBg: (s.hwTab || "submitted") === "submitted" ? "#fff" : "transparent",
+          tabSubFg: (s.hwTab || "submitted") === "submitted" ? "#1d4ed8" : "#64748b",
+          tabPendBg: (s.hwTab || "submitted") === "pending" ? "#fff" : "transparent",
+          tabPendFg: (s.hwTab || "submitted") === "pending" ? "#1d4ed8" : "#64748b",
+          onTabSub: () => this.setState({ hwTab: "submitted" }),
+          onTabPend: () => this.setState({ hwTab: "pending" }),
+          roster: (() => {
+            const list = ROLL_LISTS[h.cls] || [];
+            const n = Math.round(list.length * (h.submitted / h.strength));
+            const sub = list.slice(0, n);
+            const pend = list.slice(n);
+            const showSub = (s.hwTab || "submitted") === "submitted";
+            return (showSub ? sub : pend).map((r, j) => ({
+              name: r.name, roll: r.roll,
+              initials: r.name.split(" ").map(w => w[0]).join("").slice(0, 2),
+              note: showSub ? (j % 2 === 0 ? "Submitted 4 Sept · on time" : "Submitted 5 Sept · on time") : "Not submitted yet",
+              icon: showSub ? "check_circle" : "schedule",
+              iconColor: showSub ? "#16a34a" : "#f59e0b",
+              avaBg: showSub ? "#dcfce7" : "#fef3c7",
+              avaFg: showSub ? "#15803d" : "#a16207"
+            }));
+          })(),
+          rosterEmpty: (() => {
+            const list = ROLL_LISTS[h.cls] || [];
+            const n = Math.round(list.length * (h.submitted / h.strength));
+            return ((s.hwTab || "submitted") === "submitted" ? n : list.length - n) === 0;
+          })(),
+          rosterEmptyMsg: (s.hwTab || "submitted") === "submitted" ? "No submissions yet" : "Everyone has submitted",
+          onMarkDone: () => this.toast(h.title + " marked completed"),
+          onRemind: () => this.toast("Reminder sent to " + (h.strength - h.submitted) + " students")
+        };
+      }),
+      newHomework: () => this.toast("New homework — use Post Assignment in Academics"),
+
+      isPage: screen === "page",
+      pageStats: ((ERP_PAGES[s.page] || {}).stats || []).map(st => ({ label: st[0], value: st[1] })),
+      pageQuery: s.pageQuery || "",
+      onPageQuery: e => this.setState({ pageQuery: e.target.value, openRow: null }),
+      clearPageQuery: () => this.setState({ pageQuery: "" }),
+      hasPageQuery: !!(s.pageQuery || "").trim(),
+      showSearch: ["Class Results", "Parent Meetings", "Class Teacher"].indexOf(s.page) > -1,
+      pageSections: ((ERP_PAGES[s.page] || {}).sections || []).map((sec, si) => ({
+        label: sec.label,
+        rows: sec.rows.map((r, ri) => {
+          const q = (s.pageQuery || "").trim().toLowerCase();
+          const hits = q ? (r.list || []).filter(n => n.toLowerCase().indexOf(q) > -1) : (r.list || []);
+          const textHit = q ? ((r.title + " " + (r.meta || "")).toLowerCase().indexOf(q) > -1) : true;
+          const rk = si + "-" + ri;
+          const open = q ? hits.length > 0 : s.openRow === rk;
+          const detail = r.detail || [["Detail", r.meta || "—"], ["Status", r.right || "—"]];
+          const hasDetail = detail.length > 0;
+          return {
+            title: r.title, meta: r.meta, right: r.right, hasRight: !!r.right,
+            open, chev: open ? "expand_less" : "expand_more",
+            detail: detail.map(d => ({ label: d[0], value: d[1] })), hasDetail,
+            list: hits.map(x => ({ x })),
+            hasList: hits.length > 0,
+            hide: !!q && ((r.list || []).length > 0 ? hits.length === 0 && !textHit : !textHit),
+            onClick: () => this.setState({ openRow: open ? null : rk })
+          };
+        }).filter(r => !r.hide)
+      })).filter(sec => sec.rows.length > 0),
+      pageNoResults: (() => {
+        const q = (s.pageQuery || "").trim().toLowerCase();
+        if (!q) return false;
+        const secs = (ERP_PAGES[s.page] || {}).sections || [];
+        return !secs.some(sec => sec.rows.some(r =>
+          (r.list || []).some(n => n.toLowerCase().indexOf(q) > -1) ||
+          (r.title + " " + (r.meta || "")).toLowerCase().indexOf(q) > -1));
+      })(),
+
+      isMarksEntry: screen === "marksEntry",
+      examTabs: [["ut1", "Unit Test 1", 25], ["ut2", "Unit Test 2", 25], ["assign", "Assignment", 20]].map(([k, label]) => ({
+        label, onClick: () => this.setState({ exam: k }),
+        bg: (s.exam || "ut1") === k ? "#fff" : "transparent",
+        fg: (s.exam || "ut1") === k ? "#1d4ed8" : "#64748b"
+      })),
+      examMax: "Max " + ({ ut1: 25, ut2: 25, assign: 20 }[s.exam || "ut1"]),
+      entryRows: (ROLL_LISTS[s.cls] || []).map(r => {
+        const ex = s.exam || "ut1";
+        const max = { ut1: 25, ut2: 25, assign: 20 }[ex];
+        const key = s.cls + "/" + r.roll + "/" + ex;
+        const val = (s.entryMarks || {})[key];
+        return {
+          name: r.name, roll: r.roll,
+          initials: r.name.split(" ").map(w => w[0]).join("").slice(0, 2),
+          value: val === undefined ? String(marksFor(s.cls, r.roll)[ex]) : val,
+          onInput: e => {
+            let v = e.target.value.replace(/[^0-9]/g, "").slice(0, 2);
+            if (v !== "" && Number(v) > max) v = String(max);
+            this.setState(p => ({ entryMarks: { ...(p.entryMarks || {}), [key]: v } }));
+          }
+        };
+      }),
+      saveMarks: () => this.toast("Marks saved for " + (CLASSES.find(c => c.key === s.cls) || CLASSES[0]).label),
+
+      busStops: BUS_STOPS,
+      callDriver: () => this.toast("Calling driver · Murugan S"),
+
+      clsLabel: (CLASSES.find(c => c.key === s.cls) || CLASSES[0]).label,
+      clsOpen: s.clsOpen,
+      toggleCls: () => this.setState(p => ({ clsOpen: !p.clsOpen })),
+      clsOptions: CLASSES.map(c => ({
+        label: c.label,
+        onClick: () => this.setState({ cls: c.key, clsOpen: false }),
+        bg: s.cls === c.key ? "#eaf0fd" : "#fff",
+        fg: s.cls === c.key ? "#1d4ed8" : "#334155",
+        weight: s.cls === c.key ? 700 : 500
+      })),
+      attSummary: (() => {
+        const cl = CLASSES.find(x => x.key === s.cls) || CLASSES[0];
+        const list = ROLL_LISTS[s.cls] || [];
+        const marks = s.marks || {};
+        const mk = r => marks[s.cls + "/" + r.roll] || (r.status === "Present" ? "P" : "A");
+        const absent = list.filter(r => mk(r) === "A").length;
+        const total = cl.strength;
+        const present = total - absent;
+        const pct = total ? Math.round((present / total) * 100) : 0;
+        return { total, present, absent, pct, pctWidth: pct + "%" };
+      })(),
+      markAllPresent: () => {
+        const list = ROLL_LISTS[s.cls] || [];
+        const next = { ...(s.marks || {}) };
+        list.forEach(r => { next[s.cls + "/" + r.roll] = "P"; });
+        this.setState({ marks: next });
+        this.toast("All students marked present");
+      },
+      pastOpen: s.pastOpen,
+      togglePast: () => this.setState(p => ({ pastOpen: !p.pastOpen, pastDay: null })),
+      pastMonthName: PAST_MONTHS[s.pastMonth || 0].name,
+      pastPrev: () => this.setState({ pastMonth: 0, pastDay: null }),
+      pastNext: () => this.setState({ pastMonth: 1, pastDay: null }),
+      pastCells: (() => {
+        const mi = s.pastMonth || 0;
+        const m = PAST_MONTHS[mi];
+        const cl = CLASSES.find(x => x.key === s.cls) || CLASSES[0];
+        const out = [];
+        for (let i = 0; i < m.offset; i++) out.push({ d: "", bg: "transparent", fg: "#0f172a", onClick: () => {}, cursor: "default", dot: "transparent" });
+        for (let d = 1; d <= m.days; d++) {
+          const rec = attendanceFor(s.cls, mi, d, cl.strength);
+          const sel = s.pastDay === d;
+          const has = rec && !rec.holiday;
+          out.push({
+            d: String(d),
+            bg: sel ? "#2563eb" : "transparent",
+            fg: sel ? "#fff" : rec ? (rec.holiday ? "#cbd5e1" : "#334155") : "#cbd5e1",
+            dot: sel ? "#fff" : has ? (rec.absent > 2 ? "#dc2626" : "#16a34a") : "transparent",
+            cursor: rec ? "pointer" : "default",
+            onClick: rec ? () => this.setState({ pastDay: d }) : () => {}
+          });
+        }
+        return out;
+      })(),
+      pastDetail: (() => {
+        const mi = s.pastMonth || 0;
+        if (!s.pastDay) return null;
+        const cl = CLASSES.find(x => x.key === s.cls) || CLASSES[0];
+        const rec = attendanceFor(s.cls, mi, s.pastDay, cl.strength);
+        if (!rec) return null;
+        const label = s.pastDay + " " + PAST_MONTHS[mi].short + " 2026";
+        if (rec.holiday) return { label, dateLine: rec.holiday, holiday: true, isDay: false, hasAbsentees: false, absentees: [] };
+        return { ...rec, label, isDay: true, dateLine: rec.dow + ", " + label + " · " + rec.markedBy, holiday: false, hasAbsentees: rec.absentees.length > 0 };
+      })(),
+      pastPrompt: !s.pastDay,
+      isSubmitted: !!s.submitted[s.cls],
+      submitLabel: s.submitted[s.cls] ? "Submitted" : "Submit",
+      submitBg: s.submitted[s.cls] ? "#16a34a" : "#2563eb",
+      submitAttendance: () => {
+        this.setState(p => ({ submitted: { ...p.submitted, [s.cls]: true } }));
+        this.toast("Attendance submitted for " + (CLASSES.find(c => c.key === s.cls) || CLASSES[0]).label);
+      },
+      roster: (ROLL_LISTS[s.cls] || []).map(r => {
+        const key = s.cls + "/" + r.roll;
+        const mark = (s.marks || {})[key] || (r.status === "Present" ? "P" : "A");
+        const set = m => () => this.setState(p => ({ marks: { ...(p.marks || {}), [key]: m } }));
+        return {
+          roll: r.roll, name: r.name,
+          initials: r.name.split(" ").map(w => w[0]).join("").slice(0, 2),
+          rowBg: mark === "A" ? "#fef6f6" : "#fff",
+          avaBg: mark === "A" ? "#fee2e2" : "#eaf0fd",
+          avaFg: mark === "A" ? "#b91c1c" : "#1d4ed8",
+          onP: set("P"), onA: set("A"),
+          pBg: mark === "P" ? "#16a34a" : "#f1f5fb", pFg: mark === "P" ? "#fff" : "#94a3b8",
+          aBg: mark === "A" ? "#dc2626" : "#f1f5fb", aFg: mark === "A" ? "#fff" : "#94a3b8"
+        };
+      }),
+
+      leaveFilters: ["Pending", "Approved", "Rejected"].map(f => ({
+        label: f + " (" + LEAVE_REQUESTS.filter(l => (s.leaveState[l.roll + l.dates] || l.status) === f).length + ")",
+        onClick: () => this.setState({ leaveFilter: f }),
+        bg: s.leaveFilter === f ? "#fff" : "transparent",
+        fg: s.leaveFilter === f ? "#1d4ed8" : "#64748b"
+      })),
+      leaveEmpty: LEAVE_REQUESTS.filter(l => (s.leaveState[l.roll + l.dates] || l.status) === s.leaveFilter).length === 0,
+      leaveEmptyMsg: "No " + s.leaveFilter.toLowerCase() + " requests",
+      leaveList: LEAVE_REQUESTS.map(l => ({ ...l, status: s.leaveState[l.roll + l.dates] || l.status }))
+        .filter(l => l.status === s.leaveFilter).map(l => ({
+        roll: l.roll, name: l.name, reason: l.reason, dates: l.dates, days: l.days, status: l.status,
+        file: l.file, hasFile: !!l.file, isPending: l.status === "Pending",
+        onApprove: () => { this.setState(p => ({ leaveState: { ...p.leaveState, [l.roll + l.dates]: "Approved" } })); this.toast("Leave approved for " + l.name); },
+        onReject: () => { this.setState(p => ({ leaveState: { ...p.leaveState, [l.roll + l.dates]: "Rejected" } })); this.toast("Leave rejected for " + l.name); },
+        onFile: () => this.toast("Opening " + l.file),
+        statusBg: l.status === "Pending" ? "#fef3c7" : l.status === "Approved" ? "#dcfce7" : "#fee2e2",
+        statusFg: l.status === "Pending" ? "#a16207" : l.status === "Approved" ? "#15803d" : "#b91c1c"
+      })),
+
+      academicsItems: [
+        { icon: "menu_book", label: "Current Term", sub: SUBJECTS.length + " subjects · syllabus, plans, assignments", onClick: () => this.go("term") },
+        { icon: "schedule", label: "Timetable", sub: "Week of 24–29 August", onClick: () => this.go("timetable") },
+        { icon: "event", label: "Academic Calendar", sub: "Semester 1 · Jul 2026 – Dec 2026", onClick: () => this.go("calendar") }
+      ],
+
+      subjectCount: SUBJECTS.length,
+      pendingCount: 3,
+      subjects: SUBJECTS.map((sub, i) => ({
+        code: sub.code, name: sub.name, meta: sub.meta,
+        onOpen: () => this.setState({ screen: "subject", subjectIndex: i, tab: "syllabus" }),
+        chips: [
+          { label: "SYLLABUS", value: sub.syllabus.length + " posted", bg: "#f1f5fb", fg: "#475569" },
+          { label: "LESSON PLAN", value: sub.lesson.length + " posted", bg: "#f1f5fb", fg: "#475569" },
+          { label: "ASSIGNMENT", value: sub.assignment.length + " posted", bg: "#eaf0fd", fg: "#1d4ed8" }
+        ]
+      })),
+
+      tabs: tabDefs.map(([k, label]) => ({
+        label, onClick: () => this.setState({ tab: k }),
+        bg: s.tab === k ? "#fff" : "transparent",
+        fg: s.tab === k ? "#1d4ed8" : "#64748b"
+      })),
+      tabHeading: headingByTab[s.tab],
+      postLabel: postByTab[s.tab],
+      openPost: () => this.setState({ composerOpen: true, composerTitle: "" }),
+      composerOpen: s.composerOpen,
+      composerTitle: s.composerTitle,
+      composerHeading: postByTab[s.tab],
+      composerSub: subj.name,
+      onComposerInput: e => this.setState({ composerTitle: e.target.value }),
+      closeComposer: () => this.setState({ composerOpen: false }),
+      canSave: s.composerTitle.trim().length > 2,
+      saveComposer: () => {
+        const title = s.composerTitle.trim();
+        if (title.length < 3) return;
+        const key = s.subjectIndex + "/" + s.tab;
+        const item = { title, meta: "Posted 5 Sept 2026 · " + subj.name.split(" · ")[1], status: "Published", file: "attachment-pending.pdf" };
+        this.setState(p => ({ added: { ...p.added, [key]: [item, ...(p.added[key] || [])] }, composerOpen: false, composerTitle: "" }));
+        this.toast(postByTab[s.tab] + " posted");
+      },
+      entries: [...(s.added[s.subjectIndex + "/" + s.tab] || []), ...(entriesByTab[s.tab] || [])].map(e => ({
+        ...e,
+        statusBg: (statusColor[e.status] || statusColor.Draft)[0],
+        statusFg: (statusColor[e.status] || statusColor.Draft)[1],
+        onEdit: () => this.toast("Editing “" + e.title + "”"),
+        onFile: () => this.toast("Opening " + e.file)
+      })),
+
+      days: DAYS.map(d => ({
+        dow: d.dow, num: d.num,
+        onClick: () => this.setState({ day: d.num }),
+        bg: s.day === d.num ? "#fff" : "rgba(255,255,255,.18)",
+        fg: s.day === d.num ? "#1d4ed8" : "#fff"
+      })),
+      ttStats: [
+        { label: "CLASSES", value: String(dayPeriods.length) },
+        { label: "FREE", value: String(8 - dayPeriods.length) },
+        { label: "LABS", value: String(dayPeriods.filter(p => p.room.indexOf("Lab") > -1).length) }
+      ],
+      periods: dayPeriods,
+
+      dowLabels: ["S", "M", "T", "W", "T", "F", "S"].map(l => ({ l })),
+      calCells: cells,
+      calEvents: month.events.map(e => ({ ...e, short: month.short, onClick: () => this.toast(e.title + " · " + e.day + " " + month.short) })),
+      monthName: month.name,
+      monthEventCount: month.events.length + " EVENTS",
+      prevMonth: () => this.setState(p => ({ month: (p.month + MONTHS.length - 1) % MONTHS.length })),
+      nextMonth: () => this.setState(p => ({ month: (p.month + 1) % MONTHS.length })),
+
+      nav: NAV.map(n => ({
+        icon: n.icon, label: n.label,
+        onClick: () => this.go(n.key),
+        color: navTab === n.key ? "#1d4ed8" : "#94a3b8",
+        weight: navTab === n.key ? 700 : 500
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

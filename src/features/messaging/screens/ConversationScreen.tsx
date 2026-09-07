@@ -229,7 +229,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.background },
+  screen: { flex: 1, backgroundColor: colors.surface },
   translateButton: { paddingVertical: 6, paddingHorizontal: 10 },
   translateButtonText: { fontFamily: fonts.bold, fontSize: 13, color: colors.white },
   participantRow: {
