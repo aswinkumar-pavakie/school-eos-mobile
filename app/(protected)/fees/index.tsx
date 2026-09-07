@@ -23,9 +23,9 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Svg, { Path } from 'react-native-svg';
 import { AppHeader } from '@/components/AppHeader';
 import { RazorpayCheckout, type RazorpayOrderInfo } from '@/components/RazorpayCheckout';
+import { useMe } from '@/hooks/useMe';
 import { useSelectedChild } from '@/hooks/useSelectedChild';
 import { formatDate, formatMoneySummary } from '@/lib/format';
-import { authedRequest } from '@/lib/auth';
 import {
   createRazorpayOrder,
   getFeeSummary,
@@ -150,10 +150,10 @@ export default function FeesScreen() {
     enabled: !!studentId,
   });
 
-  const meQuery = useQuery({
-    queryKey: ['me'],
-    queryFn: () => authedRequest<{ data: { person: { firstName: string; lastName: string | null; email: string | null } } }>('/auth/me'),
-  });
+  // Same ['me'] cache entry every other screen's useMe() call already populates --
+  // a second, differently-shaped raw /auth/me query under the same key previously
+  // crashed BottomTabBar's useCurrentRoles() whichever query won the cache race.
+  const meQuery = useMe();
 
   const lines = useMemo(() => summaryQuery.data?.lines ?? [], [summaryQuery.data]);
 
@@ -252,7 +252,9 @@ export default function FeesScreen() {
           {termMenuOpen ? (
             <View style={styles.termMenu}>
               {(termsQuery.data ?? []).map((term) => {
-                const active = selectedTerm?.academicYearId === term.academicYearId && selectedTerm?.instalmentNo === term.instalmentNo;
+                const active =
+                  selectedTerm?.academicYearId === term.academicYearId &&
+                  selectedTerm?.instalmentNo === term.instalmentNo;
                 return (
                   <Pressable
                     key={`${term.academicYearId}-${term.instalmentNo}`}
@@ -275,7 +277,9 @@ export default function FeesScreen() {
               <Text style={styles.summaryLabel}>Total payable</Text>
             </View>
             <View style={{ alignItems: 'center' }}>
-              <Text style={[styles.summaryValue, { color: parentColors.blueDeep }]}>{formatMoneySummary(summaryQuery.data?.paidPaise ?? '0')}</Text>
+              <Text style={[styles.summaryValue, { color: parentColors.blueDeep }]}>
+                {formatMoneySummary(summaryQuery.data?.paidPaise ?? '0')}
+              </Text>
               <Text style={styles.summaryLabel}>Paid</Text>
             </View>
             <View style={{ alignItems: 'flex-end' }}>
@@ -286,10 +290,16 @@ export default function FeesScreen() {
         </View>
 
         <View style={styles.segment}>
-          <Pressable style={[styles.segmentBtn, tab === 'pay' && styles.segmentBtnActive]} onPress={() => setTab('pay')}>
+          <Pressable
+            style={[styles.segmentBtn, tab === 'pay' && styles.segmentBtnActive]}
+            onPress={() => setTab('pay')}
+          >
             <Text style={[styles.segmentText, tab === 'pay' && styles.segmentTextActive]}>Pay fees</Text>
           </Pressable>
-          <Pressable style={[styles.segmentBtn, tab === 'history' && styles.segmentBtnActive]} onPress={() => setTab('history')}>
+          <Pressable
+            style={[styles.segmentBtn, tab === 'history' && styles.segmentBtnActive]}
+            onPress={() => setTab('history')}
+          >
             <Text style={[styles.segmentText, tab === 'history' && styles.segmentTextActive]}>Payment history</Text>
           </Pressable>
         </View>
@@ -306,7 +316,12 @@ export default function FeesScreen() {
         ) : (
           <View style={{ gap: 14 }}>
             {lines.map((line) => (
-              <FeeLineCard key={line.feeDemandId} line={line} checked={selectedLineIds.has(line.feeDemandId)} onToggle={() => toggleLine(line.feeDemandId)} />
+              <FeeLineCard
+                key={line.feeDemandId}
+                line={line}
+                checked={selectedLineIds.has(line.feeDemandId)}
+                onToggle={() => toggleLine(line.feeDemandId)}
+              />
             ))}
 
             {summaryQuery.data && summaryQuery.data.outstandingPaise === '0' ? (
@@ -334,9 +349,13 @@ export default function FeesScreen() {
                     <Text style={styles.amountHint}>Tap the amount to pay less than the full due now</Text>
                   ) : null}
                   {!amountValid && selectedLineIds.size > 0 ? (
-                    <Text style={styles.amountError}>Enter an amount up to {formatMoneySummary(selectedOutstandingPaise.toString())}</Text>
+                    <Text style={styles.amountError}>
+                      Enter an amount up to {formatMoneySummary(selectedOutstandingPaise.toString())}
+                    </Text>
                   ) : null}
-                  {!canPay ? <Text style={styles.amountError}>View-only access — the primary guardian can pay this fee.</Text> : null}
+                  {!canPay ? (
+                    <Text style={styles.amountError}>View-only access — the primary guardian can pay this fee.</Text>
+                  ) : null}
                 </View>
                 <Pressable
                   disabled={!amountValid || !canPay || submitting}
@@ -355,8 +374,10 @@ export default function FeesScreen() {
         visible={!!checkoutOrder}
         order={checkoutOrder}
         prefill={{
-          name: meQuery.data ? [meQuery.data.data.person.firstName, meQuery.data.data.person.lastName].filter(Boolean).join(' ') : undefined,
-          email: meQuery.data?.data.person.email ?? undefined,
+          name: meQuery.data
+            ? [meQuery.data.person.firstName, meQuery.data.person.lastName].filter(Boolean).join(' ')
+            : undefined,
+          email: meQuery.data?.person.email ?? undefined,
         }}
         onRequestClose={() => {
           setCheckoutOrder(null);
@@ -366,7 +387,10 @@ export default function FeesScreen() {
           setCheckoutOrder(null);
           refetchAfterCheckout();
           if (result.type === 'success') {
-            Alert.alert('Payment submitted', 'Your payment is being confirmed by the bank — it will appear in Payment history shortly.');
+            Alert.alert(
+              'Payment submitted',
+              'Your payment is being confirmed by the bank — it will appear in Payment history shortly.',
+            );
           } else if (result.type === 'failed') {
             Alert.alert('Payment failed', result.message ?? 'Please try again.');
           }
@@ -382,18 +406,31 @@ function FeeLineCard({ line, checked, onToggle }: { line: FeeLine; checked: bool
   return (
     <View style={[styles.card, cardShadow]}>
       <View style={styles.lineTop}>
-        {interactive ? <Checkbox checked={checked} done={false} onPress={onToggle} /> : done ? <Checkbox checked={false} done onPress={() => {}} /> : <View style={{ width: 22 }} />}
+        {interactive ? (
+          <Checkbox checked={checked} done={false} onPress={onToggle} />
+        ) : done ? (
+          <Checkbox checked={false} done onPress={() => {}} />
+        ) : (
+          <View style={{ width: 22 }} />
+        )}
         <View style={{ flex: 1 }}>
           <Text style={styles.lineTitle}>{line.feeHeadName}</Text>
           <Text style={styles.lineDue}>Due {formatDate(line.dueDate)}</Text>
         </View>
-        <StatusPill label={done ? 'Paid' : line.state === 'PARTIAL' ? 'Partial' : line.state === 'OVERDUE' ? 'Overdue' : 'Pending'} paid={done} />
+        <StatusPill
+          label={
+            done ? 'Paid' : line.state === 'PARTIAL' ? 'Partial' : line.state === 'OVERDUE' ? 'Overdue' : 'Pending'
+          }
+          paid={done}
+        />
       </View>
       {interactive || line.paidPaise !== '0' ? (
         <View style={styles.lineGrid}>
           <View>
             <Text style={styles.lineGridLabel}>TOTAL</Text>
-            <Text style={styles.lineGridValue}>{formatMoneySummary(String(BigInt(line.amountPaise) + BigInt(line.lateFeePaise)))}</Text>
+            <Text style={styles.lineGridValue}>
+              {formatMoneySummary(String(BigInt(line.amountPaise) + BigInt(line.lateFeePaise)))}
+            </Text>
           </View>
           <View style={styles.lineGridPaid}>
             <Text style={styles.lineGridLabel}>PAID</Text>
@@ -401,7 +438,9 @@ function FeeLineCard({ line, checked, onToggle }: { line: FeeLine; checked: bool
           </View>
           <View style={styles.lineGridDue}>
             <Text style={[styles.lineGridLabel, { color: '#8DA6E4' }]}>DUE</Text>
-            <Text style={[styles.lineGridValue, { color: parentColors.blueDeep }]}>{formatMoneySummary(line.outstandingPaise)}</Text>
+            <Text style={[styles.lineGridValue, { color: parentColors.blueDeep }]}>
+              {formatMoneySummary(line.outstandingPaise)}
+            </Text>
           </View>
         </View>
       ) : null}
@@ -436,8 +475,14 @@ function PaymentHistoryList({
           <View style={{ alignItems: 'flex-end', gap: 9 }}>
             <Text style={styles.historyAmount}>{formatMoneySummary(p.amountPaise)}</Text>
             {p.receiptId ? (
-              <Pressable style={styles.downloadBtn} onPress={() => onDownload(p.receiptId!)} disabled={downloadingReceiptId === p.receiptId}>
-                <Text style={styles.downloadBtnText}>{downloadingReceiptId === p.receiptId ? 'Preparing…' : 'Download receipt'}</Text>
+              <Pressable
+                style={styles.downloadBtn}
+                onPress={() => onDownload(p.receiptId!)}
+                disabled={downloadingReceiptId === p.receiptId}
+              >
+                <Text style={styles.downloadBtnText}>
+                  {downloadingReceiptId === p.receiptId ? 'Preparing…' : 'Download receipt'}
+                </Text>
               </Pressable>
             ) : null}
           </View>
@@ -462,8 +507,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  termSelectText: { fontSize: 15, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, flex: 1, marginRight: 8 },
-  termMenu: { borderWidth: 1, borderColor: parentColors.fieldBorder, borderRadius: 12, marginTop: 8, overflow: 'hidden' },
+  termSelectText: {
+    fontSize: 15,
+    fontFamily: 'PlusJakartaSans_700Bold',
+    color: parentColors.ink,
+    flex: 1,
+    marginRight: 8,
+  },
+  termMenu: {
+    borderWidth: 1,
+    borderColor: parentColors.fieldBorder,
+    borderRadius: 12,
+    marginTop: 8,
+    overflow: 'hidden',
+  },
   termOption: { padding: 13, borderBottomWidth: 1, borderBottomColor: parentColors.borderSoft },
   termOptionActive: { backgroundColor: '#F5F8FE' },
   termOptionText: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: '#41526E' },
@@ -488,16 +545,44 @@ const styles = StyleSheet.create({
   lineDue: { fontSize: 13, color: parentColors.muted, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 3 },
   statusPill: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 99 },
   statusPillText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold' },
-  checkbox: { width: 22, height: 22, borderRadius: 6, alignItems: 'center', justifyContent: 'center', borderWidth: 1.8, marginTop: 2 },
+  checkbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.8,
+    marginTop: 2,
+  },
   checkboxOn: { backgroundColor: parentColors.blueDeep, borderColor: parentColors.blueDeep },
   checkboxOff: { backgroundColor: '#fff', borderColor: parentColors.checkboxOff },
-  doneCircle: { width: 22, height: 22, borderRadius: 11, backgroundColor: parentColors.pillBlueBg, alignItems: 'center', justifyContent: 'center', marginTop: 2 },
+  doneCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: parentColors.pillBlueBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
   lineGrid: { flexDirection: 'row', gap: 8, marginTop: 16 },
-  lineGridLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.mutedLight, letterSpacing: 0.6 },
+  lineGridLabel: {
+    fontSize: 11,
+    fontFamily: 'PlusJakartaSans_800ExtraBold',
+    color: parentColors.mutedLight,
+    letterSpacing: 0.6,
+  },
   lineGridValue: { fontSize: 16, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 5 },
   lineGridPaid: { backgroundColor: parentColors.duePaidBg, borderRadius: 10, padding: 8, flex: 1 },
   lineGridDue: { backgroundColor: parentColors.dueBg, borderRadius: 10, padding: 8, flex: 1 },
-  allPaidBanner: { backgroundColor: parentColors.pillBlueBg, borderRadius: 18, padding: 18, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  allPaidBanner: {
+    backgroundColor: parentColors.pillBlueBg,
+    borderRadius: 18,
+    padding: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
   allPaidText: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.blueDeep },
   payFooter: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   amountBox: {
@@ -514,17 +599,59 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F8FE',
   },
   amountPrefix: { fontSize: 22, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.blueDeep },
-  amountInput: { fontSize: 22, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.blueDeep, padding: 0, minWidth: 60 },
-  amountHint: { fontSize: 11, color: parentColors.muted, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 5, maxWidth: 200 },
-  amountError: { fontSize: 11.5, color: '#B33A2E', fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 6, maxWidth: 200 },
-  payButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 16, paddingHorizontal: 30, alignItems: 'center', justifyContent: 'center' },
+  amountInput: {
+    fontSize: 22,
+    fontFamily: 'PlusJakartaSans_800ExtraBold',
+    color: parentColors.blueDeep,
+    padding: 0,
+    minWidth: 60,
+  },
+  amountHint: {
+    fontSize: 11,
+    color: parentColors.muted,
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    marginTop: 5,
+    maxWidth: 200,
+  },
+  amountError: {
+    fontSize: 11.5,
+    color: '#B33A2E',
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    marginTop: 6,
+    maxWidth: 200,
+  },
+  payButton: {
+    backgroundColor: parentColors.blue,
+    borderRadius: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   payButtonDisabled: { backgroundColor: parentColors.disabled },
   payButtonText: { color: '#fff', fontSize: 16, fontFamily: 'PlusJakartaSans_800ExtraBold' },
-  emptyText: { textAlign: 'center', color: parentColors.muted, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 24 },
+  emptyText: {
+    textAlign: 'center',
+    color: parentColors.muted,
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    marginTop: 24,
+  },
   historyRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16 },
   historyRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  historyRef: { fontSize: 11.5, color: parentColors.mutedLight, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 3 },
+  historyRef: {
+    fontSize: 11.5,
+    color: parentColors.mutedLight,
+    fontFamily: 'PlusJakartaSans_600SemiBold',
+    marginTop: 3,
+  },
   historyAmount: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.blueDeep },
-  downloadBtn: { borderRadius: 10, paddingVertical: 8, paddingHorizontal: 12, borderWidth: 1, borderColor: '#DCE7FB', backgroundColor: '#fff' },
+  downloadBtn: {
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: '#DCE7FB',
+    backgroundColor: '#fff',
+  },
   downloadBtnText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.blueDeep },
 });

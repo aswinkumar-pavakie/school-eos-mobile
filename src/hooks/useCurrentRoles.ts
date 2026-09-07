@@ -1,21 +1,19 @@
-// Which role(s) the signed-in person actually holds -- the one thing that
-// decides Faculty vs Parent navigation (the "My class" tab becomes "ERP" for
-// Faculty, see BottomTabBar.tsx). Same ['me'] query key fees/index.tsx already
-// uses for its own /auth/me call, so react-query shares one real fetch across
-// every screen that needs it rather than each asking separately.
+// Which role(s) the signed-in person actually holds -- the one thing that decides
+// Faculty vs Parent navigation (the "My class" tab becomes "ERP" for Faculty, see
+// BottomTabBar.tsx). Built on useMe() (not a second raw /auth/me query) so this
+// shares the exact same ['me'] cache entry and response shape as every other
+// screen that already calls useMe() -- two queries under the same key with
+// different unwrapping expectations previously crashed BottomTabBar with
+// "Cannot read property 'roles' of undefined" whenever useMe()'s query won the
+// race to populate the cache first.
 
-import { useQuery } from '@tanstack/react-query';
-import { authedRequest, type PersonSummary, type RoleSummary } from '@/lib/auth';
-
-interface MeResponse {
-  data: { person: PersonSummary; roles: RoleSummary[] };
-}
+import { useMe } from '@/hooks/useMe';
 
 export function useCurrentRoles() {
-  const query = useQuery({ queryKey: ['me'], queryFn: () => authedRequest<MeResponse>('/auth/me') });
-  const roleCodes = query.data?.data.roles.map((r) => r.role_code) ?? [];
+  const query = useMe();
+  const roleCodes = query.data?.roles.map((r) => r.role_code) ?? [];
   return {
-    person: query.data?.data.person ?? null,
+    person: query.data?.person ?? null,
     roleCodes,
     isFaculty: roleCodes.includes('FACULTY'),
     isLoading: query.isLoading,

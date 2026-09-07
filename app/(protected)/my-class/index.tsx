@@ -1,9 +1,8 @@
 // "All services" -- pixel replica of the design reference's isServices block: 4
-// titled sections, 3-column grid, 58px circular blue icon buttons. Fees, Messages
-// and Permissions are real, wired destinations (the latter two point at this
-// branch's own Messaging/Permissions modules, not hot-fix-sri's separate,
-// unwired Events/Permissions feature -- see app/(protected)/_layout.tsx for why);
-// every other icon is visual-only (design complete, feature not yet built).
+// titled sections, 3-column grid, 58px circular blue icon buttons. Fees and
+// Messages are this branch's own modules; Permissions is hot-fix-sri's own
+// Events-consent feature (this branch's own Permissions module was removed in
+// favor of it -- one real consent flow, not two).
 
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -15,7 +14,7 @@ import { parentColors } from '@/lib/theme';
 interface ServiceItem {
   key: ServiceIconKey;
   label: string;
-  href?: '/fees' | '/(protected)/my-class/messages' | '/(protected)/my-class/permissions';
+  href?: '/fees' | '/(protected)/my-class/messages' | '/permissions';
 }
 
 const SECTIONS: { title: string; items: ServiceItem[] }[] = [
@@ -50,7 +49,7 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
     title: 'Family',
     items: [
       { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
-      { key: 'consent', label: 'Permissions', href: '/(protected)/my-class/permissions' },
+      { key: 'consent', label: 'Permissions', href: '/permissions' },
       { key: 'settings', label: 'Settings' },
     ],
   },

@@ -1,9 +1,9 @@
 // Faculty "ERP" services grid -- pixel-matches "ERP screen design choice/Faculty
 // Module - 2" (STUDENT / EMPLOYEE sections), same grid pattern my-class/index.tsx
-// already uses for the Parent app. "Messages" and "Permissions" point at this
-// branch's own Messaging/Permissions modules (not hot-fix-sri's separate, unwired
-// Events/Permissions feature -- see app/(protected)/_layout.tsx for why); every
-// other tile besides those is visual-only (design complete, feature not yet built).
+// already uses for the Parent app. "Messages" is this branch's own Messaging
+// module; "Events" is hot-fix-sri's own Events/consent feature (this branch's own
+// Permissions module was removed in favor of it -- one real consent flow, not
+// two). Every other tile is visual-only (design complete, feature not yet built).
 
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -14,16 +14,13 @@ import { parentColors } from '@/lib/theme';
 interface ServiceItem {
   key: ServiceIconKey;
   label: string;
-  href?: '/(protected)/my-class/messages' | '/(protected)/my-class/permissions';
+  href?: '/(protected)/my-class/messages' | '/events';
 }
 
 const SECTIONS: { title: string; items: ServiceItem[] }[] = [
   {
     title: 'Communication',
-    items: [
-      { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
-      { key: 'consent', label: 'Permissions', href: '/(protected)/my-class/permissions' },
-    ],
+    items: [{ key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' }],
   },
   {
     title: 'Student',
@@ -37,7 +34,7 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
       { key: 'homework', label: 'Homework' },
       { key: 'classTeacher', label: 'Class Teacher' },
       { key: 'meetings', label: 'Parent Meetings' },
-      { key: 'events', label: 'Events' },
+      { key: 'events', label: 'Events', href: '/events' },
     ],
   },
   {
