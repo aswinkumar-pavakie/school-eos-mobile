@@ -65,3 +65,20 @@ export async function decideMeetingBooking(bookingId: string, decision: 'APPROVE
   });
   return res.data;
 }
+
+// ============================================================
+// Parent side -- real parent-meetings.controller.ts. A slot here omits
+// `pastBookings` (that's Faculty-only) but carries `facultyName` and this
+// student's own active PENDING/APPROVED `booking`, if any -- the backend
+// already scopes the list to slots relevant to this student's own faculty.
+// ============================================================
+
+export async function listParentMeetingSlots(studentId: string): Promise<(MeetingSlot & { facultyName: string })[]> {
+  const res = await authedRequest<ApiEnvelope<(MeetingSlot & { facultyName: string })[]>>(`/parent/meeting-slots?studentId=${studentId}`);
+  return res.data;
+}
+
+export async function createParentMeetingBooking(input: { slotId: string; studentId: string; notes?: string }): Promise<MeetingBooking> {
+  const res = await authedRequest<ApiEnvelope<MeetingBooking>>('/parent/meeting-bookings', { method: 'POST', body: input });
+  return res.data;
+}

@@ -38,6 +38,11 @@ const FRAMES: Record<string, string> = {
   // library shelf-line.
   report: 'M3 20h18',
   library: 'M3 21h18',
+  // Subjects (syllabus progress) -- the design's own script has no icon
+  // FRAME/ICON pair for this tile at all (only a title string), so this is
+  // an original open-book silhouette, drawn in the same single-Path stroke
+  // style as everything else in this file.
+  subjects: 'M12 5c-2.5-1.3-5.3-1.3-8-.5v13.5c2.7-.8 5.5-.8 8 .5c2.5-1.3 5.3-1.3 8-.5V4.5c-2.7-.8-5.5-.8-8 .5z',
   // Academic Coordinator -- no design reference exists for this tile at all
   // (a genuinely new role-conditional feature); a shield/badge frame reads as
   // "an assigned authority/scope", matching the role's own nature.
@@ -86,6 +91,7 @@ const ICONS: Record<string, string> = {
   // Missing ICON half completed cosmetically -- menu_book page-lines.
   records: 'M6 8h4M6 12h4M14 8h4M14 12h4',
   coordinator: 'M9 12l2 2 4-4',
+  subjects: 'M12 5v13.5',
 };
 
 export type ServiceIconKey = keyof typeof ICONS | keyof typeof FRAMES;
