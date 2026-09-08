@@ -4,7 +4,11 @@ import {
   fetchConversations,
   fetchMessages,
   markConversationRead,
+  searchFacultyDirectory,
+  searchStudentDirectory,
   sendMessage,
+  startFacultyConversation,
+  startStudentConversation,
   translateMessage,
 } from './api';
 
@@ -65,5 +69,37 @@ export function useTranslateMessage(conversationId: string) {
   return useMutation({
     mutationFn: ({ messageId, targetLanguage }: { messageId: string; targetLanguage: string }) =>
       translateMessage(conversationId, messageId, targetLanguage),
+  });
+}
+
+// ---- Principal: start a new conversation, search directories -------------------
+
+export function useSearchFaculty(query: string) {
+  return useQuery({
+    queryKey: ['messaging', 'principal', 'faculty-search', query],
+    queryFn: () => searchFacultyDirectory(query),
+  });
+}
+
+export function useSearchStudents(query: string) {
+  return useQuery({
+    queryKey: ['messaging', 'principal', 'student-search', query],
+    queryFn: () => searchStudentDirectory(query),
+  });
+}
+
+export function useStartFacultyConversation() {
+  const invalidate = useInvalidateMessaging();
+  return useMutation({
+    mutationFn: (facultyPersonId: string) => startFacultyConversation(facultyPersonId),
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useStartStudentConversation() {
+  const invalidate = useInvalidateMessaging();
+  return useMutation({
+    mutationFn: (studentId: string) => startStudentConversation(studentId),
+    onSuccess: () => invalidate(),
   });
 }

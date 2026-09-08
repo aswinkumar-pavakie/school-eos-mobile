@@ -8,8 +8,8 @@ import { useQuery } from '@tanstack/react-query';
 import { listChildren, type ParentChild } from '@/lib/parent-api';
 import { useSelectedChildStore } from '@/store/selected-child.store';
 
-export function useSelectedChild() {
-  const childrenQuery = useQuery({ queryKey: ['parent-children'], queryFn: listChildren });
+export function useSelectedChild({ enabled = true }: { enabled?: boolean } = {}) {
+  const childrenQuery = useQuery({ queryKey: ['parent-children'], queryFn: listChildren, enabled });
   const studentId = useSelectedChildStore((s) => s.studentId);
   const setStudentId = useSelectedChildStore((s) => s.setStudentId);
 

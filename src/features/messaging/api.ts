@@ -5,7 +5,15 @@
 
 import * as Crypto from 'expo-crypto';
 import { authedRequest } from '@/lib/auth';
-import type { ConversationDetail, ConversationSummary, Message, MessagesPage, TranslateMessageResult } from './types';
+import type {
+  ConversationDetail,
+  ConversationSummary,
+  FacultyDirectoryEntry,
+  Message,
+  MessagesPage,
+  StudentDirectoryEntry,
+  TranslateMessageResult,
+} from './types';
 
 interface Envelope<T> {
   data: T;
@@ -52,5 +60,41 @@ export async function translateMessage(
     `/messages/conversations/${conversationId}/messages/${messageId}/translate`,
     { method: 'POST', body: { targetLanguage } },
   );
+  return res.data;
+}
+
+// ---- Principal: start a new conversation, search directories -------------------
+// Principal-only server-side (RolesGuard rejects anyone else before these
+// handlers run) -- these calls simply aren't reachable from a Faculty/Parent
+// login, so no client-side role gate is needed here beyond not showing the
+// entry points to them (see MessagesListScreen/new-message screens).
+
+export async function startFacultyConversation(facultyPersonId: string): Promise<ConversationSummary> {
+  const res = await authedRequest<Envelope<ConversationSummary>>('/messages/principal/conversations/faculty', {
+    method: 'POST',
+    body: { facultyPersonId },
+  });
+  return res.data;
+}
+
+/** Fans out to every currently ACTIVE guardian at once server-side -- this can
+ * return more than one conversation for a student with more than one guardian. */
+export async function startStudentConversation(studentId: string): Promise<ConversationSummary[]> {
+  const res = await authedRequest<Envelope<ConversationSummary[]>>('/messages/principal/conversations/student', {
+    method: 'POST',
+    body: { studentId },
+  });
+  return res.data;
+}
+
+export async function searchFacultyDirectory(search: string): Promise<FacultyDirectoryEntry[]> {
+  const query = search ? `?search=${encodeURIComponent(search)}` : '';
+  const res = await authedRequest<{ data: FacultyDirectoryEntry[] }>(`/messages/principal/faculty/search${query}`);
+  return res.data;
+}
+
+export async function searchStudentDirectory(search: string): Promise<StudentDirectoryEntry[]> {
+  const query = search ? `?search=${encodeURIComponent(search)}` : '';
+  const res = await authedRequest<{ data: StudentDirectoryEntry[] }>(`/messages/principal/students/search${query}`);
   return res.data;
 }

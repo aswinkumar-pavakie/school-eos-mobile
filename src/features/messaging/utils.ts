@@ -4,6 +4,8 @@ export const ROLE_LABELS: Record<ParticipantRole, string> = {
   PARENT: 'Parent',
   SUBJECT_TEACHER: 'Subject Teacher',
   CLASS_ADVISOR: 'Class Teacher',
+  PRINCIPAL: 'Principal',
+  FACULTY_DIRECT: 'Faculty',
 };
 
 export function initialOf(name: string): string {

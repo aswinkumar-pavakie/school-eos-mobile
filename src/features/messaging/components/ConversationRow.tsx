@@ -21,14 +21,19 @@ export function ConversationRow({ conversation, isFaculty, onPress, query }: Con
   let name: string;
   let subtitle: string;
 
-  if (isFaculty) {
+  if (conversation.conversationType === 'STAFF_DIRECT') {
+    // Direct thread -- always exactly one other party, never a class/ward to
+    // describe. Principal sees the Faculty's name; Faculty sees "Principal".
+    name = conversation.directParticipant?.name ?? 'Conversation';
+    subtitle = conversation.directParticipant ? ROLE_LABELS[conversation.directParticipant.role] : '';
+  } else if (isFaculty) {
     // Faculty cares which ward/parent this thread is about, not which co-teacher
     // is also in it.
     const parent = findParentContact(conversation.participants);
-    name = conversation.student.name;
+    name = conversation.student?.name ?? 'Conversation';
     subtitle = parent
-      ? `${parent.name} · ${conversation.grade.name}-${conversation.section.name}`
-      : `${conversation.grade.name}-${conversation.section.name}`;
+      ? `${parent.name} · ${conversation.grade?.name}-${conversation.section?.name}`
+      : `${conversation.grade?.name}-${conversation.section?.name}`;
   } else {
     const matched = query ? conversation.participants.find((p) => p.name.toLowerCase().includes(query)) : undefined;
     const teacher = matched ?? primaryTeacherContact(conversation.participants);

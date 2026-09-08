@@ -16,6 +16,8 @@ export function useCurrentRoles() {
     person: query.data?.person ?? null,
     roleCodes,
     isFaculty: roleCodes.includes('FACULTY'),
+    isHostelWarden: roleCodes.includes('HOSTEL_WARDEN'),
+    isPrincipal: roleCodes.includes('PRINCIPAL'),
     isLoading: query.isLoading,
   };
 }

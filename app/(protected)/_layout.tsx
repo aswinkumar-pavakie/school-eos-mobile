@@ -8,7 +8,8 @@ import { parentColors } from '@/lib/theme';
 // Real navigation shell: whichever screen matched (Home/My class-or-ERP/Academics/
 // My Bus/Fees) fills the content area; the bottom tab bar is persistent chrome
 // rendered once here, not per-screen (see BottomTabBar.tsx for the tab set and its
-// per-role "My class" vs "ERP" swap).
+// per-role "My class" vs "ERP" swap -- Hostel Warden gets the same 4-tab bar as
+// everyone else, with its own operational home behind the ERP tab).
 //
 // Session gating (kept from this branch's own layout, not hot-fix-sri's): a
 // signed-out visitor never reaches a screen under this group. Gate on stored-

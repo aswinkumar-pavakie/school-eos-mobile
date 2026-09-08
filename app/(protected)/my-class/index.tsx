@@ -14,7 +14,13 @@ import { parentColors } from '@/lib/theme';
 interface ServiceItem {
   key: ServiceIconKey;
   label: string;
-  href?: '/fees' | '/(protected)/my-class/messages' | '/permissions';
+  href?:
+    | '/fees'
+    | '/(protected)/my-class/messages'
+    | '/permissions'
+    | '/(protected)/hostel/gate-pass-requests'
+    | '/(protected)/hostel/emergency-exit-requests'
+    | '/(protected)/hostel/call-requests';
 }
 
 const SECTIONS: { title: string; items: ServiceItem[] }[] = [
@@ -51,6 +57,18 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
       { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
       { key: 'consent', label: 'Permissions', href: '/permissions' },
       { key: 'settings', label: 'Settings' },
+    ],
+  },
+  // Only meaningful for a hostel-boarder child -- the backend itself rejects a
+  // request for a student with no active hostel allocation (clear error message),
+  // so these tiles aren't hidden for a non-boarder rather than needing a second
+  // "is this child a hosteller" check the Parent app doesn't otherwise carry.
+  {
+    title: 'Hostel',
+    items: [
+      { key: 'gatePass', label: 'Gate Pass', href: '/(protected)/hostel/gate-pass-requests' },
+      { key: 'emergencyExit', label: 'Emergency Exit', href: '/(protected)/hostel/emergency-exit-requests' },
+      { key: 'callRequest', label: 'Call Request', href: '/(protected)/hostel/call-requests' },
     ],
   },
 ];

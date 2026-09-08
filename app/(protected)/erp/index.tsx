@@ -8,10 +8,11 @@
 // a third section header, since the design itself only ever shows two.
 
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
 import { ServiceIcon, type ServiceIconKey } from '@/components/ServiceIcon';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { getCoordinatorMe } from '@/lib/faculty-academic-coordinator-api';
 import { facultyColors } from '@/lib/theme';
 
@@ -68,11 +69,24 @@ function TileGrid({ items, router }: { items: ServiceItem[]; router: ReturnType<
 
 export default function ErpScreen() {
   const router = useRouter();
+  const { isHostelWarden, isPrincipal } = useCurrentRoles();
   // Academic Coordinator has no design reference at all (a role-conditional
   // feature, not part of the static Faculty Module design) -- its own tile
   // only ever appears for a real, currently-active coordinator, checked live
-  // on every load, never assumed from a cached flag.
+  // on every load, never assumed from a cached flag. Called unconditionally
+  // (Rules of Hooks) even though a Hostel Warden/Principal redirects away
+  // below before ever rendering anything that uses it.
   const meQuery = useQuery({ queryKey: ['faculty-academic-coordinator-me'], queryFn: getCoordinatorMe });
+
+  // The ERP tab is Hostel Warden's own operational home for that role -- see
+  // hostel-warden/index.tsx -- rather than the Faculty services grid below.
+  if (isHostelWarden) {
+    return <Redirect href={'/(protected)/hostel-warden' as never} />;
+  }
+  // Same pattern for Principal -- see principal/index.tsx.
+  if (isPrincipal) {
+    return <Redirect href={'/(protected)/principal' as never} />;
+  }
 
   return (
     <View style={styles.flex}>
