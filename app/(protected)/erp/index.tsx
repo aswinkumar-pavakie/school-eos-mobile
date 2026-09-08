@@ -6,9 +6,10 @@
 // two). Every other tile is visual-only (design complete, feature not yet built).
 
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Redirect, useRouter } from 'expo-router';
 import { AppHeader } from '@/components/AppHeader';
 import { ServiceIcon, type ServiceIconKey } from '@/components/ServiceIcon';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { parentColors } from '@/lib/theme';
 
 interface ServiceItem {
@@ -54,6 +55,17 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
 
 export default function ErpScreen() {
   const router = useRouter();
+  const { isHostelWarden, isPrincipal } = useCurrentRoles();
+
+  // The ERP tab is Hostel Warden's own operational home for that role -- see
+  // hostel-warden/index.tsx -- rather than the Faculty services grid below.
+  if (isHostelWarden) {
+    return <Redirect href={'/(protected)/hostel-warden' as never} />;
+  }
+  // Same pattern for Principal -- see principal/index.tsx.
+  if (isPrincipal) {
+    return <Redirect href={'/(protected)/principal' as never} />;
+  }
 
   return (
     <View style={styles.flex}>

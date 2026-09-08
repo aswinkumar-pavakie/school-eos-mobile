@@ -14,6 +14,8 @@
 // Faculty reference screen, "ERP screen design choice/Faculty Module - 2") instead
 // of "My class" in that same second-tab slot, pointing at /erp instead of
 // /my-class -- everything else (Home/Academics/Bus) is unchanged for either role.
+// PRINCIPAL gets the same "ERP" tab -- /erp's own redirect sends them on to
+// /principal, mirroring exactly how it already redirects Hostel Warden.
 
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
@@ -61,12 +63,15 @@ function BusIcon({ color }: { color: string }) {
 
 type SecondTabHref = '/my-class' | '/erp';
 
+// Faculty AND Hostel Warden both get "ERP" in the second tab slot (Warden's own
+// operational launcher lives behind /erp -- see erp/index.tsx's redirect); only
+// Parent sees "My class" there.
 function tabsFor(
-  isFaculty: boolean,
+  showErp: boolean,
 ): { key: TabKey; label: string; href: '/' | SecondTabHref | '/academics' | '/my-bus'; Icon: typeof HomeIcon }[] {
   return [
     { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
-    isFaculty
+    showErp
       ? { key: 'school', label: 'ERP', href: '/erp', Icon: SchoolIcon }
       : { key: 'school', label: 'My class', href: '/my-class', Icon: SchoolIcon },
     { key: 'academics', label: 'Academics', href: '/academics', Icon: AcademicsIcon },
@@ -81,7 +86,10 @@ function activeTabFor(pathname: string): TabKey {
     pathname.startsWith('/fees') ||
     pathname.startsWith('/erp') ||
     pathname.startsWith('/events') ||
-    pathname.startsWith('/permissions')
+    pathname.startsWith('/permissions') ||
+    // Covers both the Warden's own /hostel-warden subtree and the Parent's
+    // /hostel/{gate-pass,emergency-exit,call}-requests subtree.
+    pathname.startsWith('/hostel')
   )
     return 'school';
   if (pathname.startsWith('/academics') || pathname.startsWith('/online-classes')) return 'academics';
@@ -94,8 +102,8 @@ export function BottomTabBar() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const active = activeTabFor(pathname);
-  const { isFaculty } = useCurrentRoles();
-  const TABS = tabsFor(isFaculty);
+  const { isFaculty, isHostelWarden, isPrincipal } = useCurrentRoles();
+  const TABS = tabsFor(isFaculty || isHostelWarden || isPrincipal);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>

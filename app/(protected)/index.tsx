@@ -1,12 +1,18 @@
 // Home tab -- deliberately simple per plan (only My class + Fees are pixel-built
 // and fully wired). Real signed-in person + real linked-children names; no fake
 // attendance/fee/homework summary cards invented here.
+//
+// Hostel Warden shares this same Home tab now (see BottomTabBar.tsx) -- its own
+// operational launcher lives behind the ERP tab instead (see
+// hostel-warden/index.tsx), so Home just shows a plain greeting + sign out for
+// that role, skipping every Parent-only concept (linked children, Fees hint).
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { useSelectedChild } from '@/hooks/useSelectedChild';
 import { parentColors } from '@/lib/theme';
 
@@ -18,7 +24,8 @@ export default function ProtectedHome() {
   const router = useRouter();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { children, selected } = useSelectedChild();
+  const { isHostelWarden } = useCurrentRoles();
+  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden });
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -47,19 +54,25 @@ export default function ProtectedHome() {
         ) : (
           <>
             <Text style={styles.title}>Hi, {me.person.firstName}</Text>
-            {selected ? (
-              <Text style={styles.subtitle}>
-                {selected.studentName} · {[selected.gradeName, selected.sectionName].filter(Boolean).join(' ')}
-              </Text>
-            ) : null}
-            {children.length > 1 ? (
-              <Text style={styles.hint}>{children.length} children linked to your account.</Text>
-            ) : null}
-            <Text style={styles.hint}>Open &ldquo;My class&rdquo; below for Fees and other services.</Text>
+            {isHostelWarden ? (
+              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
+            ) : (
+              <>
+                {selected ? (
+                  <Text style={styles.subtitle}>
+                    {selected.studentName} · {[selected.gradeName, selected.sectionName].filter(Boolean).join(' ')}
+                  </Text>
+                ) : null}
+                {children.length > 1 ? (
+                  <Text style={styles.hint}>{children.length} children linked to your account.</Text>
+                ) : null}
+                <Text style={styles.hint}>Open &ldquo;My class&rdquo; below for Fees and other services.</Text>
+              </>
+            )}
           </>
         )}
 
-        {me ? (
+        {me && !isHostelWarden ? (
           <Pressable onPress={() => router.push('/(protected)/online-classes')} style={styles.button}>
             <Text style={styles.buttonText}>Online Classes</Text>
           </Pressable>

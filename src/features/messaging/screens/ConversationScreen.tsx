@@ -137,15 +137,32 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     );
   }
 
-  // Faculty cares which ward/parent this thread is about; Parent cares which
-  // teacher they're corresponding with. Never a "+N more" count -- see utils.ts.
-  const headerTitle = isFaculty ? detail.data.student.name : (teacherContact?.name ?? 'Conversation');
-  const headerSubtitle = isFaculty
-    ? `${detail.data.grade.name}-${detail.data.section.name}`
-    : teacherContact
-      ? ROLE_LABELS[teacherContact.role]
-      : '';
-  const avatarName = isFaculty ? detail.data.student.name : (teacherContact?.name ?? 'Conversation');
+  const isStaffDirect = detail.data.conversationType === 'STAFF_DIRECT';
+
+  // A direct thread always has exactly one other party -- Principal sees the
+  // Faculty's name, Faculty sees "Principal", never a class/ward to describe.
+  // Otherwise: Faculty cares which ward/parent this thread is about; Parent
+  // cares which teacher they're corresponding with. Never a "+N more" count --
+  // see utils.ts.
+  const headerTitle = isStaffDirect
+    ? (detail.data.directParticipant?.name ?? 'Conversation')
+    : isFaculty
+      ? (detail.data.student?.name ?? 'Conversation')
+      : (teacherContact?.name ?? 'Conversation');
+  const headerSubtitle = isStaffDirect
+    ? detail.data.directParticipant
+      ? ROLE_LABELS[detail.data.directParticipant.role]
+      : ''
+    : isFaculty
+      ? `${detail.data.grade?.name}-${detail.data.section?.name}`
+      : teacherContact
+        ? ROLE_LABELS[teacherContact.role]
+        : '';
+  const avatarName = isStaffDirect
+    ? (detail.data.directParticipant?.name ?? 'Conversation')
+    : isFaculty
+      ? (detail.data.student?.name ?? 'Conversation')
+      : (teacherContact?.name ?? 'Conversation');
   const items = messages.data?.items ?? [];
 
   return (
@@ -161,7 +178,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
         }
       />
 
-      {isFaculty ? (
+      {isFaculty && !isStaffDirect ? (
         <View style={styles.participantRow}>
           <Avatar name={avatarName} size={28} />
           <Text style={styles.participantNote} numberOfLines={1}>

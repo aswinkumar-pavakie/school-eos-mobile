@@ -34,6 +34,19 @@ const FRAMES: Record<string, string> = {
   payslip: 'M6 3h12v18l-3-2-3 2-3-2-3 2z',
   appraisal: 'M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.7 7.1 18.2l.9-5.5-4-3.9 5.5-.8z',
   events: 'M4 6h16v14H4zM8 3v4M16 3v4M4 10h16',
+  // Hostel Warden ERP grid -- original icons (no design-reference file exists for
+  // this role in "ERP screen design choice", unlike the Faculty/Parent tiles
+  // above), drawn in the same single-Path stroke style as the rest of this file.
+  nightAttendance: 'M12 3a9 9 0 1 0 8.5 12',
+  studyAttendance: 'M4 5h8v14H4zM12 5h8v14h-8z',
+  gatePass: 'M4 21V5a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v16',
+  callRequest: 'M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2C10.5 21 3 13.5 3 6a2 2 0 0 1 2-2z',
+  visitorLog: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5M13 15c2.8.3 5 1.9 5 5',
+  emergencyExit: 'M19 4h-6l-3 5 3 5-3 5h9',
+  classAbsence: 'M2 9l10-5 10 5-10 5z',
+  roomBed: 'M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18v3M21 18v3M3 13V8a2 2 0 0 1 2-2h4v5',
+  complaints: 'M14.5 3.5l6 6L9 21l-6-1.5L4.5 12z',
+  roomDetails: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 11h.01M15 11h.01',
 };
 
 const ICONS: Record<string, string> = {
