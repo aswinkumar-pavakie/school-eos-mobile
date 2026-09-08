@@ -57,3 +57,25 @@ export function formatDateTime(value: string | Date): string {
   const d = typeof value === 'string' ? new Date(value) : value;
   return `${formatDate(d)}, ${formatTime(d)}`;
 }
+
+/** "AB" from "Aarav" + "Balan" -- avatar-circle initials used across every
+ * Faculty roster/roll-list screen. */
+export function initialsOf(first: string, last?: string | null): string {
+  return [first, last].filter(Boolean).map((s) => (s as string)[0]).join('').toUpperCase().slice(0, 2);
+}
+
+/** "2.4 MB" -- for LMS file listing rows. `bytes` arrives as a numeric string
+ * (Postgres bigint) or number. */
+export function formatFileSize(bytes: string | number): string {
+  const n = Number(bytes);
+  if (!Number.isFinite(n) || n < 0) return '—';
+  if (n < 1024) return `${n} B`;
+  const units = ['KB', 'MB', 'GB'];
+  let value = n / 1024;
+  let unitIndex = 0;
+  while (value >= 1024 && unitIndex < units.length - 1) {
+    value /= 1024;
+    unitIndex += 1;
+  }
+  return `${value.toFixed(value < 10 ? 1 : 0)} ${units[unitIndex]}`;
+}

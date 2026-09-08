@@ -64,6 +64,40 @@ export const parentColors = {
   background: '#F7F9FC',
 } as const;
 
+// Faculty ERP tokens -- pixel-matched to "ERP screen design choice/Faculty
+// Module - 2" (its own, distinct design reference; colors are close to but
+// NOT identical to parentColors above, e.g. #2563eb vs #2A62F0), kept as its
+// own palette for the same reason parentColors is kept separate from the
+// auth-flow `colors`.
+export const facultyColors = {
+  background: '#F7F8FB',
+  surface: '#FFFFFF',
+  ink: '#0F172A',
+  body: '#334155',
+  bodyMuted: '#475569',
+  muted: '#94A3B8',
+  mutedStrong: '#64748B',
+  border: '#E8ECF3',
+  borderSoft: '#EEF1F6',
+  borderLight: '#DBE2EE',
+  blue: '#2563EB',
+  blueDark: '#1D4ED8',
+  blueLight: '#EAF0FD',
+  blueTile: '#2F6AE0',
+  green: '#16A34A',
+  greenDark: '#15803D',
+  greenBg: '#DCFCE7',
+  red: '#DC2626',
+  redDark: '#B91C1C',
+  redBg: '#FEE2E2',
+  amber: '#F59E0B',
+  amberDark: '#A16207',
+  amberBg: '#FEF3C7',
+  chipTrack: '#EAEDF3',
+  rowBg: '#FAFBFE',
+  disabled: '#C3CDDF',
+} as const;
+
 // RN has no CSS box-shadow -- this is "boxShadow:0 2px 10px rgba(15,27,51,.05)"
 // from the design reference, expressed the iOS/Android way.
 export const cardShadow = {

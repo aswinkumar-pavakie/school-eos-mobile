@@ -21,9 +21,8 @@ const FRAMES: Record<string, string> = {
   transport: 'M4 5h16v11H4z',
   health: 'M12 4l8 4v5c0 4-3.4 6.3-8 7-4.6-.7-8-3-8-7V8z',
   meetings: 'M9 6a3 3 0 1 1 0 6 3 3 0 0 1 0-6M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5',
-  // Faculty ERP tiles (see "ERP screen design choice/Faculty Module - 2") -- only
-  // `events` is a real, wired destination; the rest are visual-only placeholders,
-  // same convention my-class/index.tsx already uses for every non-Fees tile.
+  // Faculty ERP tiles (see "ERP screen design choice/Faculty Module - 2") --
+  // wired one feature at a time; see faculty/*.tsx for what's real so far.
   records: 'M4 4h8v16H4zM12 4h8v16h-8z',
   marksEntry: 'M4 5h16v14H4z',
   announcements: 'M3 9h4l6-4v14l-6-4H3z',
@@ -34,6 +33,15 @@ const FRAMES: Record<string, string> = {
   payslip: 'M6 3h12v18l-3-2-3 2-3-2-3 2z',
   appraisal: 'M12 3l2.5 5 5.5.8-4 3.9.9 5.5L12 15.7 7.1 18.2l.9-5.5-4-3.9 5.5-.8z',
   events: 'M4 6h16v14H4zM8 3v4M16 3v4M4 10h16',
+  // Missing FRAME halves completed cosmetically (no frame/icon pair existed
+  // for these in either design's own reference): a bar_chart baseline and a
+  // library shelf-line.
+  report: 'M3 20h18',
+  library: 'M3 21h18',
+  // Academic Coordinator -- no design reference exists for this tile at all
+  // (a genuinely new role-conditional feature); a shield/badge frame reads as
+  // "an assigned authority/scope", matching the role's own nature.
+  coordinator: 'M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6z',
 };
 
 const ICONS: Record<string, string> = {
@@ -62,6 +70,9 @@ const ICONS: Record<string, string> = {
   payroll: 'M9 8h6M9 12h4M10 16V8',
   payslip: 'M9 8h6M9 12h6M9 16h4',
   events: 'M9 15l2 2 4-4',
+  // Missing ICON half completed cosmetically -- menu_book page-lines.
+  records: 'M6 8h4M6 12h4M14 8h4M14 12h4',
+  coordinator: 'M9 12l2 2 4-4',
 };
 
 export type ServiceIconKey = keyof typeof ICONS | keyof typeof FRAMES;

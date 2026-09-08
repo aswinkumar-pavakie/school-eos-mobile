@@ -1,13 +1,18 @@
 // Home tab -- deliberately simple per plan (only My class + Fees are pixel-built
-// and fully wired). Real signed-in person + real linked-children names; no fake
-// attendance/fee/homework summary cards invented here.
+// and fully wired) for the Parent side. Faculty gets its own real Home screen
+// (see FacultyHome.tsx): real Announcements + real Media Room published
+// posts, pixel-matched to "ERP screen design choice/Faculty Module - 2"'s own
+// Home screen -- role-branched here so nothing about the Parent experience
+// below changes.
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
+import { hasRole } from '@/hooks/useMe';
 import { useSelectedChild } from '@/hooks/useSelectedChild';
+import { FacultyHome } from '@/components/faculty/FacultyHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -35,6 +40,10 @@ export default function ProtectedHome() {
   async function handleSignOut() {
     await logout();
     router.replace('/(auth)/login');
+  }
+
+  if (me && hasRole(me.roles, 'FACULTY')) {
+    return <FacultyHome facultyName={me.person.firstName} facultyMeta={me.roles.map((r) => r.role_code).join(', ')} />;
   }
 
   return (
