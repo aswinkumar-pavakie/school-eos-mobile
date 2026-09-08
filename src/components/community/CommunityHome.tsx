@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { StatusBadge } from '@/components/StatusBadge';
 import { logout } from '@/lib/auth';
@@ -43,6 +43,7 @@ function PersonIcon() {
 
 export function CommunityHome({ personName, communityId }: { personName: string; communityId: string }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [initialsFallback] = useState(() => personName.slice(0, 2).toUpperCase());
 
   const communityQuery = useQuery({ queryKey: ['community', 'detail', communityId], queryFn: () => getCommunity(communityId) });
@@ -63,6 +64,10 @@ export function CommunityHome({ personName, communityId }: { personName: string;
 
   async function handleSignOut() {
     await logout();
+    // Same reasoning as LoginForm.tsx's clear() on login -- the next sign-in
+    // on this device must never see this account's cached ['me'] or business
+    // data.
+    queryClient.clear();
     router.replace('/(auth)/login');
   }
 

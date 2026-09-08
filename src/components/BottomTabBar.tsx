@@ -68,12 +68,17 @@ type SecondTabHref = '/my-class' | '/erp';
 // Parent sees "My class" there.
 //
 // Community drops Academics/My Bus entirely -- neither concept exists for a
-// standalone Community login (no academic record, no transport enrollment),
-// unlike Hostel Warden/Principal who keep the same 4-tab layout everyone else
-// has (a pre-existing characteristic of this bar, not something touched here).
+// standalone Community login (no academic record, no transport enrollment).
+// Vice Principal drops ONLY Academics -- its own Academics now lives inside
+// its ERP shell (vice-principal/index.tsx's ACADEMICS section) instead of
+// this bottom-tab placeholder; My Bus is left as-is for VP, scope limited to
+// exactly what was asked. Hostel Warden/Principal keep the same 4-tab layout
+// everyone else has (a pre-existing characteristic of this bar, not
+// something touched here).
 function tabsFor(
   showErp: boolean,
-  hideAcademicsAndBus: boolean,
+  hideAcademics: boolean,
+  hideBus: boolean,
 ): { key: TabKey; label: string; href: '/' | SecondTabHref | '/academics' | '/my-bus'; Icon: typeof HomeIcon }[] {
   const tabs: ReturnType<typeof tabsFor> = [
     { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
@@ -81,11 +86,11 @@ function tabsFor(
       ? { key: 'school', label: 'ERP', href: '/erp', Icon: SchoolIcon }
       : { key: 'school', label: 'My class', href: '/my-class', Icon: SchoolIcon },
   ];
-  if (!hideAcademicsAndBus) {
-    tabs.push(
-      { key: 'academics', label: 'Academics', href: '/academics', Icon: AcademicsIcon },
-      { key: 'bus', label: 'My Bus', href: '/my-bus', Icon: BusIcon },
-    );
+  if (!hideAcademics) {
+    tabs.push({ key: 'academics', label: 'Academics', href: '/academics', Icon: AcademicsIcon });
+  }
+  if (!hideBus) {
+    tabs.push({ key: 'bus', label: 'My Bus', href: '/my-bus', Icon: BusIcon });
   }
   return tabs;
 }
@@ -113,8 +118,12 @@ export function BottomTabBar() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const active = activeTabFor(pathname);
-  const { isFaculty, isHostelWarden, isPrincipal, isCommunity } = useCurrentRoles();
-  const TABS = tabsFor(isFaculty || isHostelWarden || isPrincipal || isCommunity, isCommunity);
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const TABS = tabsFor(
+    isFaculty || isHostelWarden || isPrincipal || isVicePrincipal || isCommunity,
+    isVicePrincipal || isCommunity,
+    isCommunity,
+  );
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>

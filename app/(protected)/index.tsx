@@ -17,6 +17,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
 import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
@@ -31,10 +32,11 @@ interface MeResponse {
 
 export default function ProtectedHome() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isCommunity } = useCurrentRoles();
-  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden && !isCommunity });
+  const { isHostelWarden, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden && !isVicePrincipal && !isCommunity });
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -50,6 +52,10 @@ export default function ProtectedHome() {
 
   async function handleSignOut() {
     await logout();
+    // Same reasoning as LoginForm.tsx's clear() on login -- the next sign-in
+    // on this device must never see this account's cached ['me'] or business
+    // data.
+    queryClient.clear();
     router.replace('/(auth)/login');
   }
 
@@ -76,6 +82,8 @@ export default function ProtectedHome() {
             <Text style={styles.title}>Hi, {me.person.firstName}</Text>
             {isHostelWarden ? (
               <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
+            ) : isVicePrincipal ? (
+              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your Vice Principal workspace.</Text>
             ) : isCommunity ? (
               <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your community&apos;s proposals and activities.</Text>
             ) : (
@@ -94,7 +102,7 @@ export default function ProtectedHome() {
           </>
         )}
 
-        {me && !isHostelWarden && !isCommunity ? (
+        {me && !isHostelWarden && !isVicePrincipal && !isCommunity ? (
           <Pressable onPress={() => router.push('/(protected)/online-classes')} style={styles.button}>
             <Text style={styles.buttonText}>Online Classes</Text>
           </Pressable>

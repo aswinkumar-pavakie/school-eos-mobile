@@ -69,7 +69,7 @@ function TileGrid({ items, router }: { items: ServiceItem[]; router: ReturnType<
 
 export default function ErpScreen() {
   const router = useRouter();
-  const { isHostelWarden, isPrincipal, isCommunity } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
   // Academic Coordinator has no design reference at all (a role-conditional
   // feature, not part of the static Faculty Module design) -- its own tile
   // only ever appears for a real, currently-active coordinator, checked live
@@ -86,6 +86,12 @@ export default function ErpScreen() {
   // Same pattern for Principal -- see principal/index.tsx.
   if (isPrincipal) {
     return <Redirect href={'/(protected)/principal' as never} />;
+  }
+  // Vice Principal -- Phase 1 only (login/auth/role-boundary): a minimal
+  // protected entry point, not the real module set Principal gets. See
+  // vice-principal/index.tsx and vice-principal/_layout.tsx.
+  if (isVicePrincipal) {
+    return <Redirect href={'/(protected)/vice-principal' as never} />;
   }
   // Same pattern for the standalone Community login -- see community/index.tsx.
   if (isCommunity) {

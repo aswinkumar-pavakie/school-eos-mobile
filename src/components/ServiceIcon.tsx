@@ -60,6 +60,23 @@ const FRAMES: Record<string, string> = {
   proposal: 'M6 3h9l4 4v14H6z',
   activity: 'M3 5h18v16H3zM8 3v4M16 3v4',
   communityProfile: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5M13 15c2.8.3 5 1.9 5 5',
+  // Vice Principal shell nav -- original icons (no design reference exists
+  // for this role either, same situation as Hostel Warden/Community above).
+  // Most nav items below reuse an existing key instead (Faculty->classTeacher,
+  // Examinations->exams, Calendar->events, Transport->transport, Hostel->
+  // roomBed, Library->library, Finance->fees, Communities->communityProfile,
+  // Announcements->announcements, Reports->report, Audit Log->records,
+  // Requests & Approvals->consent, Settings->settings, Attendance->
+  // attendance) -- these nine are for the genuinely new concepts only.
+  dashboard: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
+  students: 'M12 4 2 9l10 5 8-4.2V15h1V9zM6 12.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5',
+  parents: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15 20c0-2.2 1.8-3.5 4-3.5s4 1.3 4 3.5',
+  academicsSection: 'M12 6c-2-1.3-5-1.3-7 0v12c2-1.3 5-1.3 7 0c2-1.3 5-1.3 7 0V6c-2-1.3-5-1.3-7 0zM12 6v12',
+  timetable: 'M4 5h16v15H4zM4 9h16M8 3v4M16 3v4M8 13h3M8 17h3M13 13h3M13 17h3',
+  inventory: 'M3 8l9-5 9 5-9 5-9-5zM3 8v9l9 5 9-5V8M12 13v9',
+  maintenance: 'M14.7 6.3a4 4 0 1 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-2-2z',
+  notifications: 'M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
+  profile: 'M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5',
 };
 
 const ICONS: Record<string, string> = {

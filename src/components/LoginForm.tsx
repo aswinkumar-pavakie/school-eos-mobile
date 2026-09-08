@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Link, useRouter } from 'expo-router';
+import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api';
 import { login, PlatformNotAllowedError } from '@/lib/auth';
 import { colors, fonts } from '@/lib/theme';
 
 export function LoginForm() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +23,14 @@ export function LoginForm() {
     setIsSubmitting(true);
     try {
       await login(identifier.trim(), password);
+      // A previous account's cached queries (its ['me'] role data especially)
+      // must never survive into this new session -- without this, switching
+      // accounts on the same device within useMe()'s 5-minute staleTime shows
+      // the PREVIOUS person's role/screens until that cache naturally expires
+      // (confirmed live: logging in as Vice Principal after Community showed
+      // Community's own Home screen). Clear everything, not just ['me'] --
+      // any other cached business data is equally stale for a new identity.
+      queryClient.clear();
       // Per-role home destinations aren't built yet (feature teams own those screens
       // individually); every role lands on the single protected placeholder for now.
       router.replace('/(protected)');

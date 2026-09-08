@@ -18,6 +18,7 @@ export function useCurrentRoles() {
     isFaculty: roleCodes.includes('FACULTY'),
     isHostelWarden: roleCodes.includes('HOSTEL_WARDEN'),
     isPrincipal: roleCodes.includes('PRINCIPAL'),
+    isVicePrincipal: roleCodes.includes('VICE_PRINCIPAL'),
     isCommunity: roleCodes.includes('COMMUNITY'),
     isLoading: query.isLoading,
   };
