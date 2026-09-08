@@ -66,17 +66,28 @@ type SecondTabHref = '/my-class' | '/erp';
 // Faculty AND Hostel Warden both get "ERP" in the second tab slot (Warden's own
 // operational launcher lives behind /erp -- see erp/index.tsx's redirect); only
 // Parent sees "My class" there.
+//
+// Community drops Academics/My Bus entirely -- neither concept exists for a
+// standalone Community login (no academic record, no transport enrollment),
+// unlike Hostel Warden/Principal who keep the same 4-tab layout everyone else
+// has (a pre-existing characteristic of this bar, not something touched here).
 function tabsFor(
   showErp: boolean,
+  hideAcademicsAndBus: boolean,
 ): { key: TabKey; label: string; href: '/' | SecondTabHref | '/academics' | '/my-bus'; Icon: typeof HomeIcon }[] {
-  return [
+  const tabs: ReturnType<typeof tabsFor> = [
     { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
     showErp
       ? { key: 'school', label: 'ERP', href: '/erp', Icon: SchoolIcon }
       : { key: 'school', label: 'My class', href: '/my-class', Icon: SchoolIcon },
-    { key: 'academics', label: 'Academics', href: '/academics', Icon: AcademicsIcon },
-    { key: 'bus', label: 'My Bus', href: '/my-bus', Icon: BusIcon },
   ];
+  if (!hideAcademicsAndBus) {
+    tabs.push(
+      { key: 'academics', label: 'Academics', href: '/academics', Icon: AcademicsIcon },
+      { key: 'bus', label: 'My Bus', href: '/my-bus', Icon: BusIcon },
+    );
+  }
+  return tabs;
 }
 
 function activeTabFor(pathname: string): TabKey {
@@ -102,8 +113,8 @@ export function BottomTabBar() {
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
   const active = activeTabFor(pathname);
-  const { isFaculty, isHostelWarden, isPrincipal } = useCurrentRoles();
-  const TABS = tabsFor(isFaculty || isHostelWarden || isPrincipal);
+  const { isFaculty, isHostelWarden, isPrincipal, isCommunity } = useCurrentRoles();
+  const TABS = tabsFor(isFaculty || isHostelWarden || isPrincipal || isCommunity, isCommunity);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>

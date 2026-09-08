@@ -55,6 +55,11 @@ const FRAMES: Record<string, string> = {
   roomBed: 'M3 18v-6a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6M3 18v3M21 18v3M3 13V8a2 2 0 0 1 2-2h4v5',
   complaints: 'M14.5 3.5l6 6L9 21l-6-1.5L4.5 12z',
   roomDetails: 'M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 11h.01M15 11h.01',
+  // Community ERP grid -- original icons (no design-reference file exists for
+  // this role either, same situation as Hostel Warden above).
+  proposal: 'M6 3h9l4 4v14H6z',
+  activity: 'M3 5h18v16H3zM8 3v4M16 3v4',
+  communityProfile: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5M13 15c2.8.3 5 1.9 5 5',
 };
 
 const ICONS: Record<string, string> = {

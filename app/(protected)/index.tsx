@@ -22,6 +22,7 @@ import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { useSelectedChild } from '@/hooks/useSelectedChild';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
+import { CommunityHome } from '@/components/community/CommunityHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -32,8 +33,8 @@ export default function ProtectedHome() {
   const router = useRouter();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden } = useCurrentRoles();
-  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden });
+  const { isHostelWarden, isCommunity } = useCurrentRoles();
+  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden && !isCommunity });
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -56,6 +57,13 @@ export default function ProtectedHome() {
     return <FacultyHome facultyName={me.person.firstName} facultyMeta={me.roles.map((r) => r.role_code).join(', ')} />;
   }
 
+  if (me && isCommunity) {
+    const communityRole = me.roles.find((r) => r.role_code === 'COMMUNITY' && r.scope_type === 'COMMUNITY');
+    if (communityRole?.scope_id) {
+      return <CommunityHome personName={me.person.firstName} communityId={communityRole.scope_id} />;
+    }
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.content}>
@@ -68,6 +76,8 @@ export default function ProtectedHome() {
             <Text style={styles.title}>Hi, {me.person.firstName}</Text>
             {isHostelWarden ? (
               <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
+            ) : isCommunity ? (
+              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your community&apos;s proposals and activities.</Text>
             ) : (
               <>
                 {selected ? (
@@ -84,7 +94,7 @@ export default function ProtectedHome() {
           </>
         )}
 
-        {me && !isHostelWarden ? (
+        {me && !isHostelWarden && !isCommunity ? (
           <Pressable onPress={() => router.push('/(protected)/online-classes')} style={styles.button}>
             <Text style={styles.buttonText}>Online Classes</Text>
           </Pressable>
