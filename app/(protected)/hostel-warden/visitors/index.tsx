@@ -56,7 +56,12 @@ function RecordVisitTab() {
     if (selectedStudent || studentSearch.trim().length < 2) return [];
     const q = studentSearch.trim().toLowerCase();
     return (allocationsQuery.data ?? [])
-      .filter((row) => fullName(row.studentFirstName, row.studentLastName).toLowerCase().includes(q) || row.admissionNo.toLowerCase().includes(q))
+      .filter(
+        (row) =>
+          fullName(row.studentFirstName, row.studentLastName).toLowerCase().includes(q) ||
+          row.admissionNo.toLowerCase().includes(q) ||
+          (row.rollNo !== null && String(row.rollNo).includes(q)),
+      )
       .slice(0, 8);
   }, [allocationsQuery.data, studentSearch, selectedStudent]);
 
@@ -112,7 +117,7 @@ function RecordVisitTab() {
                 style={styles.input}
                 value={studentSearch}
                 onChangeText={setStudentSearch}
-                placeholder="Search by name or admission no."
+                placeholder="Search by name, admission no. or roll no."
                 placeholderTextColor={parentColors.mutedLight}
               />
               {allocationsQuery.isLoading ? <ActivityIndicator color={parentColors.blue} style={{ marginTop: 8 }} /> : null}
@@ -126,7 +131,8 @@ function RecordVisitTab() {
                   }}
                 >
                   <Text style={styles.resultText}>
-                    {fullName(row.studentFirstName, row.studentLastName)} · {row.admissionNo} · Room {row.roomNo}
+                    {fullName(row.studentFirstName, row.studentLastName)} · {row.admissionNo}
+                    {row.rollNo !== null ? ` · Roll ${row.rollNo}` : ''} · Room {row.roomNo}
                   </Text>
                 </Pressable>
               ))}

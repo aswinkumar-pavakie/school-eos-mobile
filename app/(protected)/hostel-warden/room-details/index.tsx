@@ -149,15 +149,24 @@ export default function RoomDetailsScreen() {
             ) : (
               <ScrollView style={styles.modalList}>
                 {selectedOccupants.map((occupant) => (
-                  <View key={occupant.studentId} style={styles.occupantRow}>
+                  <Pressable
+                    key={occupant.studentId}
+                    style={styles.occupantRow}
+                    onPress={() => {
+                      setSelectedRoom(null);
+                      router.push(`/(protected)/hostel-warden/room-bed/${occupant.studentId}` as never);
+                    }}
+                  >
                     <View style={{ flex: 1 }}>
                       <Text style={styles.occupantName}>{fullName(occupant.studentFirstName, occupant.studentLastName)}</Text>
                       <Text style={styles.occupantMeta}>
                         {occupant.gradeName ? `${occupant.gradeName}${occupant.sectionName ? ` · ${occupant.sectionName}` : ''}` : 'Not enrolled this year'}
+                        {occupant.rollNo !== null ? ` · Roll ${occupant.rollNo}` : ''}
                       </Text>
                     </View>
                     <Text style={styles.occupantBed}>Bed {occupant.bedNo}</Text>
-                  </View>
+                    <Text style={styles.chevronSmall}>›</Text>
+                  </Pressable>
                 ))}
               </ScrollView>
             )}
@@ -210,6 +219,7 @@ const styles = StyleSheet.create({
   occupantName: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
   occupantMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
   occupantBed: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.blueDeep },
+  chevronSmall: { fontSize: 20, color: parentColors.mutedLight, fontFamily: 'PlusJakartaSans_400Regular', marginLeft: 4 },
   closeButton: { marginTop: 16, borderRadius: 14, paddingVertical: 14, alignItems: 'center', backgroundColor: parentColors.blue },
   closeButtonText: { color: '#fff', fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 14.5 },
 });
