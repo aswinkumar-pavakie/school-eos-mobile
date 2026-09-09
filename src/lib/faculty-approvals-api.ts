@@ -24,3 +24,12 @@ export async function rejectRequest(approvalRequestId: string, comment?: string)
 export async function sendBackRequest(approvalRequestId: string, comment: string): Promise<void> {
   await authedRequest<ApiEnvelope<unknown>>(`/approvals/${approvalRequestId}/send-back`, { method: 'POST', body: { comment } });
 }
+
+/** withdrawRequest added (Principal Requests & Approvals) for the engine's
+ * fourth real action -- the REQUESTER'S OWN still-open request only
+ * (enforced server-side: ApprovalsService.withdraw checks requestedBy ===
+ * actor.personId), same engine, same authorization, reused here rather than
+ * duplicated in a Principal-only file. */
+export async function withdrawRequest(approvalRequestId: string): Promise<void> {
+  await authedRequest<ApiEnvelope<unknown>>(`/approvals/${approvalRequestId}/withdraw`, { method: 'POST' });
+}
