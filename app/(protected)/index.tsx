@@ -6,11 +6,14 @@
 // (see VicePrincipalHome.tsx) -- the exact same leadership-dashboard content
 // that used to sit behind the ERP menu's own "Dashboard" tile, now shown
 // directly here instead (that tile was removed from vice-principal/index.tsx
-// since it would just duplicate this). Parent gets its own real Home screen
-// (see ParentHome.tsx), pixel-matched to "ERP screen design choice/School
-// App.dc.html"'s own HOME section -- child switcher, real Announcements, real
-// Media Room posts (ParentHome resolves the selected child itself via
-// useSelectedChild).
+// since it would just duplicate this). Principal gets its own real Home
+// screen too (see PrincipalHome.tsx) -- this was previously a real bug: with
+// no isPrincipal branch here, a Principal login fell through to ParentHome
+// (the wrong role's UI entirely) before this fix. Parent gets its own real
+// Home screen (see ParentHome.tsx), pixel-matched to "ERP screen design
+// choice/School App.dc.html"'s own HOME section -- child switcher, real
+// Announcements, real Media Room posts (ParentHome resolves the selected
+// child itself via useSelectedChild).
 //
 // Hostel Warden is the only role left on this plain fallback Home tab -- its
 // own operational launcher lives behind the ERP tab instead (see
@@ -27,6 +30,7 @@ import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
 import { CommunityHome } from '@/components/community/CommunityHome';
 import { VicePrincipalHome } from '@/components/vice-principal/VicePrincipalHome';
+import { PrincipalHome } from '@/components/principal/PrincipalHome';
 import { ParentHome } from '@/components/parent/ParentHome';
 import { parentColors } from '@/lib/theme';
 
@@ -39,7 +43,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -77,8 +81,12 @@ export default function ProtectedHome() {
     return <VicePrincipalHome personName={me.person.firstName} />;
   }
 
-  // Community and Vice Principal are both handled above (returns early);
-  // everyone else who isn't Hostel Warden is Parent.
+  if (me && isPrincipal) {
+    return <PrincipalHome personName={me.person.firstName} />;
+  }
+
+  // Community, Vice Principal, and Principal are all handled above (returns
+  // early); everyone else who isn't Hostel Warden is Parent.
   if (me && !isHostelWarden) {
     return <ParentHome />;
   }
