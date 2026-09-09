@@ -17,6 +17,18 @@ interface ServiceItem {
   href?:
     | '/fees'
     | '/(protected)/my-class/messages'
+    | '/(protected)/my-class/results'
+    | '/(protected)/my-class/homework'
+    | '/(protected)/my-class/exams'
+    | '/(protected)/my-class/subjects'
+    | '/(protected)/my-class/attendance'
+    | '/(protected)/my-class/leave'
+    | '/(protected)/my-class/library'
+    | '/(protected)/my-class/health'
+    | '/(protected)/my-class/meetings'
+    | '/(protected)/my-class/feedback'
+    | '/(protected)/my-class/documents'
+    | '/(protected)/my-class/settings'
     | '/permissions'
     | '/(protected)/hostel/gate-pass-requests'
     | '/(protected)/hostel/emergency-exit-requests'
@@ -27,20 +39,21 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
   {
     title: 'Academics',
     items: [
-      { key: 'report', label: 'Results' },
-      { key: 'homework', label: 'Homework' },
-      { key: 'exams', label: 'Exams' },
+      { key: 'report', label: 'Results', href: '/(protected)/my-class/results' },
+      { key: 'homework', label: 'Homework', href: '/(protected)/my-class/homework' },
+      { key: 'exams', label: 'Exams', href: '/(protected)/my-class/exams' },
+      { key: 'subjects', label: 'Subjects', href: '/(protected)/my-class/subjects' },
     ],
   },
   {
     title: 'School life',
     items: [
-      { key: 'attendance', label: 'Attendance' },
-      { key: 'leave', label: 'Leave' },
-      { key: 'library', label: 'Library' },
-      { key: 'health', label: 'Health room' },
-      { key: 'meetings', label: 'Meetings' },
-      { key: 'feedback', label: 'Feedback' },
+      { key: 'attendance', label: 'Attendance', href: '/(protected)/my-class/attendance' },
+      { key: 'leave', label: 'Leave', href: '/(protected)/my-class/leave' },
+      { key: 'library', label: 'Library', href: '/(protected)/my-class/library' },
+      { key: 'health', label: 'Health room', href: '/(protected)/my-class/health' },
+      { key: 'meetings', label: 'Meetings', href: '/(protected)/my-class/meetings' },
+      { key: 'feedback', label: 'Feedback', href: '/(protected)/my-class/feedback' },
     ],
   },
   {
@@ -48,7 +61,7 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
     items: [
       { key: 'fees', label: 'Fees', href: '/fees' },
       { key: 'canteen', label: 'Canteen' },
-      { key: 'certificates', label: 'Documents' },
+      { key: 'certificates', label: 'Documents', href: '/(protected)/my-class/documents' },
     ],
   },
   {
@@ -56,7 +69,7 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
     items: [
       { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
       { key: 'consent', label: 'Permissions', href: '/permissions' },
-      { key: 'settings', label: 'Settings' },
+      { key: 'settings', label: 'Settings', href: '/(protected)/my-class/settings' },
     ],
   },
   // Only meaningful for a hostel-boarder child -- the backend itself rejects a

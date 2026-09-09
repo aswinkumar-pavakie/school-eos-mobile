@@ -2,8 +2,7 @@
 // Sensitive, class-scoped content: every write is re-validated server-side
 // regardless of what this client sends.
 
-import { authedRequest, getValidAccessToken } from './auth';
-import { API_BASE_URL } from './api';
+import { authedRequest } from './auth';
 
 interface ApiEnvelope<T> {
   data: T;
@@ -70,24 +69,26 @@ export async function deleteLmsFolder(folderId: string): Promise<void> {
   await authedRequest(`/faculty/lms/folders/${folderId}`, { method: 'DELETE' });
 }
 
-/** Multipart upload -- authedRequest's own JSON body helper doesn't cover
- * this, so this builds the fetch call directly, same token-refresh
- * convention as everywhere else. */
+/** Multipart upload via authedRequest (real token-refresh + clean ApiError
+ * messages, same as every other call in this file).
+ *
+ * IMPORTANT: Expo's fetch/FormData implementation (which replaces RN's
+ * built-in one) does NOT support the classic RN `{ uri, name, type }`
+ * file-part object -- it only accepts a real Blob/File instance, or it
+ * throws "Unsupported FormDataPart implementation". So the picked file is
+ * first read into a real Blob (with its mime type set explicitly, since a
+ * local file:// fetch doesn't reliably report the right Content-Type on its
+ * own) before being appended. */
 export async function uploadLmsFile(folderId: string, file: { uri: string; name: string; mimeType: string }): Promise<LmsFile[]> {
-  const token = await getValidAccessToken();
+  const bytes = await (await fetch(file.uri)).arrayBuffer();
+  const blob = new Blob([bytes], { type: file.mimeType });
   const form = new FormData();
-  form.append('file', { uri: file.uri, name: file.name, type: file.mimeType } as unknown as Blob);
-  const res = await fetch(`${API_BASE_URL}/faculty/lms/folders/${folderId}/files`, {
+  form.append('file', blob, file.name);
+  const res = await authedRequest<ApiEnvelope<LmsFile[]>>(`/faculty/lms/folders/${folderId}/files`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
     body: form,
   });
-  if (!res.ok) {
-    const body = await res.text().catch(() => '');
-    throw new Error(`Upload failed (${res.status}): ${body}`);
-  }
-  const json = (await res.json()) as ApiEnvelope<LmsFile[]>;
-  return json.data;
+  return res.data;
 }
 
 export async function getLmsFileUrl(fileId: string): Promise<string> {

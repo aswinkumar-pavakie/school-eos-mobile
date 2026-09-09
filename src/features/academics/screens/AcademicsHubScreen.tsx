@@ -1,8 +1,8 @@
 // Parent-only launcher hub, matching the provided design exactly: a gradient header
-// plus a 4-icon grid. Only "Online class" is a real, backed feature -- the other
-// three tiles (Current term, Timetable, Calendar) have no backend/module anywhere
-// in this project yet (see src/features/academics/README.md), so they render for
-// visual fidelity but show a "Coming soon" notice instead of a fabricated screen.
+// plus a 4-icon grid. All four tiles are now real: Current term, Timetable and
+// Calendar push to their own real, backend-wired screens (see
+// app/(protected)/academics/{current-term,timetable,calendar}); Online class was
+// already real and is untouched.
 
 import { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -18,13 +18,14 @@ interface HubTile {
   label: string;
   icon: IconName;
   enabled: boolean;
+  route: string;
 }
 
 const TILES: HubTile[] = [
-  { key: 'current-term', label: 'Current term', icon: 'reader-outline', enabled: false },
-  { key: 'timetable', label: 'Timetable', icon: 'time-outline', enabled: false },
-  { key: 'online-class', label: 'Online class', icon: 'play-outline', enabled: true },
-  { key: 'calendar', label: 'Calendar', icon: 'calendar-outline', enabled: false },
+  { key: 'current-term', label: 'Current term', icon: 'reader-outline', enabled: true, route: '/(protected)/academics/current-term' },
+  { key: 'timetable', label: 'Timetable', icon: 'time-outline', enabled: true, route: '/(protected)/academics/timetable' },
+  { key: 'online-class', label: 'Online class', icon: 'play-outline', enabled: true, route: '/(protected)/academics/online-class' },
+  { key: 'calendar', label: 'Calendar', icon: 'calendar-outline', enabled: true, route: '/(protected)/academics/calendar' },
 ];
 
 export function AcademicsHubScreen() {
@@ -39,7 +40,7 @@ export function AcademicsHubScreen() {
       setComingSoon(tile.label);
       return;
     }
-    router.push('/(protected)/academics/online-class');
+    router.push(tile.route as never);
   }
 
   return (

@@ -62,6 +62,20 @@ export const parentColors = {
   tabInactive: '#94A3B8',
   white: '#FFFFFF',
   background: '#F7F9FC',
+  bodyMuted: '#41526E',
+  mutedSoft: '#7C8DA6',
+  // Profile screen's own "Class X · Section Y · Roll Z" line color -- pixel-matched
+  // to School App.dc.html's isProfile block, distinct from bodyMuted/mutedSoft.
+  classLineMuted: '#5B6B85',
+  highlightBg: '#EAF0FD',
+  greenBg: '#E6F4EC',
+  greenDark: '#1E7A4B',
+  chevronBg: '#D3E0F8',
+  amberBg: '#FEF3C7',
+  amberDark: '#A16207',
+  redBg: '#FEE2E2',
+  redDark: '#B91C1C',
+  coverBg: '#DCE7FB',
 } as const;
 
 // Faculty ERP tokens -- pixel-matched to "ERP screen design choice/Faculty

@@ -1,17 +1,17 @@
-// Home tab -- deliberately simple per plan (only My class + Fees are pixel-built
-// and fully wired) for the Parent side. Real signed-in person + real
-// linked-children names; no fake attendance/fee/homework summary cards
-// invented here.
+// Home tab -- real signed-in person, role-branched. Faculty gets its own real
+// Home screen (see FacultyHome.tsx), pixel-matched to "ERP screen choice/
+// Faculty Module - 2"'s own Home screen. Community gets its own real Home
+// screen (see CommunityHome.tsx), resolved from the COMMUNITY-scoped role
+// assignment's own scope_id. Parent gets its own real Home screen (see
+// ParentHome.tsx), pixel-matched to "ERP screen design choice/School
+// App.dc.html"'s own HOME section -- child switcher, real Announcements, real
+// Media Room posts (ParentHome resolves the selected child itself via
+// useSelectedChild).
 //
-// Faculty gets its own real Home screen (see FacultyHome.tsx): real
-// Announcements + real Media Room published posts, pixel-matched to "ERP
-// screen design choice/Faculty Module - 2"'s own Home screen -- role-branched
-// here so nothing about the Parent experience below changes.
-//
-// Hostel Warden shares this same Home tab now (see BottomTabBar.tsx) -- its own
-// operational launcher lives behind the ERP tab instead (see
-// hostel-warden/index.tsx), so Home just shows a plain greeting + sign out for
-// that role, skipping every Parent-only concept (linked children, Fees hint).
+// Hostel Warden and Vice Principal share this same plain fallback Home tab --
+// each role's own operational launcher lives behind the ERP tab instead (see
+// hostel-warden/index.tsx and vice-principal/index.tsx), so Home just shows a
+// role-specific greeting + sign out for both.
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -21,9 +21,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
 import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
-import { useSelectedChild } from '@/hooks/useSelectedChild';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
 import { CommunityHome } from '@/components/community/CommunityHome';
+import { ParentHome } from '@/components/parent/ParentHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -36,7 +36,6 @@ export default function ProtectedHome() {
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { isHostelWarden, isVicePrincipal, isCommunity } = useCurrentRoles();
-  const { children, selected } = useSelectedChild({ enabled: !isHostelWarden && !isVicePrincipal && !isCommunity });
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -70,6 +69,14 @@ export default function ProtectedHome() {
     }
   }
 
+  // Community is handled above (returns early when its scope resolves);
+  // Vice Principal gets the plain greeting fallback below, not Parent's own
+  // Home screen -- everyone else who isn't Hostel Warden or Vice Principal
+  // is Parent.
+  if (me && !isHostelWarden && !isVicePrincipal) {
+    return <ParentHome />;
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.content}>
@@ -82,31 +89,11 @@ export default function ProtectedHome() {
             <Text style={styles.title}>Hi, {me.person.firstName}</Text>
             {isHostelWarden ? (
               <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
-            ) : isVicePrincipal ? (
-              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your Vice Principal workspace.</Text>
-            ) : isCommunity ? (
-              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your community&apos;s proposals and activities.</Text>
             ) : (
-              <>
-                {selected ? (
-                  <Text style={styles.subtitle}>
-                    {selected.studentName} · {[selected.gradeName, selected.sectionName].filter(Boolean).join(' ')}
-                  </Text>
-                ) : null}
-                {children.length > 1 ? (
-                  <Text style={styles.hint}>{children.length} children linked to your account.</Text>
-                ) : null}
-                <Text style={styles.hint}>Open &ldquo;My class&rdquo; below for Fees and other services.</Text>
-              </>
+              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your Vice Principal workspace.</Text>
             )}
           </>
         )}
-
-        {me && !isHostelWarden && !isVicePrincipal && !isCommunity ? (
-          <Pressable onPress={() => router.push('/(protected)/online-classes')} style={styles.button}>
-            <Text style={styles.buttonText}>Online Classes</Text>
-          </Pressable>
-        ) : null}
 
         <Pressable onPress={handleSignOut} style={styles.button}>
           <Text style={styles.buttonText}>Sign out</Text>
