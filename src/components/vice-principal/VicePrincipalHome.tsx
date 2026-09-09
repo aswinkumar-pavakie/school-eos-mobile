@@ -1,21 +1,38 @@
-// Vice Principal's real leadership dashboard -- Phase 3. Guarded by the same
-// vice-principal/_layout.tsx as every other screen in this subtree (no
-// per-screen role check needed here). Every number/list below is a real read
-// from vice-principal-dashboard-api.ts's own real backend endpoints -- no
-// mock arrays, no invented KPIs, no fake alerts. Sections with no safe
-// existing backend dependency (Attendance) show an honest "not available
-// yet" state instead of fabricated numbers, per this phase's own explicit
-// instruction. Visual pattern reused from CommunityHome.tsx (this session's
-// own most-recent leadership-style overview) -- header, stat tiles, section
-// cards -- nothing new invented at the design level.
+// Vice Principal Home -- the exact real leadership dashboard content that
+// used to live at vice-principal/dashboard.tsx (Phase 3), now rendered
+// directly on the shared Home tab instead of behind its own ERP menu entry
+// (the "Dashboard" tile in vice-principal/index.tsx's MAIN section was
+// removed since this makes it redundant). Same pattern as FacultyHome/
+// CommunityHome/ParentHome: no AppHeader (Home gets its own greeting, not
+// the shared back-button header), personName passed in as a prop from
+// app/(protected)/index.tsx rather than a second useMe() query. Every
+// number/list below is still a real read from vice-principal-dashboard-api.ts's
+// own real backend endpoints -- no mock arrays, no invented KPIs, nothing
+// changed about the content itself, only where it's mounted.
+//
+// Header banner + floating greeting card + bell icon are lifted from
+// CommunityHome.tsx's own Home screen (closest match in shape to this one --
+// stat tiles + several list sections + sign out at the bottom), not invented
+// fresh, so Home reads consistently across every role in this app instead of
+// VP being the only flat, bannerless one. The bell links to VP's own real
+// Notifications screen (vice-principal/notifications.tsx), same as Faculty's
+// bell links to its own announcements.
+//
+// Sign out lives at the bottom of this screen too -- VP used to fall through
+// to the plain Home fallback in app/(protected)/index.tsx (greeting + Sign
+// out button) before this dashboard content took over its Home tab, so this
+// self-contained handleSignOut (own useQueryClient + logout(), same shape as
+// CommunityHome.tsx's) replaces what that fallback used to provide, instead
+// of dropping it.
 
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import Svg, { Path, Circle } from 'react-native-svg';
 import { EmptyState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
-import { useMe } from '@/hooks/useMe';
+import { logout } from '@/lib/auth';
 import { formatDate } from '@/lib/format';
 import { parentColors } from '@/lib/theme';
 import {
@@ -25,6 +42,23 @@ import {
   listPendingApprovals,
   listUpcomingCalendarEvents,
 } from '@/lib/vice-principal-dashboard-api';
+
+function BellIcon() {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+      <Path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    </Svg>
+  );
+}
+function PersonIcon() {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={parentColors.blue} strokeWidth={1.8} strokeLinecap="round">
+      <Circle cx={12} cy={8} r={3.5} />
+      <Path d="M5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5" />
+    </Svg>
+  );
+}
 
 const cardShadow = {
   shadowColor: '#0F172A',
@@ -79,9 +113,18 @@ const QUICK_ACTIONS: { label: string; slug: string }[] = [
   { label: 'Announcements', slug: 'announcements' },
 ];
 
-export default function VicePrincipalDashboard() {
+export function VicePrincipalHome({ personName }: { personName: string }) {
   const router = useRouter();
-  const meQuery = useMe();
+  const queryClient = useQueryClient();
+
+  async function handleSignOut() {
+    await logout();
+    // Same reasoning as LoginForm.tsx's clear() on login -- the next sign-in
+    // on this device must never see this account's cached ['me'] or business
+    // data.
+    queryClient.clear();
+    router.replace('/(auth)/login');
+  }
 
   const summaryQuery = useQuery({ queryKey: ['vp-dashboard', 'summary'], queryFn: getDashboardSummary });
   const eventsQuery = useQuery({ queryKey: ['vp-dashboard', 'calendar-events'], queryFn: listUpcomingCalendarEvents });
@@ -98,9 +141,38 @@ export default function VicePrincipalDashboard() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Dashboard" subtitle="School leadership overview" onBack={() => router.back()} />
+      <View style={styles.header}>
+        <SafeAreaView edges={['top']}>
+          <View style={styles.headerRow}>
+            <View style={styles.headerLeft}>
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>VP</Text>
+              </View>
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={styles.headerTitle}>Vice Principal</Text>
+                <Text style={styles.headerSubtitle}>School leadership overview</Text>
+              </View>
+            </View>
+            <Pressable
+              style={styles.bellWrap}
+              onPress={() => router.push('/(protected)/vice-principal/notifications?title=Notifications' as never)}
+            >
+              <BellIcon />
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      </View>
+
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.greeting}>Hi, {meQuery.data?.person.firstName ?? 'Vice Principal'}</Text>
+        <View style={[styles.greetingCard, cardShadow]}>
+          <View style={styles.avatar}>
+            <PersonIcon />
+          </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={styles.greetingName}>Hi, {personName}</Text>
+            <Text style={styles.greetingMeta}>Vice Principal</Text>
+          </View>
+        </View>
 
         <View style={styles.sectionHeaderRow}>
           <Text style={styles.sectionTitle}>Key statistics</Text>
@@ -265,6 +337,10 @@ export default function VicePrincipalDashboard() {
             </Pressable>
           ))}
         </View>
+
+        <Pressable onPress={handleSignOut} style={styles.signOutButton}>
+          <Text style={styles.signOutButtonText}>Sign out</Text>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -272,8 +348,35 @@ export default function VicePrincipalDashboard() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: parentColors.background },
+  header: { backgroundColor: parentColors.blueDeep, paddingBottom: 20 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+    paddingHorizontal: 20,
+    paddingTop: 14,
+  },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1, minWidth: 0 },
+  badge: { width: 42, height: 42, borderRadius: 12, backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center' },
+  badgeText: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.blueDeep },
+  headerTitle: { color: '#fff', fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold' },
+  headerSubtitle: { color: 'rgba(255,255,255,0.75)', fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 1 },
+  bellWrap: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.16)', alignItems: 'center', justifyContent: 'center' },
   content: { padding: 16, paddingBottom: 32 },
-  greeting: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginBottom: 4 },
+  greetingCard: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 4,
+  },
+  avatar: { width: 44, height: 44, borderRadius: 22, backgroundColor: '#DBEAFE', alignItems: 'center', justifyContent: 'center' },
+  greetingName: { fontSize: 16.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  greetingMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.muted, marginTop: 2 },
   sectionHeaderRow: {
     marginTop: 20,
     marginBottom: 10,
@@ -314,4 +417,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   actionChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  signOutButton: {
+    marginTop: 26,
+    borderWidth: 1,
+    borderColor: parentColors.border,
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  signOutButtonText: { fontFamily: 'PlusJakartaSans_700Bold', fontSize: 15, color: parentColors.ink },
 });
