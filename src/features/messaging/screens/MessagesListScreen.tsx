@@ -6,7 +6,7 @@
 // or class advisor for that section -- the list already contains both, unpartitioned).
 
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ApiError } from '@/lib/api';
@@ -15,7 +15,7 @@ import { hasRole, useMe } from '@/hooks/useMe';
 import { GradientHeader } from '@/components/GradientHeader';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ScreenStates';
 import { ConversationRow } from '../components/ConversationRow';
-import { useConversations } from '../hooks';
+import { useConversations, useStartPrincipalConversation } from '../hooks';
 import type { ConversationSummary } from '../types';
 
 export function MessagesListScreen() {
@@ -24,7 +24,17 @@ export function MessagesListScreen() {
   const isFaculty = hasRole(me.data?.roles, 'FACULTY');
   const isPrincipal = hasRole(me.data?.roles, 'PRINCIPAL');
   const conversations = useConversations();
+  const startPrincipalConversation = useStartPrincipalConversation();
   const [query, setQuery] = useState('');
+
+  async function handleMessagePrincipal() {
+    try {
+      const conversation = await startPrincipalConversation.mutateAsync();
+      router.push(`/(protected)/my-class/messages/${conversation.id}` as never);
+    } catch (err) {
+      Alert.alert('Could not open conversation', err instanceof ApiError ? err.message : 'Please try again.');
+    }
+  }
 
   const trimmedQuery = query.trim().toLowerCase();
 
@@ -63,6 +73,19 @@ export function MessagesListScreen() {
         </Pressable>
       ) : null}
 
+      {isFaculty && !isPrincipal ? (
+        <Pressable
+          style={[styles.newMessageButton, startPrincipalConversation.isPending && styles.newMessageButtonDisabled]}
+          onPress={handleMessagePrincipal}
+          disabled={startPrincipalConversation.isPending}
+        >
+          <Ionicons name="add-circle" size={18} color={colors.white} />
+          <Text style={styles.newMessageButtonText}>
+            {startPrincipalConversation.isPending ? 'Opening…' : 'Message Principal'}
+          </Text>
+        </Pressable>
+      ) : null}
+
       {conversations.isLoading ? (
         <LoadingState />
       ) : conversations.isError ? (
@@ -88,7 +111,15 @@ export function MessagesListScreen() {
       ) : conversations.data && conversations.data.length > 0 ? (
         <EmptyState message="No matches." />
       ) : (
-        <EmptyState message={isPrincipal ? 'No conversations yet. Tap "New message" to start one.' : 'No conversations yet.'} />
+        <EmptyState
+          message={
+            isPrincipal
+              ? 'No conversations yet. Tap "New message" to start one.'
+              : isFaculty
+                ? 'No conversations yet. Tap "Message Principal" to start one.'
+                : 'No conversations yet.'
+          }
+        />
       )}
     </View>
   );
@@ -117,6 +148,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: accent.blue,
   },
+  newMessageButtonDisabled: { opacity: 0.6 },
   newMessageButtonText: { fontFamily: fonts.bold, fontSize: 14, color: colors.white },
   searchRow: {
     flexDirection: 'row',

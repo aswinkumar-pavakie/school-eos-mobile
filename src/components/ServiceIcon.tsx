@@ -5,7 +5,7 @@
 
 import Svg, { Path } from 'react-native-svg';
 
-const FRAMES: Record<string, string> = {
+const FRAMES = {
   messages: 'M4 5h16v11H4l-3 4z',
   consent: 'M6 3h12v18H6z',
   canteen: 'M4 20h16',
@@ -72,7 +72,7 @@ const FRAMES: Record<string, string> = {
   // roomBed, Library->library, Finance->fees, Communities->communityProfile,
   // Announcements->announcements, Reports->report, Audit Log->records,
   // Requests & Approvals->consent, Settings->settings, Attendance->
-  // attendance) -- these nine are for the genuinely new concepts only.
+  // attendance) -- these twelve are for the genuinely new concepts only.
   dashboard: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
   students: 'M12 4 2 9l10 5 8-4.2V15h1V9zM6 12.5V17c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5',
   parents: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM17 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM2 20c0-3.3 2.7-5 6-5s6 1.7 6 5M15 20c0-2.2 1.8-3.5 4-3.5s4 1.3 4 3.5',
@@ -82,9 +82,19 @@ const FRAMES: Record<string, string> = {
   maintenance: 'M14.7 6.3a4 4 0 1 1-5.4 5.4L4 17l3 3 5.3-5.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-2-2z',
   notifications: 'M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
   profile: 'M12 11.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5',
-};
+  // My Attendance -- a watch face (own original design, not the institutional
+  // "attendance" calendar-and-check tile), reading as "my own time record"
+  // rather than the school-wide attendance oversight tile above.
+  myAttendance: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 4v1M12 19v1M4 12h1M19 12h1',
+  // My Leave -- a briefcase (own original design, not the institutional
+  // "leave" door-and-arrow tile), reading as "my own time-off request".
+  myLeave: 'M4 8h16v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1zM9 8V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',
+  // My Day (Phase 30) -- a sunrise (own original design), reading as "today,
+  // at a glance", distinct from every other tile's box/badge/circle shapes.
+  myDay: 'M4 18h16M2 18a10 10 0 0 1 20 0M12 4v2M4.2 8.2l1.4 1.4M19.8 8.2l-1.4 1.4',
+} satisfies Record<string, string>;
 
-const ICONS: Record<string, string> = {
+const ICONS = {
   messages: 'M7 9h10M7 13h6',
   consent: 'M8 12l2.5 2.5L16 9',
   canteen: 'M8 4v7a2 2 0 0 0 4 0V4M16 4v16',
@@ -114,12 +124,17 @@ const ICONS: Record<string, string> = {
   records: 'M6 8h4M6 12h4M14 8h4M14 12h4',
   coordinator: 'M9 12l2 2 4-4',
   subjects: 'M12 5v13.5',
-};
+  myAttendance: 'M12 8v5l3 2',
+  myLeave: 'M4 13h16',
+} satisfies Record<string, string>;
 
 export type ServiceIconKey = keyof typeof ICONS | keyof typeof FRAMES;
 
+const framesByKey: Partial<Record<ServiceIconKey, string>> = FRAMES;
+const iconsByKey: Partial<Record<ServiceIconKey, string>> = ICONS;
+
 export function ServiceIcon({ name, color = '#fff', size = 26 }: { name: ServiceIconKey; color?: string; size?: number }) {
-  const d = [FRAMES[name], ICONS[name]].filter(Boolean).join(' ');
+  const d = [framesByKey[name], iconsByKey[name]].filter(Boolean).join(' ');
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.8} strokeLinecap="round">
       <Path d={d} />

@@ -62,6 +62,7 @@ export default function StudentProfileScreen() {
             <Text style={styles.sectionTitle}>ACADEMIC</Text>
             <DetailRow label="Class" value={student.gradeName ? `${student.gradeName}${student.sectionName ? ` · ${student.sectionName}` : ''}` : 'Not enrolled this year'} />
             <DetailRow label="Admission no." value={student.admissionNo} />
+            <DetailRow label="Roll no." value={student.rollNo !== null ? String(student.rollNo) : 'Not on record'} />
             <DetailRow label="EMIS / State student ID" value={student.stateStudentId ?? 'Not on record'} />
           </View>
 

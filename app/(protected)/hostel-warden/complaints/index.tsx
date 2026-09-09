@@ -163,7 +163,10 @@ function ReportIssueTab() {
 
 function HistoryTab() {
   const router = useRouter();
-  const listQuery = useQuery({ queryKey: COMPLAINTS_KEY, queryFn: listComplaints });
+  // Polls like the other approval screens (Gate Pass/Call/Emergency Exit) --
+  // Principal can decide a complaint at any time while the Warden already has
+  // this tab open.
+  const listQuery = useQuery({ queryKey: COMPLAINTS_KEY, queryFn: listComplaints, refetchInterval: 15_000 });
 
   return (
     <ScrollView

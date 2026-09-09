@@ -7,9 +7,14 @@
 // principal/index.tsx uses -- matches how every OTHER role's own launcher
 // with several items is already built in this app. Reuse is UI-only, this
 // file grants no permissions of its own; every screen it navigates to is
-// gated by this same VICE_PRINCIPAL-only layout. Every item below is a
-// placeholder entry point (see [section].tsx) except Dashboard/Students,
-// which now have real screens from Phase 3/4.
+// gated by this same VICE_PRINCIPAL-only layout. Every item below now has a
+// real screen (Phases 4-28, plus My Day in Phase 30), except Audit Log --
+// Phase 22 concluded no safe VP-scoped capability exists there, so it still
+// falls through to the generic [section].tsx placeholder, deliberately, not
+// an oversight. Dashboard was removed from here -- its real content now lives
+// on the shared Home tab itself (see app/(protected)/index.tsx +
+// VicePrincipalHome.tsx), so a separate "Dashboard" tile in this ERP menu
+// would just be a redundant second way to reach the exact same screen.
 
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
@@ -29,10 +34,6 @@ interface NavSection {
 }
 
 const SECTIONS: NavSection[] = [
-  {
-    title: 'MAIN',
-    items: [{ key: 'dashboard', label: 'Dashboard', slug: 'dashboard' }],
-  },
   {
     title: 'PEOPLE',
     items: [
@@ -87,6 +88,7 @@ const SECTIONS: NavSection[] = [
   {
     title: 'SYSTEM',
     items: [
+      { key: 'myDay', label: 'My Day', slug: 'my-day' },
       { key: 'notifications', label: 'Notifications', slug: 'notifications' },
       { key: 'myAttendance', label: 'My Attendance', slug: 'my-attendance' },
       { key: 'myLeave', label: 'My Leave', slug: 'my-leave' },

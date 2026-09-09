@@ -2,16 +2,19 @@
 // Home screen (see FacultyHome.tsx), pixel-matched to "ERP screen choice/
 // Faculty Module - 2"'s own Home screen. Community gets its own real Home
 // screen (see CommunityHome.tsx), resolved from the COMMUNITY-scoped role
-// assignment's own scope_id. Parent gets its own real Home screen (see
-// ParentHome.tsx), pixel-matched to "ERP screen design choice/School
+// assignment's own scope_id. Vice Principal gets its own real Home screen
+// (see VicePrincipalHome.tsx) -- the exact same leadership-dashboard content
+// that used to sit behind the ERP menu's own "Dashboard" tile, now shown
+// directly here instead (that tile was removed from vice-principal/index.tsx
+// since it would just duplicate this). Parent gets its own real Home screen
+// (see ParentHome.tsx), pixel-matched to "ERP screen design choice/School
 // App.dc.html"'s own HOME section -- child switcher, real Announcements, real
 // Media Room posts (ParentHome resolves the selected child itself via
 // useSelectedChild).
 //
-// Hostel Warden and Vice Principal share this same plain fallback Home tab --
-// each role's own operational launcher lives behind the ERP tab instead (see
-// hostel-warden/index.tsx and vice-principal/index.tsx), so Home just shows a
-// role-specific greeting + sign out for both.
+// Hostel Warden is the only role left on this plain fallback Home tab -- its
+// own operational launcher lives behind the ERP tab instead (see
+// hostel-warden/index.tsx), so Home just shows a plain greeting + sign out.
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -23,6 +26,7 @@ import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
 import { CommunityHome } from '@/components/community/CommunityHome';
+import { VicePrincipalHome } from '@/components/vice-principal/VicePrincipalHome';
 import { ParentHome } from '@/components/parent/ParentHome';
 import { parentColors } from '@/lib/theme';
 
@@ -69,11 +73,13 @@ export default function ProtectedHome() {
     }
   }
 
-  // Community is handled above (returns early when its scope resolves);
-  // Vice Principal gets the plain greeting fallback below, not Parent's own
-  // Home screen -- everyone else who isn't Hostel Warden or Vice Principal
-  // is Parent.
-  if (me && !isHostelWarden && !isVicePrincipal) {
+  if (me && isVicePrincipal) {
+    return <VicePrincipalHome personName={me.person.firstName} />;
+  }
+
+  // Community and Vice Principal are both handled above (returns early);
+  // everyone else who isn't Hostel Warden is Parent.
+  if (me && !isHostelWarden) {
     return <ParentHome />;
   }
 
@@ -87,11 +93,7 @@ export default function ProtectedHome() {
         ) : (
           <>
             <Text style={styles.title}>Hi, {me.person.firstName}</Text>
-            {isHostelWarden ? (
-              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
-            ) : (
-              <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your Vice Principal workspace.</Text>
-            )}
+            <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
           </>
         )}
 
