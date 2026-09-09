@@ -1,0 +1,2018 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; background:#FFFFFF; font-family:'Plus Jakarta Sans',system-ui,sans-serif; }
+  a { color:#1D4ED8; text-decoration:none; }
+  a:hover { color:#163FA8; }
+  *::-webkit-scrollbar { width:0; height:0; }
+</style>
+</helmet>
+
+<div style="minHeight:100vh;display:flex;alignItems:center;justifyContent:center;padding:24px">
+  <div style="width:390px;height:844px;borderRadius:38px;background:#FFFFFF;boxShadow:0 24px 60px rgba(15,27,51,.18);overflow:hidden;position:relative">
+
+    <div style="position:absolute;top:0;left:0;right:0;zIndex:5;background:linear-gradient(135deg,#2A62F0 0%,#1636A4 100%);borderRadius:0 0 22px 22px;padding:14px 18px 18px">
+      <div style="display:flex;justifyContent:space-between;alignItems:center;color:#fff;marginBottom:16px;position:relative;height:24px">
+        <span style="fontSize:15px;fontWeight:700;letterSpacing:-0.01em;fontFamily:-apple-system,BlinkMacSystemFont,'SF Pro Text',system-ui,sans-serif;minWidth:62px">9:41</span>
+        <div style="position:absolute;left:50%;top:-4px;transform:translateX(-50%);width:104px;height:30px;borderRadius:99px;background:#000;display:flex;alignItems:center;justifyContent:flex-end;paddingRight:9px">
+          <div style="width:9px;height:9px;borderRadius:50%;background:#1B2A47"></div>
+        </div>
+        <div style="display:flex;alignItems:center;gap:6px">
+          <svg width="18" height="12" viewBox="0 0 18 12" fill="#fff">
+            <rect x="0" y="8" width="3" height="4" rx="1"></rect>
+            <rect x="5" y="5.5" width="3" height="6.5" rx="1"></rect>
+            <rect x="10" y="3" width="3" height="9" rx="1"></rect>
+            <rect x="15" y="0" width="3" height="12" rx="1"></rect>
+          </svg>
+          <span style="fontSize:12px;fontWeight:700;letterSpacing:-0.01em">5G</span>
+          <div style="display:flex;alignItems:center;gap:2px;marginLeft:1px">
+            <div style="width:24px;height:12px;borderRadius:4px;border:1.4px solid rgba(255,255,255,.55);padding:1.6px"><div style="width:72%;height:100%;background:#fff;borderRadius:1.5px"></div></div>
+            <div style="width:1.6px;height:4.5px;borderRadius:0 1px 1px 0;background:rgba(255,255,255,.55)"></div>
+          </div>
+        </div>
+      </div>
+
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;alignItems:center;gap:12px">
+          <div style="width:40px;height:40px;borderRadius:12px;background:#fff;display:flex;alignItems:center;justifyContent:center;fontSize:15px;fontWeight:800;color:#1636A4">PP</div>
+          <div style="flex:1;color:#fff;fontSize:16px;fontWeight:700;lineHeight:1.25">Pavakie Public School</div>
+          <div onClick="{{ goNotices }}" style="width:36px;height:36px;borderRadius:50%;background:rgba(255,255,255,.18);display:flex;alignItems:center;justifyContent:center;position:relative;cursor:pointer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"></path><path d="M10 19a2 2 0 0 0 4 0"></path></svg>
+            <div style="position:absolute;top:7px;right:8px;width:7px;height:7px;borderRadius:50%;background:#E8A33D;border:1.5px solid #2A62F0"></div>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ notHome }}">
+        <div style="display:flex;alignItems:center;gap:14px">
+          <div onClick="{{ back }}" style="width:44px;height:44px;borderRadius:14px;background:rgba(255,255,255,.2);display:flex;alignItems:center;justifyContent:center;cursor:pointer;flexShrink:0">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M14 6l-6 6 6 6"></path></svg>
+          </div>
+          <div style="flex:1">
+            <div style="color:#fff;fontSize:21px;fontWeight:800">{{ title }}</div>
+            <div style="color:rgba(255,255,255,.78);fontSize:13px;fontWeight:600;marginTop:2px">{{ subtitle }}</div>
+          </div>
+        </div>
+      </sc-if>
+    </div>
+
+    <div style="position:absolute;top:106px;bottom:74px;left:0;right:0;overflowY:auto;scrollbarWidth:none;msOverflowStyle:none">
+
+      <!-- HOME -->
+      <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+        <div style="padding:6px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="display:flex;alignItems:center;gap:12px">
+            <div onClick="{{ goProfile }}" style="width:46px;height:46px;borderRadius:50%;overflow:hidden;border:2px solid #2A62F0;flexShrink:0;cursor:pointer;background:#E6EDFD">
+              <img src="uploads/pasted-1788499697023-0.png" alt="Student photo" style="width:100%;height:100%;objectFit:cover;transform:scale(2.7);transformOrigin:50% 30%">
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:19px;fontWeight:800;color:#1D4ED8">Hi, {{ studentName }}</div>
+              <div style="fontSize:12px;color:#7C8DA6;fontWeight:600;marginTop:2px">Class 8 · Section B · Roll 24</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+          </div>
+
+          <div style="display:grid;gridTemplateColumns:1fr 1fr 1fr;gap:10px">
+            <div onClick="{{ goAttendance }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:14px;padding:13px 12px;cursor:pointer">
+              <div style="fontSize:10.5px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">ATTENDANCE</div>
+              <div style="fontSize:20px;fontWeight:800;color:#1D4ED8;marginTop:6px">{{ attendancePercent }}%</div>
+            </div>
+            <div onClick="{{ goFees }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:14px;padding:13px 12px;cursor:pointer">
+              <div style="fontSize:10.5px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">FEE DUE</div>
+              <div style="fontSize:20px;fontWeight:800;color:#9A6316;marginTop:6px">₹24k</div>
+            </div>
+            <div onClick="{{ goHomework }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:14px;padding:13px 12px;cursor:pointer">
+              <div style="fontSize:10.5px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">HOMEWORK</div>
+              <div style="fontSize:20px;fontWeight:800;color:#0F1B33;marginTop:6px">3</div>
+            </div>
+          </div>
+
+          <div style="display:flex;alignItems:center;justifyContent:space-between;marginTop:2px">
+            <div style="display:flex;alignItems:center;gap:9px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F1B33" stroke-width="1.9"><path d="M3 11v3l10 4V7z"></path><path d="M13 9h4a3 3 0 0 1 0 6h-4"></path></svg>
+              <span style="fontSize:17px;fontWeight:800;color:#0F1B33">Announcements</span>
+            </div>
+            <span onClick="{{ goNotices }}" style="fontSize:13px;fontWeight:700;color:#1D4ED8;cursor:pointer">View All</span>
+          </div>
+
+          <div onClick="{{ goNotices }}" style="background:#E6EDFD;borderRadius:16px;padding:18px;display:flex;alignItems:center;gap:12px;cursor:pointer">
+            <div style="flex:1">
+              <div style="fontSize:19px;fontWeight:800;color:#0F1B33">Annual Day rehearsals</div>
+              <div style="fontSize:13px;color:#5B6B85;marginTop:4px">Grades 6–10 · Auditorium, 3 PM</div>
+              <div style="fontSize:12px;color:#8494AB;marginTop:8px">2d ago</div>
+            </div>
+            <div style="width:38px;height:38px;borderRadius:50%;background:#CFDDFB;display:flex;alignItems:center;justifyContent:center">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4"><path d="M9 6l6 6-6 6"></path></svg>
+            </div>
+          </div>
+
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:16px">
+            <div style="display:flex;alignItems:center;gap:10px">
+              <div style="width:34px;height:34px;borderRadius:50%;border:1px solid #E8EDF5;display:flex;alignItems:center;justifyContent:center;fontSize:11px;fontWeight:800;color:#1636A4">PP</div>
+              <div style="flex:1">
+                <div style="fontSize:14px;fontWeight:800;color:#0F1B33">Principal's Office</div>
+                <div style="fontSize:12px;color:#8494AB">Notice · 2 Sept 2026</div>
+              </div>
+              <div style="background:#E4F5EA;color:#1B7F45;fontSize:11px;fontWeight:700;padding:5px 10px;borderRadius:99px">Notice</div>
+            </div>
+            <div style="fontSize:15px;fontWeight:800;color:#0F1B33;marginTop:14px;lineHeight:1.35">Parent–Teacher Meeting · 12 September</div>
+            <div style="fontSize:13.5px;color:#41526E;marginTop:10px;lineHeight:1.55;textWrap:pretty">Slots open from Monday in the Fees &amp; Meetings section. Class teachers will share Term 1 report cards during the meeting.</div>
+            <div style="fontSize:13.5px;color:#41526E;marginTop:10px;lineHeight:1.55;textWrap:pretty">Grades 1–5: 9:00 AM – 11:30 AM. Grades 6–10: 12:00 PM – 3:00 PM. Please carry the school diary.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- SERVICES -->
+      <sc-if value="{{ isServices }}">
+        <div style="padding:20px 20px 24px;background:#fff;minHeight:100%">
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Quick access</div>
+          <div style="display:grid;gridTemplateColumns:repeat(4,1fr);gap:20px 8px;marginTop:16px">
+            <sc-for list="{{ quick }}" as="it" hint-placeholder-count="4">
+              <div onClick="{{ it.go }}" style="display:flex;flexDirection:column;alignItems:center;gap:9px;cursor:pointer">
+                <div style="width:62px;height:62px;borderRadius:50%;background:#2A62F0;display:flex;alignItems:center;justifyContent:center">{{ it.svg }}</div>
+                <span style="fontSize:12.5px;fontWeight:600;color:#0F1B33;textAlign:center;lineHeight:1.25">{{ it.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase;marginTop:30px">Campus</div>
+          <div style="display:grid;gridTemplateColumns:repeat(4,1fr);gap:22px 8px;marginTop:16px">
+            <sc-for list="{{ campusItems }}" as="it" hint-placeholder-count="5">
+              <div onClick="{{ it.go }}" style="display:flex;flexDirection:column;alignItems:center;gap:9px;cursor:pointer">
+                <div style="width:62px;height:62px;borderRadius:50%;background:#2A62F0;display:flex;alignItems:center;justifyContent:center">{{ it.svg }}</div>
+                <span style="fontSize:12.5px;fontWeight:600;color:#0F1B33;textAlign:center;lineHeight:1.25">{{ it.label }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- ATTENDANCE -->
+      <sc-if value="{{ isAttendance }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="background:#fff;borderRadius:18px;padding:20px;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div style="display:flex;alignItems:center;justifyContent:space-between">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <span style="fontSize:38px;fontWeight:800;color:#1D4ED8;letterSpacing:-0.02em">{{ attendancePercent }}%</span>
+              </div>
+              <div style="textAlign:right">
+                <div style="fontSize:20px;fontWeight:800;color:#0F1B33">86<span style="fontSize:14px;color:#8494AB;fontWeight:700"> / 92</span></div>
+                <div style="fontSize:12px;color:#8494AB;fontWeight:600">days present</div>
+              </div>
+            </div>
+            <div style="fontSize:13.5px;color:#5B6B85;marginTop:12px">Term 1 · 12 Jun – 3 Sept</div>
+            <div style="height:10px;borderRadius:99px;background:#EDF0F5;marginTop:12px;display:flex;alignItems:center;overflow:hidden">
+              <div style="width:88%;height:100%;background:#1D4ED8;borderRadius:99px"></div>
+              <div style="width:3px;height:100%;background:#fff"></div>
+              <div style="width:6px;height:100%;background:#E8A33D"></div>
+            </div>
+            <div style="fontSize:12.5px;color:#8494AB;marginTop:10px">Marker shows the 85% requirement</div>
+          </div>
+
+          <div style="background:#fff;borderRadius:18px;padding:18px 16px;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div style="display:flex;alignItems:center;justifyContent:space-between">
+              <div onClick="{{ attPrev }}" style="width:34px;height:34px;borderRadius:50%;background:#EFF3FA;display:flex;alignItems:center;justifyContent:center;cursor:pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4"><path d="M14 6l-6 6 6 6"></path></svg>
+              </div>
+              <div style="textAlign:center">
+                <div style="fontSize:19px;fontWeight:800;color:#0F1B33">{{ attLabel }}</div>
+                <div style="fontSize:11.5px;fontWeight:700;color:#8494AB;marginTop:3px">{{ attPresent }} / {{ attTotal }} days present</div>
+              </div>
+              <div onClick="{{ attNext }}" style="width:34px;height:34px;borderRadius:50%;background:#EFF3FA;display:flex;alignItems:center;justifyContent:center;cursor:pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4"><path d="M10 6l6 6-6 6"></path></svg>
+              </div>
+            </div>
+            <div style="display:grid;gridTemplateColumns:repeat(7,1fr);gap:6px;marginTop:16px;textAlign:center;fontSize:12px;fontWeight:700;color:#A3AFC0">
+              <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+            </div>
+            <div style="display:grid;gridTemplateColumns:repeat(7,1fr);gap:6px;marginTop:8px;textAlign:center;fontSize:14px;fontWeight:700;color:#41526E">
+              <sc-for list="{{ attCells }}" as="c" hint-placeholder-count="33">
+                <div onClick="{{ c.pick }}" style="{{ c.style }}">{{ c.label }}</div>
+              </sc-for>
+            </div>
+            <div style="fontSize:12.5px;color:#41526E;fontWeight:600;textAlign:center;marginTop:12px">{{ attDayNote }}</div>
+            <div style="borderTop:1px solid #EDF0F5;marginTop:16px;paddingTop:14px;display:flex;justifyContent:center;gap:18px;fontSize:13px;fontWeight:600;color:#41526E">
+              <div style="display:flex;alignItems:center;gap:7px"><div style="width:16px;height:16px;borderRadius:5px;background:#EFF3FA;border:1px solid #DFE6F1"></div>Present</div>
+              <div style="display:flex;alignItems:center;gap:7px"><div style="width:16px;height:16px;borderRadius:5px;background:#1D4ED8"></div>Absent</div>
+              <div style="display:flex;alignItems:center;gap:7px"><div style="width:16px;height:16px;borderRadius:5px;background:#F7F9FC;border:1px solid #EDF0F5"></div>Holiday</div>
+            </div>
+          </div>
+          <div style="fontSize:12.5px;color:#8494AB;textAlign:center;padding:0 12px">85% attendance is required to appear for the term examinations.</div>
+        </div>
+      </sc-if>
+
+      <!-- REPORT CARD -->
+      <sc-if value="{{ isReport }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div style="fontSize:13px;color:#8494AB;fontWeight:600">Academic year</div>
+            <div onClick="{{ cycleTerm }}" style="border:1px solid #E3E9F3;borderRadius:12px;padding:14px 16px;marginTop:8px;display:flex;alignItems:center;justifyContent:space-between;cursor:pointer">
+              <span style="fontSize:15px;fontWeight:700;color:#0F1B33;whiteSpace:nowrap">{{ termLabel }}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+            </div>
+            <sc-if value="{{ termOpen }}">
+              <div style="border:1px solid #E3E9F3;borderRadius:12px;marginTop:8px;overflow:hidden;boxShadow:0 6px 18px rgba(15,27,51,.08)">
+                <sc-for list="{{ termOptions }}" as="o" hint-placeholder-count="3">
+                  <div onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="display:grid;gridTemplateColumns:1fr 1fr;gap:10px;marginTop:14px">
+              <div onClick="{{ pickUnit }}" style="{{ unitStyle }}">Mid term</div>
+              <div onClick="{{ pickTerm }}" style="{{ termStyle }}">Term exam</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);display:flex;alignItems:baseline;justifyContent:space-between">
+            <div>
+              <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#8494AB;textTransform:uppercase">Overall</div>
+              <div style="fontSize:34px;fontWeight:800;color:#0F1B33;marginTop:4px;letterSpacing:-0.02em">{{ overall }}<span style="fontSize:16px;color:#8494AB">%</span></div>
+            </div>
+            <div style="textAlign:right">
+              <div style="background:#E4F5EA;color:#1B7F45;fontSize:13.5px;fontWeight:800;padding:8px 13px;borderRadius:99px;whiteSpace:nowrap">{{ overallGrade }}</div>
+              <div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:8px">{{ overallRank }}</div>
+            </div>
+          </div>
+
+          <div style="background:#fff;borderRadius:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);overflow:hidden">
+            <sc-for list="{{ marks }}" as="m" hint-placeholder-count="5">
+              <div style="display:flex;alignItems:center;justifyContent:space-between;padding:13px 16px;borderBottom:1px solid #EDF0F5">
+                <div style="display:flex;alignItems:center;gap:12px">
+                  <div style="width:42px;height:42px;borderRadius:12px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:13px;fontWeight:800;color:#1D4ED8">{{ m.code }}</div>
+                  <div>
+                    <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ m.name }}</div>
+                    <div style="fontSize:12px;color:#8494AB;fontWeight:600">{{ m.teacher }}</div>
+                  </div>
+                </div>
+                <div style="textAlign:right">
+                  <div style="fontSize:16px;fontWeight:800;color:#0F1B33">{{ m.score }}<span style="fontSize:12px;color:#8494AB">/100</span></div>
+                  <div style="fontSize:12px;fontWeight:700;color:#1B7F45">{{ m.grade }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#E6EDFD;borderRadius:16px;padding:16px 18px">
+            <div style="fontSize:13.5px;fontWeight:800;color:#1D4ED8">Class teacher's remark</div>
+            <div style="fontSize:13.5px;color:#41526E;marginTop:8px;lineHeight:1.55;textWrap:pretty">Consistent work in Science and English. Needs steadier revision in Social Science before the term exam.</div>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- FEES -->
+      <sc-if value="{{ isFees }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div style="fontSize:13px;color:#8494AB;fontWeight:600">Term</div>
+            <div onClick="{{ toggleFeeTerm }}" style="border:1px solid #E3E9F3;borderRadius:12px;padding:14px 16px;marginTop:8px;display:flex;alignItems:center;justifyContent:space-between;cursor:pointer">
+              <span style="fontSize:15px;fontWeight:700;color:#0F1B33;whiteSpace:nowrap">{{ feeTermLabel }}</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2"><path d="M6 9l6 6 6-6"></path></svg>
+            </div>
+            <sc-if value="{{ feeTermOpen }}">
+              <div style="border:1px solid #E3E9F3;borderRadius:12px;marginTop:8px;overflow:hidden;boxShadow:0 6px 18px rgba(15,27,51,.08)">
+                <sc-for list="{{ feeTermOptions }}" as="o" hint-placeholder-count="3">
+                  <div onClick="{{ o.pick }}" style="{{ o.style }}">{{ o.label }}</div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <div style="borderTop:1px solid #EDF0F5;marginTop:16px;paddingTop:16px;display:flex;justifyContent:space-between">
+              <div><div style="fontSize:18px;fontWeight:800;color:#0F1B33">{{ totalPayable }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:3px">Total payable</div></div>
+              <div style="textAlign:center"><div style="fontSize:18px;fontWeight:800;color:#1D4ED8">{{ paidTotal }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:3px">Paid</div></div>
+              <div style="textAlign:right"><div style="fontSize:18px;fontWeight:800;color:#0F1B33">{{ outstanding }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:3px">Outstanding</div></div>
+            </div>
+          </div>
+
+          <div style="background:#E8EBF1;borderRadius:14px;padding:5px;display:grid;gridTemplateColumns:1fr 1fr">
+            <div onClick="{{ feeTabPay }}" style="{{ feePayStyle }}">Pay fees</div>
+            <div onClick="{{ feeTabHistory }}" style="{{ feeHistoryStyle }}">Payment history</div>
+          </div>
+
+          <sc-if value="{{ isFeeHistory }}">
+            <div style="background:#fff;borderRadius:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);overflow:hidden">
+              <sc-for list="{{ payHistory }}" as="p" hint-placeholder-count="3">
+                <div style="display:flex;alignItems:center;justifyContent:space-between;padding:15px 16px;borderBottom:1px solid #EDF0F5">
+                  <div style="flex:1">
+                    <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ p.label }}</div>
+                    <div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:3px">{{ p.meta }}</div>
+                    <div style="fontSize:11.5px;color:#A3AFC0;fontWeight:600;marginTop:3px">{{ p.ref }}</div>
+                  </div>
+                  <div style="display:flex;flexDirection:column;alignItems:flex-end;gap:9px">
+                    <div style="fontSize:15px;fontWeight:800;color:#1B7F45">{{ p.amount }}</div>
+                    <div onClick="{{ p.download }}" style="{{ p.dlStyle }}">{{ p.dlLabel }}</div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isFeePay }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flexDirection:column;gap:14px">
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div style="display:flex;alignItems:flex-start;gap:12px">
+              <sc-if value="{{ tuitionOpen }}" hint-placeholder-val="{{ true }}">
+                <div onClick="{{ toggleTuition }}" style="{{ tuitionBox }}">
+                  <sc-if value="{{ tuitionCheck }}">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5L19 7"></path></svg>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <sc-if value="{{ tuitionDone }}">
+                <div style="width:22px;height:22px;borderRadius:50%;background:#E4F5EA;display:flex;alignItems:center;justifyContent:center;marginTop:2px;flexShrink:0">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1B7F45" stroke-width="3"><path d="M5 12l5 5L19 7"></path></svg>
+                </div>
+              </sc-if>
+              <div style="flex:1">
+                <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Tuition · Term 2</div>
+                <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Due 15 Sept 2026</div>
+              </div>
+              <div style="{{ tuitionStatusStyle }}">{{ tuitionStatus }}</div>
+            </div>
+            <div style="display:grid;gridTemplateColumns:1fr 1fr 1fr;gap:8px;marginTop:16px">
+              <div><div style="fontSize:11px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">TOTAL</div><div style="fontSize:16px;fontWeight:800;color:#0F1B33;marginTop:5px">₹24,000</div></div>
+              <div style="background:#F7F9FC;borderRadius:10px;padding:8px 10px"><div style="fontSize:11px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">PAID</div><div style="fontSize:16px;fontWeight:800;color:#0F1B33;marginTop:5px">{{ tuitionPaidAmt }}</div></div>
+              <div style="background:#EFF4FE;borderRadius:10px;padding:8px 10px"><div style="fontSize:11px;fontWeight:800;color:#8DA6E4;letterSpacing:0.08em">DUE</div><div style="fontSize:16px;fontWeight:800;color:#1D4ED8;marginTop:5px">{{ tuitionDueAmt }}</div></div>
+            </div>
+          </div>
+
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);display:flex;alignItems:flex-start;gap:12px">
+            <sc-if value="{{ transportOpen }}" hint-placeholder-val="{{ true }}">
+              <div onClick="{{ toggleTransport }}" style="{{ transportBox }}">
+                <sc-if value="{{ transportCheck }}">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5L19 7"></path></svg>
+                </sc-if>
+              </div>
+            </sc-if>
+            <sc-if value="{{ transportDone }}">
+              <div style="width:22px;height:22px;borderRadius:50%;background:#E4F5EA;display:flex;alignItems:center;justifyContent:center;marginTop:2px;flexShrink:0">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1B7F45" stroke-width="3"><path d="M5 12l5 5L19 7"></path></svg>
+              </div>
+            </sc-if>
+            <div style="flex:1">
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Transport · Route 7</div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Due 15 Sept 2026</div>
+            </div>
+            <div style="fontSize:16px;fontWeight:800;color:#0F1B33">₹6,000</div>
+            <sc-if value="{{ transportDone }}">
+              <div style="{{ transportStatusStyle }}">Paid</div>
+            </sc-if>
+          </div>
+
+          <sc-if value="{{ anyDue }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);display:flex;alignItems:center;justifyContent:space-between">
+            <div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600">Paying now</div>
+              <div style="fontSize:24px;fontWeight:800;color:#1D4ED8;marginTop:4px">{{ payingNow }}</div>
+            </div>
+            <div onClick="{{ payNow }}" style="{{ payBtnStyle }}">Pay now</div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ allPaid }}">
+            <div style="background:#E4F5EA;borderRadius:18px;padding:18px;display:flex;alignItems:center;gap:12px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B7F45" stroke-width="2.6"><path d="M5 12l5 5L19 7"></path></svg>
+              <div style="fontSize:15px;fontWeight:800;color:#1B7F45">All fees paid for this term</div>
+            </div>
+          </sc-if>
+          </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- PAYMENT GATEWAY -->
+      <sc-if value="{{ isPayment }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="background:#fff;borderRadius:18px;padding:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);display:flex;alignItems:center;justifyContent:space-between">
+            <div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600">Amount payable</div>
+              <div style="fontSize:28px;fontWeight:800;color:#0F1B33;marginTop:4px;letterSpacing:-0.02em">{{ payAmount }}</div>
+            </div>
+            <div style="display:flex;alignItems:center;gap:6px;background:#E4F5EA;color:#1B7F45;fontSize:12px;fontWeight:800;padding:7px 12px;borderRadius:99px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1B7F45" stroke-width="2.4"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+              Secure
+            </div>
+          </div>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#8494AB;textTransform:uppercase;marginLeft:2px">Payment method</div>
+          <div style="background:#fff;borderRadius:18px;boxShadow:0 2px 10px rgba(15,27,51,.05);overflow:hidden">
+            <sc-for list="{{ payMethods }}" as="m" hint-placeholder-count="4">
+              <div onClick="{{ m.pick }}" style="{{ m.style }}">
+                <div style="{{ m.dot }}"><div style="{{ m.inner }}"></div></div>
+                <div style="flex:1">
+                  <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ m.label }}</div>
+                  <div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:2px">{{ m.meta }}</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div onClick="{{ confirmPay }}" style="background:#2A62F0;color:#fff;fontSize:16px;fontWeight:800;padding:17px 0;borderRadius:14px;textAlign:center;cursor:pointer">Pay {{ payAmount }}</div>
+          <div style="fontSize:12px;color:#8494AB;textAlign:center;padding:0 16px">Payments are processed by the school's authorised gateway. A receipt is issued to the registered email.</div>
+        </div>
+      </sc-if>
+
+      <!-- LEAVE -->
+      <sc-if value="{{ isLeave }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#fff;borderRadius:14px;padding:5px;display:grid;gridTemplateColumns:1fr 1fr;boxShadow:0 2px 10px rgba(15,27,51,.05)">
+            <div onClick="{{ leaveTabApply }}" style="{{ leaveApplyStyle }}">Apply</div>
+            <div onClick="{{ leaveTabHistory }}" style="{{ leaveHistoryStyle }}">History</div>
+          </div>
+
+          <sc-if value="{{ isLeaveApply }}" hint-placeholder-val="{{ true }}">
+          <div style="background:#fff;borderRadius:18px;padding:15px;boxShadow:0 2px 10px rgba(15,27,51,.05);display:flex;flexDirection:column;gap:13px">
+            <div style="display:grid;gridTemplateColumns:1fr 1fr;gap:12px">
+              <div>
+                <div style="fontSize:13.5px;fontWeight:700;color:#0F1B33;marginBottom:8px">From date</div>
+                <div style="border:1px solid #E3E9F3;borderRadius:12px;padding:13px 12px;display:flex;alignItems:center;gap:9px;background:#FAFBFE">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B8BEE" stroke-width="1.9"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+                  <span style="fontSize:14px;color:#41526E;fontWeight:700">8 Sept</span>
+                </div>
+              </div>
+              <div>
+                <div style="fontSize:13.5px;fontWeight:700;color:#0F1B33;marginBottom:8px">To date</div>
+                <div style="border:1px solid #E3E9F3;borderRadius:12px;padding:13px 12px;display:flex;alignItems:center;gap:9px;background:#FAFBFE">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5B8BEE" stroke-width="1.9"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+                  <span style="fontSize:14px;color:#41526E;fontWeight:700">9 Sept</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="fontSize:13.5px;fontWeight:700;color:#0F1B33;marginBottom:8px">Reason (64/200)</div>
+              <div style="border:1px solid #E3E9F3;borderRadius:12px;background:#FAFBFE;padding:14px;height:76px;fontSize:14px;color:#41526E;fontWeight:600;lineHeight:1.5">Viral fever, advised two days of rest by the family doctor.</div>
+            </div>
+            <div style="border:1px solid #E3E9F3;borderRadius:14px;padding:16px;display:flex;gap:12px">
+              <div style="width:22px;height:22px;borderRadius:6px;border:1.8px solid #1D4ED8;background:#1D4ED8;flexShrink:0;marginTop:1px;display:flex;alignItems:center;justifyContent:center">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><path d="M5 12l5 5L19 7"></path></svg>
+              </div>
+              <div>
+                <div style="fontSize:14.5px;fontWeight:800;color:#0F1B33">Also skip school transport</div>
+                <div style="fontSize:13px;color:#8494AB;marginTop:5px;lineHeight:1.5;textWrap:pretty">Bus will not stop for these days — the driver and class teacher are informed.</div>
+              </div>
+            </div>
+            <div style="border:1.5px dashed #A9C2F5;borderRadius:12px;padding:14px 0;display:flex;alignItems:center;justifyContent:center;gap:10px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A62F0" stroke-width="1.9"><path d="M12 16V8M9 11l3-3 3 3"></path><path d="M20 16.6A3.5 3.5 0 0 0 18 10a6 6 0 0 0-11.6 1.5A3.5 3.5 0 0 0 6 18"></path></svg>
+              <span style="fontSize:14px;fontWeight:700;color:#2A62F0;whiteSpace:nowrap">medical-note.pdf · attached</span>
+            </div>
+            <div onClick="{{ submitLeave }}" style="background:#2A62F0;borderRadius:14px;padding:16px 0;textAlign:center;color:#fff;fontSize:17px;fontWeight:800;cursor:pointer">Submit request</div>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ isLeaveHistory }}">
+          <div style="display:flex;flexDirection:column;gap:12px">
+            <sc-if value="{{ leaveSent }}">
+              <div style="background:#E4F5EA;borderRadius:14px;padding:14px 16px;display:flex;alignItems:center;gap:10px">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B7F45" stroke-width="2.6"><path d="M5 12l5 5L19 7"></path></svg>
+                <div style="fontSize:13.5px;fontWeight:800;color:#1B7F45">Request sent to the class teacher</div>
+              </div>
+            </sc-if>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase;marginTop:4px">Recent requests</div>
+          <sc-for list="{{ leaves }}" as="l" hint-placeholder-count="3">
+            <div style="background:#fff;borderRadius:14px;border:1px solid #E8EDF5;padding:14px 16px;display:flex;alignItems:center;gap:14px">
+              <div style="flex:1">
+                <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ l.dates }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ l.reason }}</div>
+              </div>
+              <div style="background:{{ l.bg }};color:{{ l.fg }};fontSize:12px;fontWeight:700;padding:6px 12px;borderRadius:99px;whiteSpace:nowrap">{{ l.status }}</div>
+            </div>
+          </sc-for>
+          </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ONLINE CLASS -->
+      <sc-if value="{{ isOnlineClass }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <sc-if value="{{ inClass }}">
+            <div style="background:#0F1B33;borderRadius:18px;padding:18px;display:flex;alignItems:center;gap:14px">
+              <div style="width:10px;height:10px;borderRadius:50%;background:#4ADE80;flexShrink:0"></div>
+              <div style="flex:1">
+                <div style="fontSize:16px;fontWeight:800;color:#fff">{{ activeSubject }} · in class</div>
+                <div style="fontSize:12.5px;color:rgba(255,255,255,.7);fontWeight:600;marginTop:3px">{{ activeTeacher }}</div>
+                <div style="fontSize:11.5px;color:rgba(255,255,255,.55);fontWeight:600;marginTop:3px">{{ activeCode }}</div>
+              </div>
+              <div onClick="{{ leaveClass }}" style="background:#B3261E;color:#fff;borderRadius:11px;padding:10px 16px;fontSize:13.5px;fontWeight:800;cursor:pointer;whiteSpace:nowrap">Leave</div>
+            </div>
+          </sc-if>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase;marginLeft:2px">Today's sessions</div>
+          <sc-for list="{{ liveClasses }}" as="c" hint-placeholder-count="3">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ c.subject }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ c.teacher }} · {{ c.time }}</div>
+                </div>
+                <div style="{{ c.stateStyle }}">{{ c.state }}</div>
+              </div>
+              <div style="fontSize:13.5px;color:#41526E;marginTop:9px;textWrap:pretty">{{ c.topic }}</div>
+              <div style="display:flex;alignItems:center;justifyContent:space-between;marginTop:13px;paddingTop:13px;borderTop:1px solid #EDF0F5">
+                <div style="fontSize:12px;color:#A3AFC0;fontWeight:600">{{ c.code }}</div>
+                <div onClick="{{ c.join }}" style="{{ c.btnStyle }}">{{ c.label }}</div>
+              </div>
+            </div>
+          </sc-for>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase;marginLeft:2px;marginTop:4px">Recordings</div>
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;overflow:hidden">
+            <sc-for list="{{ recordings }}" as="r" hint-placeholder-count="3">
+              <div>
+                <div onClick="{{ r.watch }}" style="display:flex;alignItems:center;gap:12px;padding:14px 16px;borderBottom:1px solid #EDF0F5;cursor:pointer">
+                  <div style="width:34px;height:34px;borderRadius:10px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;flexShrink:0">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="#1D4ED8" stroke="none"><path d="M9 7l9 5-9 5z"></path></svg>
+                  </div>
+                  <div style="flex:1">
+                    <div style="fontSize:14.5px;fontWeight:800;color:#0F1B33">{{ r.subject }} · {{ r.topic }}</div>
+                    <div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:3px">{{ r.meta }}</div>
+                  </div>
+                  <div style="{{ r.labelStyle }}">{{ r.label }}</div>
+                </div>
+                <sc-if value="{{ r.playing }}">
+                  <div style="background:#0F1B33;padding:16px;borderBottom:1px solid #EDF0F5">
+                    <div style="height:96px;borderRadius:10px;background:#1B2A47;display:flex;alignItems:center;justifyContent:center">
+                      <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 6h3v12H8zM13 6h3v12h-3z"></path></svg>
+                    </div>
+                    <div style="display:flex;alignItems:center;gap:10px;marginTop:12px">
+                      <div style="fontSize:11.5px;color:rgba(255,255,255,.7);fontWeight:700">04:12</div>
+                      <div style="flex:1;height:4px;borderRadius:99px;background:rgba(255,255,255,.2)">
+                        <div style="width:28%;height:4px;borderRadius:99px;background:#4ADE80"></div>
+                      </div>
+                      <div style="fontSize:11.5px;color:rgba(255,255,255,.7);fontWeight:700">{{ r.meta }}</div>
+                      <div onClick="{{ toggleFullscreen }}" style="display:flex;alignItems:center;justifyContent:center;width:26px;height:26px;borderRadius:8px;background:rgba(255,255,255,.14);cursor:pointer" title="Full screen">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg>
+                      </div>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ fullscreenOpen }}">
+            <div style="position:absolute;inset:0;zIndex:40;background:#000;display:flex;alignItems:center;justifyContent:center">
+              <div style="transform:rotate(90deg);width:640px;height:360px;display:flex;flexDirection:column;background:#000;padding:14px 18px;boxSizing:border-box">
+                <div style="display:flex;alignItems:center;justifyContent:space-between;color:#fff">
+                  <div>
+                    <div style="fontSize:15px;fontWeight:800">{{ fsTitle }}</div>
+                    <div style="fontSize:11.5px;color:rgba(255,255,255,.6);fontWeight:600;marginTop:2px">{{ fsMeta }}</div>
+                  </div>
+                  <div onClick="{{ toggleFullscreen }}" style="display:flex;alignItems:center;justifyContent:center;width:30px;height:30px;borderRadius:9px;background:rgba(255,255,255,.14);cursor:pointer">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"></path></svg>
+                  </div>
+                </div>
+                <div style="flex:1;marginTop:12px;borderRadius:10px;background:#1B2A47;display:flex;alignItems:center;justifyContent:center">
+                  <svg width="34" height="34" viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M8 6h3v12H8zM13 6h3v12h-3z"></path></svg>
+                </div>
+                <div style="display:flex;alignItems:center;gap:12px;marginTop:12px">
+                  <div style="fontSize:11.5px;color:rgba(255,255,255,.7);fontWeight:700">04:12</div>
+                  <div style="flex:1;height:4px;borderRadius:99px;background:rgba(255,255,255,.2)">
+                    <div style="width:28%;height:4px;borderRadius:99px;background:#4ADE80"></div>
+                  </div>
+                  <div style="fontSize:11.5px;color:rgba(255,255,255,.7);fontWeight:700">{{ fsMeta }}</div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- ACADEMICS HUB -->
+      <sc-if value="{{ isAcademics }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div onClick="{{ goTerm }}" style="background:#fff;borderRadius:18px;border:1px solid #E8EDF5;padding:18px;display:flex;alignItems:center;gap:16px;cursor:pointer">
+            <div style="width:52px;height:52px;borderRadius:16px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center;flexShrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M8 9h8M8 13h5"></path></svg>
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Current term</div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Homework and assignments, subject-wise</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+          </div>
+          <div onClick="{{ goTimetable }}" style="background:#fff;borderRadius:18px;border:1px solid #E8EDF5;padding:18px;display:flex;alignItems:center;gap:16px;cursor:pointer">
+            <div style="width:52px;height:52px;borderRadius:16px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center;flexShrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Timetable</div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Periods for every day of the week</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+          </div>
+          <div onClick="{{ goOnlineClass }}" style="background:#fff;borderRadius:18px;border:1px solid #E8EDF5;padding:18px;display:flex;alignItems:center;gap:16px;cursor:pointer">
+            <div style="width:52px;height:52px;borderRadius:16px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center;flexShrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M10 9.5l4.5 2.5-4.5 2.5z" fill="#fff" stroke="none"></path></svg>
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Online class</div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Live sessions and recordings</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+          </div>
+          <div onClick="{{ goCalendar }}" style="background:#fff;borderRadius:18px;border:1px solid #E8EDF5;padding:18px;display:flex;alignItems:center;gap:16px;cursor:pointer">
+            <div style="width:52px;height:52px;borderRadius:16px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center;flexShrink:0">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M8 3v4M16 3v4M3 10h18"></path></svg>
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33">Calendar</div>
+              <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">Events, holidays and exams by month</div>
+            </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+          </div>
+        </div>
+      </sc-if>
+
+      <!-- CURRENT TERM -->
+      <sc-if value="{{ isTerm }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <sc-for list="{{ termSubjects }}" as="s" hint-placeholder-count="6">
+            <div onClick="{{ s.open }}" style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px;cursor:pointer">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="width:42px;height:42px;borderRadius:12px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:13px;fontWeight:800;color:#1D4ED8;flexShrink:0">{{ s.code }}</div>
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ s.name }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ s.teacher }}</div>
+                </div>
+                <div style="{{ s.pendStyle }}">{{ s.pending }}</div>
+              </div>
+              <div style="display:flex;alignItems:center;justifyContent:space-between;marginTop:12px;paddingTop:12px;borderTop:1px solid #EDF0F5">
+                <div style="fontSize:12.5px;color:#41526E;fontWeight:700">{{ s.meta }}</div>
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- SUBJECT DETAIL -->
+      <sc-if value="{{ isSubject }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:14px">
+          <div style="background:#E6EDFD;borderRadius:16px;padding:16px 18px">
+            <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#1D4ED8">CURRENT UNIT</div>
+            <div style="fontSize:16px;fontWeight:800;color:#0F1B33;marginTop:6px">{{ subjectUnit }}</div>
+            <div style="fontSize:13px;color:#41526E;marginTop:5px">{{ subjectTeacher }} · {{ subjectPeriods }}</div>
+          </div>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Lesson plan</div>
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;overflow:hidden">
+            <sc-for list="{{ lessonPlan }}" as="l" hint-placeholder-count="4">
+              <div style="display:flex;alignItems:center;gap:14px;padding:13px 16px;borderBottom:1px solid #EDF0F5">
+                <div style="fontSize:11.5px;fontWeight:800;color:#1D4ED8;width:52px;flexShrink:0">{{ l.week }}</div>
+                <div style="fontSize:14px;color:#41526E;fontWeight:600;flex:1;textWrap:pretty">{{ l.topic }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Homework</div>
+          <sc-for list="{{ subjectHw }}" as="h" hint-placeholder-count="2">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:14px 16px;display:flex;alignItems:center;gap:12px">
+              <div style="flex:1">
+                <div style="fontSize:14.5px;fontWeight:800;color:#0F1B33;textWrap:pretty">{{ h.title }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ h.due }}</div>
+              </div>
+              <div style="background:{{ h.bg }};color:{{ h.fg }};fontSize:11.5px;fontWeight:700;padding:6px 11px;borderRadius:99px;whiteSpace:nowrap">{{ h.status }}</div>
+            </div>
+          </sc-for>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Assignments</div>
+          <sc-for list="{{ subjectAssign }}" as="a" hint-placeholder-count="2">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:14px 16px;display:flex;alignItems:center;gap:12px">
+              <div style="flex:1">
+                <div style="fontSize:14.5px;fontWeight:800;color:#0F1B33;textWrap:pretty">{{ a.title }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ a.due }}</div>
+              </div>
+              <div style="fontSize:12.5px;fontWeight:800;color:#1D4ED8;whiteSpace:nowrap">{{ a.marks }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- TIMETABLE -->
+      <sc-if value="{{ isTimetable }}">
+        <div style="padding:14px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="display:grid;gridTemplateColumns:repeat(6,1fr);gap:7px">
+            <sc-for list="{{ ttDays }}" as="d" hint-placeholder-count="6">
+              <div onClick="{{ d.pick }}" style="{{ d.style }}">
+                <div style="fontSize:10.5px;fontWeight:800;letterSpacing:0.06em;color:{{ d.sub }}">{{ d.dow }}</div>
+                <div style="fontSize:17px;fontWeight:800;marginTop:3px;color:{{ d.fg }}">{{ d.n }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:grid;gridTemplateColumns:repeat(4,1fr);gap:8px">
+            <div onClick="{{ goCalendar }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:12px;padding:10px 8px;textAlign:center;cursor:pointer;fontSize:12px;fontWeight:700;color:#1D4ED8">Calendar</div>
+            <div onClick="{{ goHomework }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:12px;padding:10px 8px;textAlign:center;cursor:pointer;fontSize:12px;fontWeight:700;color:#1D4ED8">Homework</div>
+            <div onClick="{{ goExams }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:12px;padding:10px 8px;textAlign:center;cursor:pointer;fontSize:12px;fontWeight:700;color:#1D4ED8">Exams</div>
+            <div onClick="{{ goSubjects }}" style="background:#fff;border:1px solid #E8EDF5;borderRadius:12px;padding:10px 8px;textAlign:center;cursor:pointer;fontSize:12px;fontWeight:700;color:#1D4ED8">Subjects</div>
+          </div>
+
+          <sc-for list="{{ periods }}" as="p" hint-placeholder-count="6">
+            <div style="background:{{ p.bg }};borderRadius:14px;border:1px solid #E8EDF5;padding:12px 16px;display:flex;alignItems:center;gap:16px">
+              <div style="width:66px">
+                <div style="fontSize:14.5px;fontWeight:800;lineHeight:1.2;color:{{ p.fg }}">{{ p.time }}</div>
+                <div style="fontSize:12px;fontWeight:700;marginTop:3px;color:{{ p.sub }}">{{ p.slot }}</div>
+              </div>
+              <div style="flex:1">
+                <div style="fontSize:16.5px;fontWeight:800;color:{{ p.fg }}">{{ p.subject }}</div>
+                <div style="fontSize:13px;fontWeight:600;marginTop:3px;color:{{ p.sub }}">{{ p.teacher }}</div>
+              </div>
+              <sc-if value="{{ p.now }}">
+                <div style="background:rgba(255,255,255,.22);color:#fff;fontSize:11.5px;fontWeight:800;padding:7px 12px;borderRadius:99px">NOW</div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- CALENDAR -->
+      <sc-if value="{{ isCalendar }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#fff;borderRadius:18px;padding:14px;border:1px solid #E8EDF5">
+            <div style="display:flex;alignItems:center;justifyContent:space-between">
+              <div onClick="{{ calPrev }}" style="width:34px;height:34px;borderRadius:10px;border:1px solid #E8EDF5;display:flex;alignItems:center;justifyContent:center;cursor:pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4"><path d="M14 6l-6 6 6 6"></path></svg>
+              </div>
+              <div style="textAlign:center">
+                <div style="fontSize:19px;fontWeight:800;color:#0F1B33">{{ calLabel }}</div>
+                <div style="fontSize:11.5px;fontWeight:800;letterSpacing:0.1em;color:#A3AFC0;marginTop:3px">{{ calCount }}</div>
+              </div>
+              <div onClick="{{ calNext }}" style="width:34px;height:34px;borderRadius:10px;border:1px solid #E8EDF5;display:flex;alignItems:center;justifyContent:center;cursor:pointer">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2.4"><path d="M10 6l6 6-6 6"></path></svg>
+              </div>
+            </div>
+            <div style="display:grid;gridTemplateColumns:repeat(7,1fr);gap:4px;marginTop:16px;textAlign:center;fontSize:12px;fontWeight:700;color:#A3AFC0">
+              <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+            </div>
+            <div style="display:grid;gridTemplateColumns:repeat(7,1fr);gap:4px;marginTop:8px;textAlign:center;fontSize:14.5px;fontWeight:700;color:#0F1B33">
+              <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="33">
+                <div style="{{ c.style }}">{{ c.label }}</div>
+              </sc-for>
+            </div>
+          </div>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">This month</div>
+          <sc-for list="{{ events }}" as="e" hint-placeholder-count="4">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:12px 16px;display:flex;alignItems:center;gap:18px">
+              <div style="textAlign:center;width:38px">
+                <div style="fontSize:22px;fontWeight:800;color:{{ e.dayColor }}">{{ e.day }}</div>
+                <div style="fontSize:11px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">{{ calMon }}</div>
+              </div>
+              <div style="flex:1">
+                <div style="fontSize:16px;fontWeight:800;color:#0F1B33">{{ e.title }}</div>
+                <div style="fontSize:13px;color:#8494AB;fontWeight:600;marginTop:3px">{{ e.meta }}</div>
+              </div>
+              <div style="background:{{ e.bg }};color:{{ e.fg }};fontSize:12px;fontWeight:700;padding:7px 13px;borderRadius:99px">{{ e.tag }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- HOMEWORK -->
+      <sc-if value="{{ isHomework }}">
+        <div style="padding:14px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="display:grid;gridTemplateColumns:repeat(6,1fr);gap:6px">
+            <sc-for list="{{ hwDays }}" as="d" hint-placeholder-count="6">
+              <div onClick="{{ d.pick }}" style="{{ d.style }}">
+                <div style="{{ d.dayStyle }}">{{ d.d }}</div>
+                <div style="{{ d.numStyle }}">{{ d.n }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:16px;display:flex;justifyContent:space-between">
+            <div><div style="fontSize:22px;fontWeight:800;color:#9A6316">{{ hwPending }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:2px">Pending</div></div>
+            <div><div style="fontSize:22px;fontWeight:800;color:#1B7F45">{{ hwSubmitted }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:2px">Submitted</div></div>
+            <div><div style="fontSize:22px;fontWeight:800;color:#B3261E">{{ hwLate }}</div><div style="fontSize:12px;color:#8494AB;fontWeight:600;marginTop:2px">Late</div></div>
+          </div>
+
+          <div style="display:flex;gap:8px;overflowX:auto;scrollbarWidth:none;paddingBottom:2px">
+            <sc-for list="{{ hwFilters }}" as="f" hint-placeholder-count="4">
+              <div onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</div>
+            </sc-for>
+          </div>
+
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#8494AB;textTransform:uppercase;marginLeft:2px">{{ hwDayLabel }}</div>
+
+          <sc-for list="{{ homework }}" as="h" hint-placeholder-count="5">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="width:40px;height:40px;borderRadius:11px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:12.5px;fontWeight:800;color:#1D4ED8">{{ h.code }}</div>
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ h.subject }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">{{ h.teacher }} · assigned {{ h.assigned }}</div>
+                </div>
+                <div style="background:{{ h.bg }};color:{{ h.fg }};fontSize:11.5px;fontWeight:700;padding:6px 11px;borderRadius:99px;whiteSpace:nowrap">{{ h.status }}</div>
+              </div>
+              <div style="fontSize:13.5px;color:#41526E;marginTop:10px;lineHeight:1.5;textWrap:pretty">{{ h.task }}</div>
+              <sc-if value="{{ h.hasAttach }}">
+                <div style="display:flex;alignItems:center;gap:8px;marginTop:11px;background:#F7F9FC;borderRadius:10px;padding:10px 12px">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="2"><path d="M14 3v5h5"></path><path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7z"></path></svg>
+                  <span style="fontSize:12.5px;fontWeight:700;color:#1D4ED8;flex:1">{{ h.attach }}</span>
+                  <span style="fontSize:12px;fontWeight:700;color:#8494AB">Open</span>
+                </div>
+              </sc-if>
+              <div style="display:flex;alignItems:center;justifyContent:space-between;marginTop:13px;paddingTop:13px;borderTop:1px solid #EDF0F5">
+                <div style="fontSize:12.5px;fontWeight:700;color:#41526E">Due {{ h.due }}</div>
+                <sc-if value="{{ h.canSubmit }}">
+                  <div onClick="{{ h.submit }}" style="background:#2A62F0;color:#fff;fontSize:13px;fontWeight:800;padding:9px 16px;borderRadius:10px;cursor:pointer">Mark completed</div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-for>
+
+          <sc-if value="{{ hwEmpty }}">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:28px 18px;textAlign:center">
+              <div style="fontSize:14.5px;fontWeight:700;color:#41526E">Nothing here</div>
+              <div style="fontSize:13px;color:#8494AB;marginTop:5px">No homework matches this day and filter.</div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- EXAMS -->
+      <sc-if value="{{ isExams }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#E6EDFD;borderRadius:16px;padding:16px 18px">
+            <div style="fontSize:13px;fontWeight:800;color:#1D4ED8;letterSpacing:0.08em">HALL TICKET</div>
+            <div style="fontSize:15px;fontWeight:700;color:#0F1B33;marginTop:6px">Room 14 · Seat 08 · Roll 24</div>
+            <div style="fontSize:13px;color:#41526E;marginTop:6px">Reporting time 9:15 AM. Carry the school ID card.</div>
+          </div>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Term 2 exam schedule</div>
+          <sc-for list="{{ exams }}" as="e" hint-placeholder-count="6">
+            <div style="background:#fff;borderRadius:14px;border:1px solid #E8EDF5;padding:14px 16px;display:flex;alignItems:center;gap:16px">
+              <div style="width:52px;textAlign:center">
+                <div style="fontSize:18px;fontWeight:800;color:#1D4ED8">{{ e.day }}</div>
+                <div style="fontSize:11px;fontWeight:800;color:#A3AFC0;letterSpacing:0.08em">{{ e.mon }}</div>
+              </div>
+              <div style="flex:1">
+                <div style="fontSize:16px;fontWeight:800;color:#0F1B33">{{ e.subject }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ e.time }} · {{ e.marks }} marks</div>
+              </div>
+              <div style="fontSize:12.5px;fontWeight:700;color:#41526E">{{ e.syllabus }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- SUBJECTS -->
+      <sc-if value="{{ isSubjects }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <sc-for list="{{ subjects }}" as="s" hint-placeholder-count="6">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="width:42px;height:42px;borderRadius:12px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:13px;fontWeight:800;color:#1D4ED8">{{ s.code }}</div>
+                <div style="flex:1">
+                  <div style="fontSize:16px;fontWeight:800;color:#0F1B33">{{ s.name }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">{{ s.teacher }} · {{ s.periods }} periods/week</div>
+                </div>
+              </div>
+              <div style="display:flex;alignItems:center;gap:10px;marginTop:12px">
+                <div style="flex:1;height:8px;borderRadius:99px;background:#EDF0F5;overflow:hidden">
+                  <div style="width:{{ s.progress }}%;height:100%;background:#2A62F0;borderRadius:99px"></div>
+                </div>
+                <span style="fontSize:12.5px;fontWeight:700;color:#41526E;whiteSpace:nowrap">{{ s.progress }}% syllabus</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- CAMPUS HUB -->
+      <sc-if value="{{ isCampus }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:10px">
+          <sc-for list="{{ campusList }}" as="c" hint-placeholder-count="6">
+            <div onClick="{{ c.go }}" style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:16px;display:flex;alignItems:center;gap:14px;cursor:pointer">
+              <div style="width:44px;height:44px;borderRadius:13px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center">{{ c.svg }}</div>
+              <div style="flex:1">
+                <div style="fontSize:16px;fontWeight:800;color:#0F1B33">{{ c.label }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">{{ c.meta }}</div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C6D0DE" stroke-width="2.2"><path d="M9 6l6 6-6 6"></path></svg>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- CERTIFICATES -->
+      <sc-if value="{{ isCertificates }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <sc-for list="{{ certificates }}" as="c" hint-placeholder-count="5">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="width:40px;height:46px;borderRadius:8px;background:#EFF4FE;border:1px solid #DCE7FB;display:flex;alignItems:center;justifyContent:center">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D4ED8" stroke-width="1.8"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path></svg>
+                </div>
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ c.name }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ c.meta }}</div>
+                </div>
+                <div style="background:{{ c.bg }};color:{{ c.fg }};fontSize:11.5px;fontWeight:700;padding:6px 11px;borderRadius:99px;whiteSpace:nowrap">{{ c.status }}</div>
+              </div>
+              <div style="display:flex;alignItems:center;gap:8px;marginTop:12px">
+                <div onClick="{{ c.view }}" style="{{ c.viewStyle }}">View</div>
+                <div onClick="{{ c.download }}" style="{{ c.dlStyle }}">{{ c.dlLabel }}</div>
+              </div>
+            </div>
+          </sc-for>
+          <div onClick="{{ toggleCertPicker }}" style="border:1.5px dashed #A9C2F5;borderRadius:14px;padding:15px 0;textAlign:center;fontSize:14px;fontWeight:700;color:#2A62F0;cursor:pointer">Request a new certificate</div>
+
+          <sc-if value="{{ certPickerOpen }}">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;overflow:hidden">
+              <div style="padding:14px 16px;fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#8494AB;textTransform:uppercase">Choose a certificate</div>
+              <sc-for list="{{ certTypes }}" as="t" hint-placeholder-count="5">
+                <div onClick="{{ t.pick }}" style="padding:14px 16px;borderTop:1px solid #EDF0F5;fontSize:14.5px;fontWeight:700;color:#0F1B33;cursor:pointer">{{ t.label }}</div>
+              </sc-for>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ certViewOpen }}">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:20px;textAlign:center">
+              <div style="fontSize:11px;fontWeight:800;letterSpacing:0.12em;color:#8494AB">PAVAKIE PUBLIC SCHOOL</div>
+              <div style="fontSize:17px;fontWeight:800;color:#0F1B33;marginTop:10px">{{ certViewName }}</div>
+              <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:6px">{{ certViewMeta }}</div>
+              <div style="height:1px;background:#EDF0F5;margin:16px 0"></div>
+              <div style="fontSize:13.5px;color:#41526E;lineHeight:1.55;textWrap:pretty">This is to certify that Aarav S, Roll 24, is a bona fide student of Class 8-B for the academic year 2026–27.</div>
+              <div onClick="{{ closeCert }}" style="marginTop:18px;border:1px solid #DCE7FB;color:#1D4ED8;borderRadius:10px;padding:10px 0;fontSize:13.5px;fontWeight:700;cursor:pointer">Close preview</div>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- LIBRARY -->
+      <sc-if value="{{ isLibrary }}">
+        <div style="padding:14px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#E6EDFD;borderRadius:16px;padding:16px 18px;display:flex;justifyContent:space-between">
+            <div><div style="fontSize:20px;fontWeight:800;color:#1D4ED8">{{ libIssued }}</div><div style="fontSize:12px;color:#41526E;fontWeight:600;marginTop:2px">Issued</div></div>
+            <div><div style="fontSize:20px;fontWeight:800;color:#9A6316">{{ libDueSoon }}</div><div style="fontSize:12px;color:#41526E;fontWeight:600;marginTop:2px">Due soon</div></div>
+            <div><div style="fontSize:20px;fontWeight:800;color:#0F1B33">₹0</div><div style="fontSize:12px;color:#41526E;fontWeight:600;marginTop:2px">Fine</div></div>
+          </div>
+
+          <div style="background:#E8EBF1;borderRadius:14px;padding:5px;display:grid;gridTemplateColumns:1fr 1fr 1fr">
+            <sc-for list="{{ libTabs }}" as="t" hint-placeholder-count="3">
+              <div onClick="{{ t.pick }}" style="{{ t.style }}">{{ t.label }}</div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ isLibBorrowed }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;flexDirection:column;gap:12px">
+            <sc-for list="{{ borrowed }}" as="b" hint-placeholder-count="2">
+              <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px;display:flex;alignItems:center;gap:14px">
+                <div style="width:36px;height:48px;borderRadius:5px;background:#2A62F0;flexShrink:0"></div>
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ b.title }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ b.author }} · {{ b.code }}</div>
+                  <div style="{{ b.dueStyle }}">{{ b.due }}</div>
+                </div>
+                <div onClick="{{ b.renew }}" style="{{ b.btnStyle }}">{{ b.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ isLibHistory }}">
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;overflow:hidden">
+            <sc-for list="{{ returned }}" as="r" hint-placeholder-count="3">
+              <div style="padding:14px 16px;borderBottom:1px solid #EDF0F5">
+                <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ r.title }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ r.author }} · {{ r.code }}</div>
+                <div style="fontSize:12.5px;color:#41526E;fontWeight:700;marginTop:5px">{{ r.meta }}</div>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ isLibSearch }}">
+          <div style="display:flex;flexDirection:column;gap:12px">
+            <div style="display:flex;alignItems:center;gap:10px;background:#fff;border:1px solid #E3E9F3;borderRadius:12px;padding:12px 14px">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8494AB" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>
+              <input type="text" value="{{ libQuery }}" onChange="{{ onLibSearch }}" placeholder="Search title, author or code" style="border:none;outline:none;flex:1;fontSize:14px;fontWeight:600;color:#0F1B33;background:transparent">
+            </div>
+            <sc-for list="{{ results }}" as="c" hint-placeholder-count="4">
+              <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px;display:flex;alignItems:center;gap:14px">
+                <div style="width:36px;height:48px;borderRadius:5px;background:#DCE7FB;flexShrink:0"></div>
+                <div style="flex:1">
+                  <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ c.title }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ c.author }} · {{ c.code }} · {{ c.shelf }}</div>
+                </div>
+                <div style="display:flex;flexDirection:column;alignItems:flex-end;gap:8px">
+                  <div style="{{ c.statusStyle }}">{{ c.status }}</div>
+                  <sc-if value="{{ c.canReserve }}">
+                    <div onClick="{{ c.reserve }}" style="border:1px solid #DCE7FB;color:#1D4ED8;borderRadius:10px;padding:7px 12px;fontSize:12.5px;fontWeight:700;cursor:pointer">Reserve</div>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ libNoResults }}">
+              <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:26px 18px;textAlign:center">
+                <div style="fontSize:14.5px;fontWeight:700;color:#41526E">No matches</div>
+                <div style="fontSize:13px;color:#8494AB;marginTop:5px">Try another title, author or code.</div>
+              </div>
+            </sc-if>
+          </div>
+          </sc-if>
+        </div>
+      </sc-if>
+
+      <!-- HEALTH -->
+      <sc-if value="{{ isHealth }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:16px">
+            <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#8494AB;textTransform:uppercase">Health record</div>
+            <div style="display:grid;gridTemplateColumns:1fr 1fr 1fr;gap:10px;marginTop:12px">
+              <div><div style="fontSize:17px;fontWeight:800;color:#0F1B33">142 cm</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Height</div></div>
+              <div><div style="fontSize:17px;fontWeight:800;color:#0F1B33">36 kg</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Weight</div></div>
+              <div><div style="fontSize:17px;fontWeight:800;color:#0F1B33">O+</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Blood group</div></div>
+            </div>
+            <div style="fontSize:13px;color:#41526E;marginTop:12px;lineHeight:1.5">Allergy on file: dust. Nurse: Ms. Sheela R · Block A, ground floor.</div>
+          </div>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Visit log</div>
+          <sc-for list="{{ visits }}" as="v" hint-placeholder-count="3">
+            <div style="background:#fff;borderRadius:14px;border:1px solid #E8EDF5;padding:14px 16px;display:flex;alignItems:center;gap:14px">
+              <div style="flex:1">
+                <div style="fontSize:15px;fontWeight:800;color:#0F1B33">{{ v.reason }}</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:3px">{{ v.date }} · {{ v.action }}</div>
+              </div>
+              <div style="background:#E4F5EA;color:#1B7F45;fontSize:11.5px;fontWeight:700;padding:6px 11px;borderRadius:99px">Closed</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- FEEDBACK -->
+      <sc-if value="{{ isFeedback }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="fontSize:13px;color:#41526E;lineHeight:1.5;textWrap:pretty">Rate each subject teacher for Term 1. Responses are anonymous and shared as class averages.</div>
+          <sc-for list="{{ feedback }}" as="f" hint-placeholder-count="4">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:12px">
+                <div style="width:40px;height:40px;borderRadius:11px;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:12.5px;fontWeight:800;color:#1D4ED8">{{ f.code }}</div>
+                <div style="flex:1">
+                  <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">{{ f.subject }}</div>
+                  <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">{{ f.teacher }}</div>
+                </div>
+                <div style="fontSize:13px;fontWeight:700;color:{{ f.fg }}">{{ f.state }}</div>
+              </div>
+              <div style="display:flex;gap:6px;marginTop:12px">
+                <sc-for list="{{ f.stars }}" as="s">
+                  <svg onClick="{{ s.pick }}" width="26" height="26" viewBox="0 0 24 24" fill="{{ s.fill }}" stroke="{{ s.stroke }}" stroke-width="1.6" style="cursor:pointer"><path d="M12 4l2.3 4.9 5.2.7-3.8 3.7.9 5.3L12 16l-4.6 2.6.9-5.3L4.5 9.6l5.2-.7z"></path></svg>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <div onClick="{{ sendFeedback }}" style="{{ fbStyle }}">{{ fbLabel }}</div>
+        </div>
+      </sc-if>
+
+      <!-- MEETINGS -->
+      <sc-if value="{{ isMeetings }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#E6EDFD;borderRadius:16px;padding:16px 18px">
+            <div style="fontSize:12px;fontWeight:800;letterSpacing:0.1em;color:#1D4ED8">SATURDAY, 12 SEPTEMBER</div>
+            <div style="fontSize:17px;fontWeight:800;color:#0F1B33;marginTop:6px">Parent–Teacher Meeting</div>
+            <div style="fontSize:13px;color:#41526E;marginTop:5px">Grades 6–10 · 12:00 PM – 3:00 PM · Block B</div>
+          </div>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Choose a slot</div>
+          <sc-for list="{{ slots }}" as="s" hint-placeholder-count="5">
+            <div onClick="{{ s.pick }}" style="background:{{ s.bg }};borderRadius:14px;border:1px solid {{ s.border }};padding:14px 16px;display:flex;alignItems:center;gap:14px;cursor:pointer">
+              <div style="flex:1">
+                <div style="fontSize:15.5px;fontWeight:800;color:{{ s.fg }}">{{ s.time }}</div>
+                <div style="fontSize:12.5px;fontWeight:600;marginTop:3px;color:{{ s.sub }}">{{ s.teacher }}</div>
+              </div>
+              <div style="fontSize:12.5px;fontWeight:700;color:{{ s.sub }}">{{ s.state }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- NOTICES -->
+      <sc-if value="{{ isNotices }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <sc-for list="{{ notices }}" as="n" hint-placeholder-count="5">
+            <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px">
+              <div style="display:flex;alignItems:center;gap:10px">
+                <div style="width:32px;height:32px;borderRadius:50%;border:1px solid #E8EDF5;display:flex;alignItems:center;justifyContent:center;fontSize:10.5px;fontWeight:800;color:#1636A4">PP</div>
+                <div style="flex:1">
+                  <div style="fontSize:13.5px;fontWeight:800;color:#0F1B33">{{ n.from }}</div>
+                  <div style="fontSize:11.5px;color:#8494AB;fontWeight:600">{{ n.date }}</div>
+                </div>
+                <div style="background:{{ n.bg }};color:{{ n.fg }};fontSize:11px;fontWeight:700;padding:5px 10px;borderRadius:99px">{{ n.tag }}</div>
+              </div>
+              <div style="fontSize:15px;fontWeight:800;color:#0F1B33;marginTop:12px;lineHeight:1.35">{{ n.title }}</div>
+              <div style="fontSize:13.5px;color:#41526E;marginTop:8px;lineHeight:1.55;textWrap:pretty">{{ n.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- BUS -->
+      <sc-if value="{{ isBus }}">
+        <div style="padding:16px 18px 24px;display:flex;flexDirection:column;gap:12px">
+          <div style="background:#fff;borderRadius:18px;border:1px solid #E8EDF5;padding:16px">
+            <div style="display:flex;alignItems:center;gap:12px">
+              <div style="width:44px;height:44px;borderRadius:13px;background:#2A62F0;display:flex;alignItems:center;justifyContent:center">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="4" y="5" width="16" height="11" rx="2"></rect><path d="M4 11h16M7 20v-3M17 20v-3"></path></svg>
+              </div>
+              <div style="flex:1">
+                <div style="fontSize:16.5px;fontWeight:800;color:#0F1B33">Route 7 · Anna Nagar</div>
+                <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">TN 09 BX 4412 · Stop 4, Third Avenue</div>
+              </div>
+            </div>
+            <div style="borderTop:1px solid #EDF0F5;marginTop:14px;paddingTop:14px;display:flex;justifyContent:space-between">
+              <div><div style="fontSize:16px;fontWeight:800;color:#1D4ED8">7:42 AM</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Pickup</div></div>
+              <div><div style="fontSize:16px;fontWeight:800;color:#0F1B33">3:55 PM</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Drop</div></div>
+              <div><div style="fontSize:16px;fontWeight:800;color:#1B7F45">On time</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:2px">Status</div></div>
+            </div>
+          </div>
+          <div style="background:#fff;borderRadius:16px;border:1px solid #E8EDF5;padding:15px 16px;display:flex;alignItems:center;gap:14px">
+            <div style="width:44px;height:44px;borderRadius:50%;background:#EFF4FE;display:flex;alignItems:center;justifyContent:center;fontSize:14px;fontWeight:800;color:#1D4ED8">RM</div>
+            <div style="flex:1">
+              <div style="fontSize:15.5px;fontWeight:800;color:#0F1B33">Ramesh M · Driver</div>
+              <div style="fontSize:12.5px;color:#8494AB;fontWeight:600;marginTop:2px">Attendant: Kavitha S</div>
+            </div>
+            <div onClick="{{ toggleCall }}" style="background:#2A62F0;color:#fff;borderRadius:10px;padding:9px 14px;fontSize:13px;fontWeight:700;cursor:pointer;whiteSpace:nowrap">{{ callLabel }}</div>
+          </div>
+          <div style="fontSize:12px;fontWeight:800;letterSpacing:0.12em;color:#8494AB;textTransform:uppercase">Morning stops</div>
+          <sc-for list="{{ stops }}" as="s" hint-placeholder-count="5">
+            <div style="background:#fff;borderRadius:14px;border:1px solid #E8EDF5;padding:13px 16px;display:flex;alignItems:center;gap:14px">
+              <div style="width:10px;height:10px;borderRadius:50%;background:{{ s.dot }}"></div>
+              <div style="flex:1;fontSize:14.5px;fontWeight:700;color:{{ s.fg }}">{{ s.name }}</div>
+              <div style="fontSize:13px;fontWeight:700;color:{{ s.sub }}">{{ s.time }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <!-- PROFILE -->
+      <sc-if value="{{ isProfile }}">
+        <div style="padding:0 0 24px">
+          <div style="background:#F7F9FC;padding:20px 20px 22px;display:flex;alignItems:center;gap:16px;borderBottom:1px solid #EDF0F5">
+            <div style="width:78px;height:78px;borderRadius:50%;overflow:hidden;border:3px solid #fff;boxShadow:0 4px 14px rgba(15,27,51,.14);flexShrink:0;background:#E6EDFD">
+              <img src="uploads/pasted-1788499697023-0.png" alt="Student photo" style="width:100%;height:100%;objectFit:cover;transform:scale(2.7);transformOrigin:50% 30%">
+            </div>
+            <div style="flex:1">
+              <div style="fontSize:22px;fontWeight:800;color:#0F1B33;letterSpacing:-0.01em">{{ studentName }}</div>
+              <div style="fontSize:13px;color:#5B6B85;fontWeight:600;marginTop:4px">Class 8 · Section B · Roll 24</div>
+              <div style="display:flex;gap:6px;marginTop:10px;flexWrap:wrap">
+                <span style="background:#E6EDFD;color:#1D4ED8;fontSize:11px;fontWeight:700;padding:5px 10px;borderRadius:99px">PPS/2019/0472</span>
+                <span style="background:#E4F5EA;color:#1B7F45;fontSize:11px;fontWeight:700;padding:5px 10px;borderRadius:99px">Emerald House</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;gridTemplateColumns:1fr 1fr 1fr;padding:16px 20px;gap:12px;borderBottom:1px solid #EDF0F5">
+            <div><div style="fontSize:17px;fontWeight:800;color:#1D4ED8">O+</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:3px">Blood group</div></div>
+            <div style="textAlign:center"><div style="fontSize:17px;fontWeight:800;color:#0F1B33">13 yrs</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:3px">14 Mar 2013</div></div>
+            <div style="textAlign:right"><div style="fontSize:17px;fontWeight:800;color:#0F1B33">Route 7</div><div style="fontSize:11.5px;color:#8494AB;fontWeight:600;marginTop:3px">Stop 4 · Bus</div></div>
+          </div>
+
+          <div style="padding:18px 20px 0;display:flex;flexDirection:column;gap:18px">
+            <sc-for list="{{ profileSections }}" as="sec" hint-placeholder-count="4">
+              <div>
+                <div style="fontSize:11.5px;fontWeight:800;letterSpacing:0.14em;color:#A3AFC0;textTransform:uppercase;marginBottom:10px">{{ sec.title }}</div>
+                <div style="background:#fff;borderRadius:16px;border:1px solid #EDF0F5;boxShadow:0 1px 3px rgba(15,27,51,.04);overflow:hidden">
+                  <sc-for list="{{ sec.rows }}" as="r" hint-placeholder-count="5">
+                    <div style="padding:12px 16px;display:flex;alignItems:baseline;gap:14px;borderTop:1px solid {{ r.line }}">
+                      <div style="fontSize:12.5px;fontWeight:600;color:#8494AB;width:120px;flexShrink:0">{{ r.k }}</div>
+                      <div style="flex:1;fontSize:14px;fontWeight:700;color:#0F1B33;textAlign:right;textWrap:pretty">{{ r.v }}</div>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+
+          </div>
+        </div>
+      </sc-if>
+
+      <!--SCREENS-->
+
+    </div>
+
+    <div style="position:absolute;left:0;right:0;bottom:0;height:74px;background:#fff;borderTop:1px solid #E8EDF5;display:grid;gridTemplateColumns:repeat(4,1fr);alignItems:center;paddingBottom:10px;zIndex:5">
+      <div onClick="{{ tabHome }}" style="display:flex;flexDirection:column;alignItems:center;gap:5px;cursor:pointer;color:{{ c1 }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 10.5 12 4l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"></path></svg>
+        <span style="fontSize:11px;fontWeight:600">Home</span>
+      </div>
+      <div onClick="{{ tabSchool }}" style="display:flex;flexDirection:column;alignItems:center;gap:5px;cursor:pointer;color:{{ c2 }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="13" rx="2"></rect><path d="M7 8h7M7 12h4M8 20l4-3 4 3"></path></svg>
+        <span style="fontSize:11px;fontWeight:600">My class</span>
+      </div>
+      <div onClick="{{ tabAcademics }}" style="display:flex;flexDirection:column;alignItems:center;gap:5px;cursor:pointer;color:{{ c4 }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M2 8.5 12 4l10 4.5L12 13z"></path><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"></path></svg>
+        <span style="fontSize:11px;fontWeight:600">Academics</span>
+      </div>
+      <div onClick="{{ tabBus }}" style="display:flex;flexDirection:column;alignItems:center;gap:5px;cursor:pointer;color:{{ c5 }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="4" width="16" height="12" rx="2"></rect><path d="M4 10h16M7 20v-2M17 20v-2"></path></svg>
+        <span style="fontSize:11px;fontWeight:600">My Bus</span>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;studentName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Aarav S&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;attendancePercent&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:94,&quot;min&quot;:0,&quot;max&quot;:100,&quot;tsType&quot;:&quot;number&quot;}}">
+const TITLES = {
+  services: ["Services", "Class 8-B · 2026–27"],
+  attendance: ["Attendance", "Term 1 · 2026–27"],
+  report: ["Report card", "Class 8-B"],
+  fees: ["Pay fees", "Term 2 · 2026–27"],
+  payment: ["Payment", "Secure checkout"],
+  leave: ["Leave", "Class teacher approval"],
+  homework: ["Homework", "Thursday, 3 September"],
+  exams: ["Exams", "Term 2 · Sept–Oct 2026"],
+  certificates: ["Certificates", "Issued documents"],
+  library: ["Library", "2 books issued"],
+  health: ["Health room", "Visit log & records"],
+  feedback: ["Feedback", "Term 1 · anonymous"],
+  meetings: ["Meetings", "Parent–teacher slots"],
+  notices: ["Announcements", "12 notices this term"],
+  profile: ["Profile", "Student & guardian"],
+  academics: ["Academics", "Class 8-B \u00b7 Term 2"],
+  onlineclass: ["Online class", "Live and recorded sessions"],
+  term: ["Current term", "Term 2 \u00b7 subject-wise work"],
+  timetable: ["Timetable", "Thursday, 3 September"],
+  calendar: ["School calendar", "Term 1 · Jun–Oct 2026"],
+  subjects: ["Subjects", "Class 8-B · 6 subjects"],
+  bus: ["My Bus", "Route 7 · TN 09 BX 4412"],
+  campus: ["Campus", "Facilities & desks"]
+};
+
+const LIVE_CLASSES = [
+  { id: "l1", subject: "Science", teacher: "Ms. Lakshmi P", time: "9:55 \u2013 10:45 AM", topic: "Friction \u2014 lab walkthrough", code: "pps-sci-882", state: "live" },
+  { id: "l2", subject: "Mathematics", teacher: "Mr. Suresh K", time: "11:00 \u2013 11:50 AM", topic: "Square roots by long division", code: "pps-mat-114", state: "soon", starts: "in 25 min" },
+  { id: "l3", subject: "English", teacher: "Ms. Radhika V", time: "1:30 \u2013 2:20 PM", topic: "Letter writing practice", code: "pps-eng-507", state: "later" }
+];
+const RECORDINGS = [
+  { subject: "Mathematics", topic: "Squares and patterns", meta: "2 Sept \u00b7 48 min" },
+  { subject: "Science", topic: "Types of force", meta: "1 Sept \u00b7 45 min" },
+  { subject: "Social Science", topic: "Himalayan rivers", meta: "31 Aug \u00b7 42 min" }
+];
+const ICONS = {
+  attendance: 'M8 14l2.5 2.5L16 11',
+  report: 'M5 20V10M12 20V4M19 20v-7',
+  fees: 'M3 11h18',
+  homework: 'M8 9h8M8 13h5',
+  leave: 'M4 12h9M10 8l4 4-4 4',
+  exams: 'M7 10h2M11 10h2M15 10h2M7 14h2M11 14h2',
+  certificates: 'M14 3v5h5',
+  transport: 'M4 11h16M7 20v-3M17 20v-3',
+  library: 'M5 19V6h5v13zM14 19V6h5v13z',
+  health: 'M9 12l2 2 4-4',
+  feedback: 'M12 4l2.3 4.9 5.2.7-3.8 3.7.9 5.3L12 16l-4.6 2.6.9-5.3L4.5 9.6l5.2-.7z',
+  meetings: 'M17 8h4M19 6v4',
+  onlineclass: 'M10 9.5l4.5 2.5-4.5 2.5z'
+};
+const FRAMES = {
+  onlineclass: 'M3 5h18v14H3z',
+  attendance: 'M3 5h18v16H3zM8 3v4M16 3v4',
+  fees: 'M3 6h18v12H3z',
+  homework: 'M4 5h16v14H4z',
+  leave: 'M15 4h5v16h-5',
+  exams: 'M3 5h18v16H3z',
+  certificates: 'M6 3h9l4 4v14H6z',
+  transport: 'M4 5h16v11H4z',
+  health: 'M12 4l8 4v5c0 4-3.4 6.3-8 7-4.6-.7-8-3-8-7V8z',
+  meetings: 'M9 6a3 3 0 1 1 0 6 3 3 0 0 1 0-6M3 20c0-3.3 2.7-5 6-5s6 1.7 6 5'
+};
+
+const TERMS = ["Term 1 · 2026–27", "Term 2 · 2026–27", "Term 3 · 2026–27"];
+const tabBtn = (on) => on
+  ? "border:1.5px solid #1D4ED8;background:#EFF4FE;borderRadius:12px;padding:13px 0;textAlign:center;fontSize:15px;fontWeight:700;color:#1D4ED8;cursor:pointer"
+  : "border:1px solid #E3E9F3;background:#fff;borderRadius:12px;padding:13px 0;textAlign:center;fontSize:15px;fontWeight:700;color:#0F1B33;cursor:pointer";
+const MARKS = {
+  unit: [
+    { code: "EN", name: "English", teacher: "Ms. Radhika V", score: 92, grade: "A+" },
+    { code: "MA", name: "Mathematics", teacher: "Mr. Suresh K", score: 86, grade: "A" },
+    { code: "SC", name: "Science", teacher: "Ms. Lakshmi P", score: 90, grade: "A+" },
+    { code: "SS", name: "Social Science", teacher: "Mr. Anand R", score: 84, grade: "A" },
+    { code: "HI", name: "Hindi", teacher: "Ms. Neetu S", score: 90, grade: "A+" }
+  ],
+  term: [
+    { code: "EN", name: "English", teacher: "Ms. Radhika V", score: 88, grade: "A" },
+    { code: "MA", name: "Mathematics", teacher: "Mr. Suresh K", score: 81, grade: "A" },
+    { code: "SC", name: "Science", teacher: "Ms. Lakshmi P", score: 93, grade: "A+" },
+    { code: "SS", name: "Social Science", teacher: "Mr. Anand R", score: 76, grade: "B+" },
+    { code: "HI", name: "Hindi", teacher: "Ms. Neetu S", score: 85, grade: "A" }
+  ]
+};
+const segBtn = (on) => on
+  ? "background:#2A62F0;color:#fff;borderRadius:11px;padding:13px 0;textAlign:center;fontSize:15px;fontWeight:800;cursor:pointer"
+  : "color:#41526E;padding:13px 0;textAlign:center;fontSize:15px;fontWeight:700;cursor:pointer";
+const box = (on) => "width:22px;height:22px;borderRadius:6px;flexShrink:0;marginTop:2px;display:flex;alignItems:center;justifyContent:center;cursor:pointer;border:1.8px solid " + (on ? "#1D4ED8;background:#1D4ED8" : "#C6D0DE;background:#fff");
+const OVERALL = {
+  unit: { pct: "88.4", grade: "Grade A", rank: "Rank 4 of 42" },
+  term: { pct: "84.6", grade: "Grade A", rank: "Rank 7 of 42" }
+};
+
+const HW_DAYS = [
+  { d: "MON", n: 31, key: "31 Aug" },
+  { d: "TUE", n: 1, key: "1 Sept" },
+  { d: "WED", n: 2, key: "2 Sept" },
+  { d: "THU", n: 3, key: "3 Sept" },
+  { d: "FRI", n: 4, key: "4 Sept" },
+  { d: "SAT", n: 5, key: "5 Sept" }
+];
+const HOMEWORK = [
+  { id: "ma1", code: "MA", subject: "Mathematics", teacher: "Mr. Suresh K", due: "4 Sept", assigned: "2 Sept", status: "pending", attach: "Worksheet 6.3.pdf", task: "Exercise 6.3, questions 1\u201312 \u2014 squares and square roots." },
+  { id: "sc1", code: "SC", subject: "Science", teacher: "Ms. Lakshmi P", due: "5 Sept", assigned: "3 Sept", status: "pending", attach: "", task: "Lab record: write up the experiment on friction with observations." },
+  { id: "ss1", code: "SS", subject: "Social Science", teacher: "Mr. Anand R", due: "5 Sept", assigned: "3 Sept", status: "pending", attach: "India outline map.pdf", task: "Map work: mark the major rivers of peninsular India." },
+  { id: "en1", code: "EN", subject: "English", teacher: "Ms. Radhika V", due: "2 Sept", assigned: "31 Aug", status: "submitted", attach: "", task: "Letter to the editor on traffic safety near the school gate." },
+  { id: "hi1", code: "HI", subject: "Hindi", teacher: "Ms. Neetu S", due: "1 Sept", assigned: "31 Aug", status: "late", attach: "", task: "Chapter 4 \u2014 answer the comprehension questions in the notebook." },
+  { id: "cs1", code: "CS", subject: "Computer Science", teacher: "Mr. Faizal A", due: "5 Sept", assigned: "3 Sept", status: "pending", attach: "Flowchart template.pdf", task: "Draw flowcharts for the three programs discussed in class." }
+];
+const HW_STATUS = {
+  pending: { label: "Pending", bg: "#FDF2E2", fg: "#9A6316" },
+  submitted: { label: "Submitted", bg: "#E4F5EA", fg: "#1B7F45" },
+  late: { label: "Late", bg: "#FDE7E7", fg: "#B3261E" }
+};
+const chip = (on) => "padding:9px 15px;borderRadius:99px;fontSize:13px;fontWeight:700;whiteSpace:nowrap;cursor:pointer;border:1px solid " + (on ? "#1D4ED8;background:#1D4ED8;color:#fff" : "#E3E9F3;background:#fff;color:#41526E");
+
+const CERTS = [
+  { name: "Bonafide certificate", meta: "Issued 12 Aug 2026 \u00b7 Ref BON/8B/119", status: "Ready" },
+  { name: "Term 1 report card", meta: "Issued 2 Sept 2026 \u00b7 Class 8-B", status: "Ready" },
+  { name: "Fee payment receipt \u00b7 Term 1", meta: "Paid 18 Jun 2026 \u00b7 \u20b918,000", status: "Ready" },
+  { name: "Conduct certificate", meta: "Requested 1 Sept 2026", status: "In review" },
+  { name: "Transfer certificate", meta: "Available on leaving school", status: "Locked" }
+];
+const CERT_STATUS = {
+  "Ready": { bg: "#E4F5EA", fg: "#1B7F45" },
+  "In review": { bg: "#FDF2E2", fg: "#9A6316" },
+  "Locked": { bg: "#EFF3FA", fg: "#41526E" }
+};
+const CERT_TYPES = ["Bonafide certificate", "Conduct certificate", "Character certificate", "Fee payment receipt", "Migration certificate"];
+
+const BORROWED = [
+  { id: "b1", title: "The Story of My Experiments with Truth", author: "M. K. Gandhi", code: "BIO-214", due: "9 Sept 2026", renewed: "23 Sept 2026", soon: true },
+  { id: "b2", title: "Wings of Fire", author: "A. P. J. Abdul Kalam", code: "BIO-087", due: "24 Sept 2026", renewed: "8 Oct 2026", soon: false }
+];
+const RETURNED = [
+  { title: "Atlas of India", author: "Oxford", code: "REF-011", meta: "Returned 28 Aug 2026" },
+  { title: "Malgudi Days", author: "R. K. Narayan", code: "FIC-142", meta: "Returned 14 Aug 2026" },
+  { title: "A Brief History of Time", author: "Stephen Hawking", code: "SCI-330", meta: "Returned 2 Aug 2026" }
+];
+const CATALOGUE = [
+  { title: "The Jungle Book", author: "Rudyard Kipling", code: "FIC-021", shelf: "Shelf B2", available: true },
+  { title: "Ponniyin Selvan \u00b7 Part 1", author: "Kalki", code: "FIC-198", shelf: "Shelf C1", available: true },
+  { title: "The Discovery of India", author: "Jawaharlal Nehru", code: "HIS-044", shelf: "Shelf A4", available: false },
+  { title: "Cosmos", author: "Carl Sagan", code: "SCI-101", shelf: "Shelf D3", available: true },
+  { title: "Oxford School Atlas", author: "Oxford", code: "REF-011", shelf: "Reference desk", available: false },
+  { title: "Panchatantra Tales", author: "Vishnu Sharma", code: "FIC-006", shelf: "Shelf B1", available: true }
+];
+
+const TT_WEEK = [
+  { dow: "MON", n: 31 }, { dow: "TUE", n: 1 }, { dow: "WED", n: 2 },
+  { dow: "THU", n: 3 }, { dow: "FRI", n: 4 }, { dow: "SAT", n: 5 }
+];
+const TT_PERIODS = {
+  MON: [["8:15 AM","P1","English","Ms. Radhika V"],["9:05 AM","P2","Mathematics","Mr. Suresh K"],["9:55 AM","P3","Hindi","Ms. Neetu S"],["11:00 AM","P4","Science","Ms. Lakshmi P"],["11:50 AM","P5","Social Science","Mr. Anand R"],["1:30 PM","P6","Computer Science \u00b7 Lab 1","Mr. Faizal A"]],
+  TUE: [["8:15 AM","P1","Mathematics","Mr. Suresh K"],["9:05 AM","P2","Science \u00b7 Lab 2","Ms. Lakshmi P"],["9:55 AM","P3","English","Ms. Radhika V"],["11:00 AM","P4","Hindi","Ms. Neetu S"],["11:50 AM","P5","Social Science","Mr. Anand R"],["1:30 PM","P6","Games \u00b7 Ground","Mr. Vikram J"]],
+  WED: [["8:15 AM","P1","Social Science","Mr. Anand R"],["9:05 AM","P2","Mathematics","Mr. Suresh K"],["9:55 AM","P3","Science","Ms. Lakshmi P"],["11:00 AM","P4","English","Ms. Radhika V"],["11:50 AM","P5","Computer Science","Mr. Faizal A"],["1:30 PM","P6","Hindi","Ms. Neetu S"]],
+  THU: [["8:15 AM","P1","Mathematics","Mr. Suresh K"],["9:05 AM","P2","English","Ms. Radhika V"],["9:55 AM","P3","Science \u00b7 Lab 2","Ms. Lakshmi P"],["11:00 AM","P4","Social Science","Mr. Anand R"],["11:50 AM","P5","Hindi","Ms. Neetu S"],["1:30 PM","P6","Games \u00b7 Ground","Mr. Vikram J"]],
+  FRI: [["8:15 AM","P1","Hindi","Ms. Neetu S"],["9:05 AM","P2","Social Science","Mr. Anand R"],["9:55 AM","P3","Mathematics","Mr. Suresh K"],["11:00 AM","P4","Computer Science \u00b7 Lab 1","Mr. Faizal A"],["11:50 AM","P5","English","Ms. Radhika V"],["1:30 PM","P6","Science","Ms. Lakshmi P"]],
+  SAT: [["8:15 AM","P1","Library \u00b7 Reading","Ms. Radhika V"],["9:05 AM","P2","Mathematics","Mr. Suresh K"],["9:55 AM","P3","Art \u00b7 Room 6","Ms. Priya D"],["11:00 AM","P4","Music","Mr. Joseph T"]]
+};
+const ATT_MONTHS = [
+  { label: "July 2026", y: 2026, m: 6, present: 24, total: 26, absents: [8, 21] },
+  { label: "August 2026", y: 2026, m: 7, present: 25, total: 26, absents: [19] },
+  { label: "September 2026", y: 2026, m: 8, present: 2, total: 3, absents: [3] }
+];
+const CAL_MONTHS = [
+  { label: "August 2026", mon: "AUG", y: 2026, m: 7, events: [
+    { day: 15, title: "Independence Day", meta: "Saturday \u00b7 Flag hoisting 8 AM", tag: "Holiday", bg: "#FDF2E2", fg: "#9A6316", dayColor: "#9A6316" },
+    { day: 22, title: "Unit test 2 begins", meta: "Saturday \u00b7 Grades 6\u201310", tag: "Exam", bg: "#E6EDFD", fg: "#1D4ED8", dayColor: "#1D4ED8" }
+  ] },
+  { label: "September 2026", mon: "SEP", y: 2026, m: 8, events: [
+    { day: 1, title: "Science Exhibition", meta: "Tuesday \u00b7 Grades 6\u201310", tag: "Event", bg: "#E6EDFD", fg: "#1D4ED8", dayColor: "#1D4ED8" },
+    { day: 12, title: "Parent\u2013Teacher Meeting", meta: "Saturday \u00b7 All grades", tag: "Meeting", bg: "#E4F5EA", fg: "#1B7F45", dayColor: "#1D4ED8" },
+    { day: 15, title: "Term 2 fee due date", meta: "Tuesday", tag: "Fees", bg: "#EFF3FA", fg: "#41526E", dayColor: "#1D4ED8" },
+    { day: 25, title: "Sports Day", meta: "Friday \u00b7 Holiday for Grades 1\u20135", tag: "Holiday", bg: "#FDF2E2", fg: "#9A6316", dayColor: "#9A6316" }
+  ] },
+  { label: "October 2026", mon: "OCT", y: 2026, m: 9, events: [
+    { day: 2, title: "Gandhi Jayanti", meta: "Friday \u00b7 School closed", tag: "Holiday", bg: "#FDF2E2", fg: "#9A6316", dayColor: "#9A6316" },
+    { day: 9, title: "Term 1 results", meta: "Friday \u00b7 Report cards issued", tag: "Result", bg: "#E4F5EA", fg: "#1B7F45", dayColor: "#1D4ED8" }
+  ] }
+];
+const SLOTS = [
+  { id: "s1", time: "12:00 \u2013 12:15 PM", teacher: "Ms. Radhika V \u00b7 English" },
+  { id: "s2", time: "12:20 \u2013 12:35 PM", teacher: "Mr. Suresh K \u00b7 Mathematics" },
+  { id: "s3", time: "12:40 \u2013 12:55 PM", teacher: "Ms. Lakshmi P \u00b7 Science", taken: true },
+  { id: "s4", time: "1:00 \u2013 1:15 PM", teacher: "Mr. Anand R \u00b7 Social Science" },
+  { id: "s5", time: "1:20 \u2013 1:35 PM", teacher: "Ms. Neetu S \u00b7 Hindi" }
+];
+const FEEDBACK = [
+  { code: "EN", subject: "English", teacher: "Ms. Radhika V" },
+  { code: "MA", subject: "Mathematics", teacher: "Mr. Suresh K" },
+  { code: "SC", subject: "Science", teacher: "Ms. Lakshmi P" },
+  { code: "SS", subject: "Social Science", teacher: "Mr. Anand R" }
+];
+
+const SUBJECT_WORK = {
+  EN: { name: "English", teacher: "Ms. Radhika V", periods: 6, unit: "Unit 5 \u00b7 Prose and letter writing",
+    lesson: [["Week 1", "The Tiger King \u2014 reading and discussion"], ["Week 2", "Letter to the editor \u2014 format and practice"], ["Week 3", "Grammar: reported speech"], ["Week 4", "Revision and unit test"]],
+    hw: [["Letter to the editor on traffic safety", "Due 2 Sept", "Submitted"], ["Reported speech worksheet", "Due 8 Sept", "Pending"]],
+    assign: [["Book review \u00b7 500 words", "Due 18 Sept", "20 marks"], ["Class magazine article", "Due 30 Sept", "15 marks"]] },
+  MA: { name: "Mathematics", teacher: "Mr. Suresh K", periods: 7, unit: "Ch. 6 \u00b7 Squares and square roots",
+    lesson: [["Week 1", "Squares, properties and patterns"], ["Week 2", "Square roots by factorisation"], ["Week 3", "Long division method"], ["Week 4", "Word problems and revision"]],
+    hw: [["Exercise 6.3, questions 1\u201312", "Due 4 Sept", "Pending"], ["Exercise 6.4, questions 1\u20138", "Due 9 Sept", "Pending"]],
+    assign: [["Practice set \u00b7 squares and roots", "Due 16 Sept", "25 marks"]] },
+  SC: { name: "Science", teacher: "Ms. Lakshmi P", periods: 7, unit: "Ch. 8 \u00b7 Force and friction",
+    lesson: [["Week 1", "Types of force"], ["Week 2", "Friction \u2014 causes and effects"], ["Week 3", "Lab: measuring friction"], ["Week 4", "Fluid friction and revision"]],
+    hw: [["Lab record \u00b7 friction experiment", "Due 5 Sept", "Pending"], ["Ch. 8 textbook questions", "Due 11 Sept", "Pending"]],
+    assign: [["Model: reducing friction", "Due 22 Sept", "20 marks"], ["Science exhibition poster", "Due 1 Sept", "Submitted"]] },
+  SS: { name: "Social Science", teacher: "Mr. Anand R", periods: 5, unit: "Ch. 5 \u00b7 Rivers of India",
+    lesson: [["Week 1", "Himalayan river systems"], ["Week 2", "Peninsular rivers"], ["Week 3", "Water resources and dams"], ["Week 4", "Map practice"]],
+    hw: [["Map work \u00b7 rivers of peninsular India", "Due 5 Sept", "Pending"]],
+    assign: [["Report on a local water body", "Due 24 Sept", "20 marks"]] },
+  HI: { name: "Hindi", teacher: "Ms. Neetu S", periods: 4, unit: "\u092a\u093e\u0920 4 \u00b7 \u0917\u0926\u094d\u092f",
+    lesson: [["Week 1", "\u092a\u093e\u0920 4 \u2014 \u0935\u093e\u091a\u0928"], ["Week 2", "\u0936\u092c\u094d\u0926\u093e\u0930\u094d\u0925 \u0914\u0930 \u092a\u094d\u0930\u0936\u094d\u0928\u094b\u0924\u094d\u0924\u0930"], ["Week 3", "\u0935\u094d\u092f\u093e\u0915\u0930\u0923: \u0938\u0902\u0927\u093f"], ["Week 4", "\u092a\u0941\u0928\u0930\u093e\u0935\u0943\u0924\u094d\u0924\u093f"]],
+    hw: [["\u092a\u093e\u0920 4 \u00b7 comprehension questions", "Due 1 Sept", "Late"]],
+    assign: [["\u0928\u093f\u092c\u0902\u0927 \u00b7 250 words", "Due 20 Sept", "15 marks"]] },
+  CS: { name: "Computer Science", teacher: "Mr. Faizal A", periods: 3, unit: "Ch. 4 \u00b7 Algorithms and flowcharts",
+    lesson: [["Week 1", "Algorithm basics"], ["Week 2", "Flowchart symbols"], ["Week 3", "Lab: three programs"], ["Week 4", "Revision"]],
+    hw: [["Flowcharts for three programs", "Due 5 Sept", "Pending"]],
+    assign: [["Lab record \u00b7 Ch. 1\u20134", "Due 26 Sept", "20 marks"]] }
+};
+const SUBJECT_ORDER = ["EN", "MA", "SC", "SS", "HI", "CS"];
+const HW_TONE = { Pending: ["#FDF2E2", "#9A6316"], Submitted: ["#E4F5EA", "#1B7F45"], Late: ["#FDE7E7", "#B3261E"] };
+
+class Component extends DCLogic {
+  state = { screen: "home", stack: [], termIdx: 0, examSet: "unit", termOpen: false,
+    feeTermIdx: 1, feeTermOpen: false, feeTab: "pay", selTuition: true, selTransport: false, tuitionPaid: false, transportPaid: false, joinedClass: null, playingRec: null, fullscreen: false, libTab: "borrowed", libQuery: "", libRenewed: {}, libReserved: {}, subjectCode: "EN",
+    ttDay: "THU", attMonth: 2, attDay: null, calMonth: 1,
+    ratings: { EN: 5, MA: 4, SC: 5, SS: 0 }, fbSent: false,
+    slotBooked: "s1", callOpen: false, leaveTab: "apply", payMethod: "upi", receipts: {}, leaveExtra: [], leaveSent: false, certExtra: [], certDone: {}, certView: null, certPicker: false, hwFilter: "all", hwDay: null, hwDone: {} };
+
+  toggleFeeTerm = () => this.setState(st => ({ feeTermOpen: !st.feeTermOpen }));
+  pickFeeTerm = (i) => () => this.setState({ feeTermIdx: i, feeTermOpen: false });
+  setFeeTab = (v) => () => this.setState({ feeTab: v });
+  toggleSel = (k) => () => this.setState(st => ({ [k]: !st[k] }));
+  payNow = () => this.go("payment");
+  confirmPay = () => this.setState(st => ({
+    screen: "fees", stack: st.stack.slice(0, -1),
+    tuitionPaid: st.tuitionPaid || st.selTuition,
+    transportPaid: st.transportPaid || st.selTransport,
+    selTuition: false, selTransport: false
+  }));
+  setMethod = (m) => () => this.setState({ payMethod: m });
+  downloadReceipt = (ref) => () => this.setState(st => ({ receipts: Object.assign({}, st.receipts, { [ref]: true }) }));
+
+  openCert = (c) => () => this.setState({ certView: c });
+  closeCert = () => this.setState({ certView: null });
+  downloadCert = (name) => () => this.setState(st => ({ certDone: Object.assign({}, st.certDone, { [name]: true }) }));
+  toggleCertPicker = () => this.setState(st => ({ certPicker: !st.certPicker }));
+  requestCert = (name) => () => this.setState(st => ({
+    certPicker: false,
+    certExtra: [{ name: name, meta: "Requested 4 Sept 2026", status: "In review" }].concat(st.certExtra)
+  }));
+
+  certVals() {
+    const st = this.state;
+    const list = st.certExtra.concat(CERTS);
+    const v = st.certView;
+    return {
+      certificates: list.map(c => {
+        const ready = c.status === "Ready";
+        const done = !!st.certDone[c.name];
+        const s = CERT_STATUS[c.status] || CERT_STATUS.Locked;
+        return {
+          name: c.name, meta: c.meta, status: c.status, bg: s.bg, fg: s.fg,
+          view: ready ? this.openCert(c) : () => {},
+          download: ready ? this.downloadCert(c.name) : () => {},
+          dlLabel: done ? "Downloaded" : "Download PDF",
+          viewStyle: "flex:1;borderRadius:10px;padding:9px 0;textAlign:center;fontSize:13px;fontWeight:700;border:1px solid " + (ready ? "#DCE7FB;color:#1D4ED8;cursor:pointer" : "#EDF0F5;color:#B4BECD;cursor:default"),
+          dlStyle: "flex:1;borderRadius:10px;padding:9px 0;textAlign:center;fontSize:13px;fontWeight:700;color:#fff;background:" + (ready ? (done ? "#1B7F45;cursor:pointer" : "#2A62F0;cursor:pointer") : "#C6D0DE;cursor:default")
+        };
+      }),
+      certTypes: CERT_TYPES.map(t => ({ label: t, pick: this.requestCert(t) })),
+      certPickerOpen: st.certPicker,
+      toggleCertPicker: this.toggleCertPicker,
+      certViewOpen: !!v,
+      certViewName: v ? v.name : "",
+      certViewMeta: v ? v.meta : "",
+      closeCert: this.closeCert
+    };
+  }
+
+  setTtDay = (d) => () => this.setState({ ttDay: d });
+  joinClass = (id) => () => this.setState({ joinedClass: id });
+  watchRec = (i) => () => this.setState(st => ({ playingRec: st.playingRec === i ? null : i, fullscreen: false }));
+  toggleFullscreen = () => this.setState(st => ({ fullscreen: !st.fullscreen }));
+  leaveClass = () => this.setState({ joinedClass: null });
+
+  onlineVals() {
+    const st = this.state;
+    const joined = st.joinedClass;
+    const live = LIVE_CLASSES.map(c => ({
+      id: c.id, subject: c.subject, teacher: c.teacher, time: c.time, topic: c.topic, code: c.code,
+      state: c.state === "live" ? "Live now" : c.state === "soon" ? "Starts " + c.starts : "Scheduled",
+      stateStyle: "fontSize:11.5px;fontWeight:700;padding:5px 11px;borderRadius:99px;whiteSpace:nowrap;" + (c.state === "live" ? "background:#FDE7E7;color:#B3261E" : c.state === "soon" ? "background:#FDF2E2;color:#9A6316" : "background:#EFF3FA;color:#41526E"),
+      canJoin: c.state !== "later",
+      join: c.state !== "later" ? this.joinClass(c.id) : () => {},
+      label: joined === c.id ? "In class" : c.state === "later" ? "Not open yet" : "Join",
+      btnStyle: "borderRadius:11px;padding:10px 16px;fontSize:13.5px;fontWeight:800;whiteSpace:nowrap;color:#fff;background:" + (joined === c.id ? "#1B7F45;cursor:default" : c.state === "later" ? "#C6D0DE;cursor:default" : "#2A62F0;cursor:pointer")
+    }));
+    const active = LIVE_CLASSES.filter(c => c.id === joined)[0];
+    return {
+      liveClasses: live,
+      fullscreenOpen: st.playingRec !== null && st.fullscreen,
+      toggleFullscreen: this.toggleFullscreen,
+      fsTitle: st.playingRec !== null ? RECORDINGS[st.playingRec].subject + " \u00b7 " + RECORDINGS[st.playingRec].topic : "",
+      fsMeta: st.playingRec !== null ? RECORDINGS[st.playingRec].meta : "",
+      recordings: RECORDINGS.map((r, i) => ({
+        subject: r.subject, topic: r.topic, meta: r.meta,
+        playing: st.playingRec === i,
+        watch: this.watchRec(i),
+        label: st.playingRec === i ? "Playing" : "Watch",
+        labelStyle: "fontSize:12.5px;fontWeight:700;color:" + (st.playingRec === i ? "#1B7F45" : "#1D4ED8")
+      })),
+      inClass: !!active,
+      activeSubject: active ? active.subject : "",
+      activeTeacher: active ? active.teacher + " \u00b7 " + active.topic : "",
+      activeCode: active ? "Meeting code " + active.code : "",
+      leaveClass: this.leaveClass
+    };
+  }
+  openSubject = (code) => () => this.setState(st => ({ screen: "subject", subjectCode: code, stack: [...st.stack, st.screen] }));
+
+  academicVals() {
+    const code = this.state.subjectCode;
+    const sub = SUBJECT_WORK[code] || SUBJECT_WORK.EN;
+    const tone = (label) => HW_TONE[label] || HW_TONE.Pending;
+    return {
+      goTerm: () => this.go("term"), goTimetable: () => this.go("timetable"), goOnlineClass: () => this.go("onlineclass"),
+      termSubjects: SUBJECT_ORDER.map(c => {
+        const x = SUBJECT_WORK[c];
+        const pending = x.hw.filter(h => h[2] !== "Submitted").length;
+        return {
+          code: c, name: x.name, teacher: x.teacher, unit: x.unit,
+          meta: x.hw.length + (x.hw.length === 1 ? " homework task \u00b7 " : " homework tasks \u00b7 ") + x.assign.length + (x.assign.length === 1 ? " assignment" : " assignments"),
+          pending: pending ? pending + " pending" : "All clear",
+          pendStyle: "fontSize:11.5px;fontWeight:700;padding:5px 10px;borderRadius:99px;whiteSpace:nowrap;" + (pending ? "background:#FDF2E2;color:#9A6316" : "background:#E4F5EA;color:#1B7F45"),
+          open: this.openSubject(c)
+        };
+      }),
+      ...(this.state.screen === "subject" ? { title: sub.name, subtitle: sub.teacher + " \u00b7 Class 8-B" } : {}),
+      subjectName: sub.name, subjectTeacher: sub.teacher, subjectUnit: sub.unit,
+      subjectPeriods: sub.periods + " periods a week",
+      lessonPlan: sub.lesson.map(l => ({ week: l[0], topic: l[1] })),
+      subjectHw: sub.hw.map(h => ({ title: h[0], due: h[1], status: h[2], bg: tone(h[2])[0], fg: tone(h[2])[1] })),
+      subjectAssign: sub.assign.map(a => ({ title: a[0], due: a[1], marks: a[2] }))
+    };
+  }
+  stepAtt = (n) => () => this.setState(st => ({ attMonth: Math.min(ATT_MONTHS.length - 1, Math.max(0, st.attMonth + n)), attDay: null }));
+  pickAttDay = (d) => () => this.setState(st => ({ attDay: st.attDay === d ? null : d }));
+  stepCal = (n) => () => this.setState(st => ({ calMonth: Math.min(CAL_MONTHS.length - 1, Math.max(0, st.calMonth + n)) }));
+  rate = (code, n) => () => this.setState(st => ({ ratings: Object.assign({}, st.ratings, { [code]: n }), fbSent: false }));
+  sendFeedback = () => this.setState({ fbSent: true });
+  bookSlot = (id) => () => this.setState({ slotBooked: id });
+  toggleCall = () => this.setState(st => ({ callOpen: !st.callOpen }));
+  submitLeave = () => this.setState(st => st.leaveSent ? {} : ({
+    leaveTab: "history", leaveSent: true,
+    leaveExtra: [{ dates: "8\u20139 Sept 2026", reason: "Viral fever \u00b7 2 days \u00b7 submitted just now", status: "Pending", bg: "#FDF2E2", fg: "#9A6316" }].concat(st.leaveExtra)
+  }));
+
+  monthCells(y, m, marks) {
+    const first = new Date(y, m, 1).getDay();
+    const days = new Date(y, m + 1, 0).getDate();
+    const cells = [];
+    for (let i = 0; i < first; i++) cells.push({ label: "", style: "padding:9px 0", pick: () => {} });
+    for (let d = 1; d <= days; d++) cells.push(Object.assign({ label: String(d) }, marks(d, new Date(y, m, d).getDay())));
+    return cells;
+  }
+
+  screenVals() {
+    const st = this.state;
+    const am = ATT_MONTHS[st.attMonth];
+    const cm = CAL_MONTHS[st.calMonth];
+    const calDays = {};
+    cm.events.forEach(e => { calDays[e.day] = e; });
+    const attCells = this.monthCells(am.y, am.m, (d, dow) => {
+      const weekend = dow === 0;
+      const absent = am.absents.indexOf(d) > -1;
+      const sel = st.attDay === d;
+      const bg = weekend ? "#F7F9FC" : absent ? "#1D4ED8" : "#EFF3FA";
+      return {
+        pick: weekend ? () => {} : this.pickAttDay(d),
+        style: "padding:9px 0;borderRadius:10px;cursor:" + (weekend ? "default" : "pointer") + ";background:" + bg + ";color:" + (absent ? "#fff" : weekend ? "#C6D0DE" : "#41526E") + (sel ? ";outline:2px solid #2A62F0;outlineOffset:1px" : "")
+      };
+    });
+    const attSelected = st.attDay;
+    const attDayNote = attSelected
+      ? attSelected + " " + am.label + " \u00b7 " + (am.absents.indexOf(attSelected) > -1 ? "Absent \u00b7 leave on record" : "Present \u00b7 all periods marked")
+      : "Tap a date to see that day's record";
+    const calCells = this.monthCells(cm.y, cm.m, (d, dow) => {
+      const ev = calDays[d];
+      return {
+        pick: () => {},
+        style: "padding:7px 0;borderRadius:10px;" + (ev ? "background:" + ev.bg + ";color:" + ev.fg + ";fontWeight:800" : dow === 0 ? "color:#C6D0DE" : "color:#0F1B33")
+      };
+    });
+    const rated = FEEDBACK.filter(f => st.ratings[f.code] > 0).length;
+    return {
+      ttDays: TT_WEEK.map(d => ({
+        dow: d.dow, n: d.n, pick: this.setTtDay(d.dow),
+        style: "borderRadius:12px;padding:9px 0;textAlign:center;cursor:pointer;border:1px solid #E8EDF5;background:" + (st.ttDay === d.dow ? "#2A62F0" : "#fff"),
+        sub: st.ttDay === d.dow ? "rgba(255,255,255,.8)" : "#A3AFC0",
+        fg: st.ttDay === d.dow ? "#fff" : "#0F1B33"
+      })),
+      periods: TT_PERIODS[st.ttDay].map((p, i) => {
+        const now = st.ttDay === "THU" && i === 2;
+        return {
+          time: p[0], slot: p[1], subject: p[2], teacher: p[3], now,
+          bg: now ? "#2A62F0" : "#fff", fg: now ? "#fff" : "#0F1B33",
+          sub: now ? "rgba(255,255,255,.8)" : "#8494AB",
+          accent: p[2].indexOf("Games") > -1 || p[2].indexOf("Art") > -1 ? "#E8A33D" : "#2A62F0"
+        };
+      }),
+      attLabel: am.label, attCells, attDayNote,
+      attPresent: am.present, attTotal: am.total,
+      attPrev: this.stepAtt(-1), attNext: this.stepAtt(1),
+      calLabel: cm.label, calCells, calMon: cm.mon, events: cm.events,
+      calCount: cm.events.length + " EVENTS",
+      calPrev: this.stepCal(-1), calNext: this.stepCal(1),
+      feedback: FEEDBACK.map(f => {
+        const val = st.ratings[f.code] || 0;
+        return {
+          code: f.code, subject: f.subject, teacher: f.teacher,
+          state: val ? "Rated" : "Not rated", fg: val ? "#1B7F45" : "#9A6316",
+          stars: [1, 2, 3, 4, 5].map(n => ({
+            fill: n <= val ? "#E8A33D" : "none",
+            stroke: n <= val ? "#E8A33D" : "#D3DBE7",
+            pick: this.rate(f.code, n)
+          }))
+        };
+      }),
+      fbLabel: st.fbSent ? "Feedback submitted" : (rated === FEEDBACK.length ? "Submit feedback" : "Rate all " + FEEDBACK.length + " subjects"),
+      fbStyle: "borderRadius:14px;padding:16px 0;textAlign:center;color:#fff;fontSize:16px;fontWeight:800;background:" + (st.fbSent ? "#1B7F45;cursor:default" : rated === FEEDBACK.length ? "#2A62F0;cursor:pointer" : "#B9C6DC;cursor:default"),
+      sendFeedback: !st.fbSent && rated === FEEDBACK.length ? this.sendFeedback : () => {},
+      slots: SLOTS.map(s => {
+        const mine = st.slotBooked === s.id;
+        const taken = s.taken && !mine;
+        return {
+          time: s.time, teacher: s.teacher,
+          state: mine ? "Booked by you" : taken ? "Taken" : "Available",
+          bg: mine ? "#E6EDFD" : "#fff",
+          border: mine ? "#1D4ED8" : "#E8EDF5",
+          fg: taken ? "#8494AB" : mine ? "#1D4ED8" : "#0F1B33",
+          sub: mine ? "#1D4ED8" : "#8494AB",
+          pick: taken ? () => {} : this.bookSlot(s.id)
+        };
+      }),
+      toggleCall: this.toggleCall, callOpen: st.callOpen,
+      callLabel: st.callOpen ? "98404 21188" : "Call",
+      submitLeave: this.submitLeave,
+      leaveSent: st.leaveSent,
+      leaveExtra: st.leaveExtra
+    };
+  }
+
+  setTtDayUnused = null;
+
+  setLibTab = (v) => () => this.setState({ libTab: v });
+  onLibSearch = (e) => this.setState({ libQuery: e.target.value });
+  renewBook = (id) => () => this.setState(st => ({ libRenewed: Object.assign({}, st.libRenewed, { [id]: true }) }));
+  reserveBook = (code) => () => this.setState(st => ({ libReserved: Object.assign({}, st.libReserved, { [code]: true }) }));
+
+  libVals() {
+    const st = this.state;
+    const q = st.libQuery.trim().toLowerCase();
+    const dueSoon = BORROWED.filter(b => b.soon && !st.libRenewed[b.id]).length;
+    return {
+      libTabs: [["borrowed", "Borrowed"], ["history", "History"], ["search", "Search"]].map(([k, label]) => ({
+        label, pick: this.setLibTab(k), style: segBtn(st.libTab === k)
+      })),
+      isLibBorrowed: st.libTab === "borrowed", isLibHistory: st.libTab === "history", isLibSearch: st.libTab === "search",
+      libIssued: BORROWED.length, libDueSoon: dueSoon,
+      libQuery: st.libQuery, onLibSearch: this.onLibSearch,
+      borrowed: BORROWED.map(b => {
+        const done = !!st.libRenewed[b.id];
+        return {
+          title: b.title, author: b.author, code: b.code,
+          due: "Due " + (done ? b.renewed : b.due),
+          dueStyle: "fontSize:12.5px;fontWeight:700;marginTop:5px;color:" + (!done && b.soon ? "#9A6316" : "#1B7F45"),
+          label: done ? "Renewed" : "Renew",
+          renew: done ? () => {} : this.renewBook(b.id),
+          btnStyle: "borderRadius:10px;padding:8px 12px;fontSize:12.5px;fontWeight:700;whiteSpace:nowrap;border:1px solid " + (done ? "#CFE7D9;color:#1B7F45;background:#E4F5EA;cursor:default" : "#DCE7FB;color:#1D4ED8;background:#fff;cursor:pointer")
+        };
+      }),
+      returned: RETURNED,
+      results: CATALOGUE.filter(c => !q || (c.title + " " + c.author + " " + c.code).toLowerCase().indexOf(q) > -1).map(c => {
+        const res = !!st.libReserved[c.code];
+        return {
+          title: c.title, author: c.author, code: c.code, shelf: c.shelf,
+          status: c.available ? (res ? "Reserved" : "Available") : "On loan",
+          statusStyle: "fontSize:11.5px;fontWeight:700;padding:5px 10px;borderRadius:99px;whiteSpace:nowrap;" + (c.available ? (res ? "background:#E6EDFD;color:#1D4ED8" : "background:#E4F5EA;color:#1B7F45") : "background:#EFF3FA;color:#41526E"),
+          reserve: c.available && !res ? this.reserveBook(c.code) : () => {},
+          canReserve: c.available && !res
+        };
+      }),
+      libNoResults: CATALOGUE.filter(c => !q || (c.title + " " + c.author + " " + c.code).toLowerCase().indexOf(q) > -1).length === 0
+    };
+  }
+
+  setLeaveTab = (v) => () => this.setState({ leaveTab: v });
+  setHwFilter = (f) => () => this.setState({ hwFilter: f });
+  setHwDay = (k) => () => this.setState(st => ({ hwDay: st.hwDay === k ? null : k }));
+  submitHw = (id) => () => this.setState(st => ({ hwDone: Object.assign({}, st.hwDone, { [id]: true }) }));
+
+  hwVals() {
+    const st = this.state;
+    const items = HOMEWORK.map(h => Object.assign({}, h, { status: st.hwDone[h.id] ? "submitted" : h.status }));
+    const counts = {
+      pending: items.filter(h => h.status === "pending").length,
+      submitted: items.filter(h => h.status === "submitted").length,
+      late: items.filter(h => h.status === "late").length
+    };
+    const shown = items.filter(h =>
+      (st.hwFilter === "all" || h.status === st.hwFilter) &&
+      (!st.hwDay || h.due === st.hwDay)
+    );
+    return {
+      hwDays: HW_DAYS.map(d => {
+        const on = st.hwDay === d.key;
+        const count = items.filter(h => h.due === d.key).length;
+        return {
+          d: d.d, n: d.n, pick: this.setHwDay(d.key),
+          style: "display:flex;flexDirection:column;alignItems:center;gap:4px;padding:11px 0;borderRadius:14px;cursor:pointer;background:" + (on ? "#2A62F0" : "#fff") + ";border:1px solid " + (on ? "#2A62F0" : "#E8EDF5"),
+          dayStyle: "fontSize:10px;fontWeight:800;letterSpacing:0.06em;color:" + (on ? "rgba(255,255,255,.8)" : "#A3AFC0"),
+          numStyle: "fontSize:15px;fontWeight:800;color:" + (on ? "#fff" : "#0F1B33"),
+          dotStyle: "width:5px;height:5px;borderRadius:50%;background:" + (count ? (on ? "#fff" : "#2A62F0") : "transparent")
+        };
+      }),
+      hwFilters: [["all", "All"], ["pending", "Pending"], ["submitted", "Submitted"], ["late", "Late"]].map(([k, label]) => ({
+        label, pick: this.setHwFilter(k), style: chip(st.hwFilter === k)
+      })),
+      hwPending: counts.pending, hwSubmitted: counts.submitted, hwLate: counts.late,
+      hwEmpty: shown.length === 0,
+      hwDayLabel: st.hwDay ? "Due " + st.hwDay : "This week",
+      homework: shown.map(h => ({
+        code: h.code, subject: h.subject, teacher: h.teacher, due: h.due, assigned: h.assigned,
+        task: h.task, attach: h.attach, hasAttach: !!h.attach,
+        status: HW_STATUS[h.status].label,
+        bg: HW_STATUS[h.status].bg, fg: HW_STATUS[h.status].fg,
+        canSubmit: h.status !== "submitted",
+        submit: this.submitHw(h.id)
+      }))
+    };
+  }
+
+  oldPayNow = () => this.setState(st => ({
+    tuitionPaid: st.tuitionPaid || (st.selTuition && !st.tuitionPaid),
+    transportPaid: st.transportPaid || (st.selTransport && !st.transportPaid),
+    selTuition: false, selTransport: false
+  }));
+
+  toggleTerm = () => this.setState(st => ({ termOpen: !st.termOpen }));
+  pickTermIdx = (i) => () => this.setState({ termIdx: i, termOpen: false });
+  setSet = (v) => () => this.setState({ examSet: v });
+
+  go = (s) => this.setState(st => ({ screen: s, stack: [...st.stack, st.screen] }));
+  back = () => this.setState(st => {
+    const stack = st.stack.slice();
+    const prev = stack.pop();
+    return { screen: prev || "home", stack };
+  });
+  tab = (s) => () => this.setState({ screen: s, stack: [] });
+
+  icon(key) {
+    const d = [FRAMES[key], ICONS[key]].filter(Boolean).join(" ");
+    return React.createElement("svg", { width: 26, height: 26, viewBox: "0 0 24 24", fill: "none", stroke: "#fff", strokeWidth: 1.8, strokeLinecap: "round" },
+      React.createElement("path", { d: d }));
+  }
+  item = (key, label) => ({ label, svg: this.icon(key), go: () => this.go(key) });
+  withLines = (sections) => sections.map(s => ({
+    title: s.title,
+    rows: s.rows.map((r, i) => ({ k: r.k, v: r.v, line: i === 0 ? "transparent" : "#F2F5F9" }))
+  }));
+  stars = (n) => [1, 2, 3, 4, 5].map(i => ({
+    fill: i <= n ? "#E8A33D" : "none",
+    stroke: i <= n ? "#E8A33D" : "#C6D0DE"
+  }));
+
+  tabOf(s) {
+    if (s === "home") return "home";
+    if (["services", "attendance", "report", "fees", "leave", "notices", "profile"].indexOf(s) > -1) return "school";
+    if (["academics", "term", "subject", "timetable", "calendar", "homework", "exams", "subjects", "onlineclass"].indexOf(s) > -1) return "academics";
+    if (["bus", "transport"].indexOf(s) > -1) return "bus";
+    return "school";
+  }
+
+  feeVals() {
+    const st = this.state;
+    const tSel = st.selTuition && !st.tuitionPaid;
+    const trSel = st.selTransport && !st.transportPaid;
+    const amount = (tSel ? 24000 : 0) + (trSel ? 6000 : 0);
+    const paidTotal = 18000 + (st.tuitionPaid ? 24000 : 0) + (st.transportPaid ? 6000 : 0);
+    const totalPayable = 48000;
+    const fmt = n => "\u20b9" + n.toLocaleString("en-IN");
+    return {
+      toggleTuition: st.tuitionPaid ? () => {} : this.toggleSel("selTuition"),
+      toggleTransport: st.transportPaid ? () => {} : this.toggleSel("selTransport"),
+      tuitionDone: st.tuitionPaid, transportDone: st.transportPaid,
+      tuitionOpen: !st.tuitionPaid, transportOpen: !st.transportPaid,
+      anyDue: !(st.tuitionPaid && st.transportPaid),
+      allPaid: st.tuitionPaid && st.transportPaid,
+      transportStatusStyle: "background:#E4F5EA;color:#1B7F45;fontSize:12px;fontWeight:700;padding:6px 12px;borderRadius:99px",
+      tuitionBox: box(tSel), transportBox: box(trSel),
+      tuitionCheck: tSel, transportCheck: trSel,
+      tuitionStatus: st.tuitionPaid ? "Paid" : "Pending",
+      tuitionStatusStyle: st.tuitionPaid
+        ? "background:#E4F5EA;color:#1B7F45;fontSize:12px;fontWeight:700;padding:6px 12px;borderRadius:99px"
+        : "background:#FDF2E2;color:#9A6316;fontSize:12px;fontWeight:700;padding:6px 12px;borderRadius:99px",
+      tuitionPaidAmt: st.tuitionPaid ? fmt(24000) : "\u20b90",
+      tuitionDueAmt: st.tuitionPaid ? "\u20b90" : fmt(24000),
+      paidTotal: fmt(paidTotal),
+      totalPayable: fmt(totalPayable),
+      outstanding: fmt(Math.max(0, totalPayable - paidTotal)),
+      payAmount: fmt(amount),
+      confirmPay: this.confirmPay,
+      payMethods: [
+        { key: "upi", label: "UPI", meta: "Google Pay, PhonePe, Paytm" },
+        { key: "card", label: "Debit / Credit card", meta: "Visa, Mastercard, RuPay" },
+        { key: "netbanking", label: "Net banking", meta: "All major banks" },
+        { key: "wallet", label: "Wallet", meta: "Paytm, Amazon Pay" }
+      ].map(m => ({
+        label: m.label, meta: m.meta, pick: this.setMethod(m.key),
+        style: "display:flex;alignItems:center;gap:12px;padding:15px 16px;cursor:pointer;borderBottom:1px solid #EDF0F5;background:" + (st.payMethod === m.key ? "#F5F8FE" : "#fff"),
+        dot: "width:20px;height:20px;borderRadius:50%;flexShrink:0;display:flex;alignItems:center;justifyContent:center;border:2px solid " + (st.payMethod === m.key ? "#1D4ED8" : "#C6D0DE"),
+        inner: st.payMethod === m.key ? "width:10px;height:10px;borderRadius:50%;background:#1D4ED8" : "display:none"
+      })),
+      payingNow: fmt(amount),
+      payHistory: [
+        { label: "Tuition · Term 1", meta: "Paid 12 Jun 2026 · UPI", amount: "₹18,000", ref: "Receipt PPS/R/2026/0418" },
+        { label: "Admission fee", meta: "Paid 2 Jun 2026 · Net banking", amount: "₹5,000", ref: "Receipt PPS/R/2026/0301" },
+        { label: "Books & uniform", meta: "Paid 28 May 2026 · Card", amount: "₹4,200", ref: "Receipt PPS/R/2026/0244" }
+      ].map(p => ({
+        label: p.label, meta: p.meta, amount: p.amount, ref: p.ref,
+        download: this.downloadReceipt(p.ref),
+        dlLabel: st.receipts[p.ref] ? "Downloaded" : "Download receipt",
+        dlStyle: "borderRadius:10px;padding:8px 12px;fontSize:12.5px;fontWeight:700;cursor:pointer;whiteSpace:nowrap;border:1px solid " + (st.receipts[p.ref] ? "#CFE7D9;background:#E4F5EA;color:#1B7F45" : "#DCE7FB;background:#fff;color:#1D4ED8")
+      })),
+      canPay: amount > 0,
+      payNow: amount > 0 ? this.payNow : () => {},
+      payBtnStyle: "color:#fff;fontSize:16px;fontWeight:800;padding:16px 30px;borderRadius:14px;background:" + (amount > 0 ? "#2A62F0;cursor:pointer" : "#B9C6DC;cursor:default")
+    };
+  }
+
+  renderVals() {
+    const s = this.state.screen;
+    const t = TITLES[s] || ["", ""];
+    const tab = this.tabOf(s);
+    const col = k => (tab === k ? "#1D4ED8" : "#94A3B8");
+    const is = k => s === k;
+    return {
+      screen: s, title: t[0], subtitle: t[1],
+      termLabel: TERMS[this.state.termIdx],
+      feeTermLabel: TERMS[this.state.feeTermIdx],
+      toggleFeeTerm: this.toggleFeeTerm,
+      feeTermOpen: this.state.feeTermOpen,
+      feeTermOptions: TERMS.map((label, i) => ({
+        label, pick: this.pickFeeTerm(i),
+        style: "padding:13px 16px;fontSize:14.5px;fontWeight:" + (i === this.state.feeTermIdx ? "800;color:#1D4ED8;background:#F5F8FE" : "600;color:#41526E;background:#fff") + ";cursor:pointer;borderBottom:1px solid #EDF0F5"
+      })),
+      feeTabPay: this.setFeeTab("pay"), feeTabHistory: this.setFeeTab("history"),
+      isFeePay: this.state.feeTab === "pay", isFeeHistory: this.state.feeTab === "history",
+      feePayStyle: segBtn(this.state.feeTab === "pay"), feeHistoryStyle: segBtn(this.state.feeTab === "history"),
+      isLeaveApply: this.state.leaveTab === "apply", isLeaveHistory: this.state.leaveTab === "history",
+      leaveTabApply: this.setLeaveTab("apply"), leaveTabHistory: this.setLeaveTab("history"),
+      leaveApplyStyle: segBtn(this.state.leaveTab === "apply"),
+      leaveHistoryStyle: segBtn(this.state.leaveTab === "history"),
+      ...this.onlineVals(),
+      ...this.academicVals(),
+      ...this.screenVals(),
+      ...this.libVals(),
+      ...this.certVals(),
+      ...this.feeVals(),
+      ...this.hwVals(),
+
+      termOpen: this.state.termOpen,
+      termOptions: TERMS.map((label, i) => ({
+        label,
+        pick: this.pickTermIdx(i),
+        style: "padding:13px 16px;fontSize:14.5px;fontWeight:" + (i === this.state.termIdx ? "800;color:#1D4ED8;background:#F5F8FE" : "600;color:#41526E;background:#fff") + ";cursor:pointer;borderBottom:1px solid #EDF0F5"
+      })),
+      pickUnit: this.setSet("unit"), pickTerm: this.setSet("term"),
+      unitStyle: tabBtn(this.state.examSet === "unit"), termStyle: tabBtn(this.state.examSet === "term"),
+      marks: MARKS[this.state.examSet],
+      overall: OVERALL[this.state.examSet].pct, overallGrade: OVERALL[this.state.examSet].grade, overallRank: OVERALL[this.state.examSet].rank,
+      isHome: is("home"), notHome: s !== "home",
+      isServices: is("services"), isAttendance: is("attendance"), isReport: is("report"),
+      isFees: is("fees"), isPayment: is("payment"), isLeave: is("leave"), isHomework: is("homework"), isExams: is("exams"),
+      isCertificates: is("certificates"), isLibrary: is("library"), isHealth: is("health"),
+      isFeedback: is("feedback"), isMeetings: is("meetings"), isNotices: is("notices"),
+      isProfile: is("profile"), isTimetable: is("timetable"), isCalendar: is("calendar"),
+      isOnlineClass: is("onlineclass"), isAcademics: is("academics"), isTerm: is("term"), isSubject: is("subject"), isSubjects: is("subjects"), isBus: is("bus"), isTransport: is("transport"), isCampus: is("campus"),
+      back: this.back,
+      goNotices: () => this.go("notices"), goProfile: () => this.go("profile"),
+      goAttendance: () => this.go("attendance"), goFees: () => this.go("fees"),
+      goHomework: () => this.go("homework"), goCalendar: () => this.go("calendar"),
+      goExams: () => this.go("exams"), goSubjects: () => this.go("subjects"),
+      goReport: () => this.go("report"), goMeetings: () => this.go("meetings"),
+      tabHome: this.tab("home"), tabSchool: this.tab("services"), tabCampus: this.tab("campus"),
+      tabAcademics: this.tab("academics"), tabBus: this.tab("bus"),
+      c1: col("home"), c2: col("school"), c3: col("campus"), c4: col("academics"), c5: col("bus"),
+      quick: [this.item("attendance", "Attendance"), this.item("report", "Results"), this.item("fees", "Fees"), this.item("homework", "Homework")],
+      campusItems: [this.item("leave", "Leave"), this.item("exams", "Exams"), this.item("library", "Library"), this.item("feedback", "Feedback"), this.item("meetings", "Meetings")],
+      campusList: [
+        Object.assign(this.item("library", "Library"), { meta: "2 books issued · no fine" }),
+        Object.assign(this.item("health", "Health room"), { meta: "Nurse: Ms. Sheela R · Block A" }),
+        Object.assign(this.item("certificates", "Certificates"), { meta: "5 documents available" }),
+        Object.assign(this.item("transport", "Transport"), { meta: "Route 7 · Stop 4" }),
+        Object.assign(this.item("meetings", "Meetings"), { meta: "PTM slots open" }),
+        Object.assign(this.item("feedback", "Feedback"), { meta: "Term 1 form open till 20 Sept" })
+      ],
+      books: [
+        { title: "The Story of My Experiments with Truth", author: "M. K. Gandhi", code: "BIO-214", due: "Due 9 Sept 2026", fg: "#9A6316" },
+        { title: "Wings of Fire", author: "A. P. J. Abdul Kalam", code: "BIO-087", due: "Due 24 Sept 2026", fg: "#1B7F45" },
+        { title: "Atlas of India", author: "Oxford", code: "REF-011", due: "Returned 28 Aug 2026", fg: "#8494AB" },
+        { title: "Malgudi Days", author: "R. K. Narayan", code: "FIC-142", due: "Returned 14 Aug 2026", fg: "#8494AB" }
+      ],
+      visits: [
+        { reason: "Headache after games", date: "28 Aug 2026", action: "Rested 30 min, parent informed" },
+        { reason: "Minor knee graze", date: "12 Aug 2026", action: "Cleaned and dressed" },
+        { reason: "Annual health check-up", date: "3 Jul 2026", action: "Height, weight, vision recorded" }
+      ],
+      notices: [
+        { from: "Principal's Office", date: "2 Sept 2026", tag: "Notice", bg: "#E4F5EA", fg: "#1B7F45", title: "Parent–Teacher Meeting · 12 September", body: "Grades 1–5: 9:00 AM – 11:30 AM. Grades 6–10: 12:00 PM – 3:00 PM. Please carry the school diary." },
+        { from: "Cultural Committee", date: "1 Sept 2026", tag: "Event", bg: "#E6EDFD", fg: "#1D4ED8", title: "Annual Day rehearsals begin", body: "Grades 6–10 report to the auditorium at 3 PM on Tuesday and Thursday until 20 September." },
+        { from: "Accounts Office", date: "30 Aug 2026", tag: "Fees", bg: "#EFF3FA", fg: "#41526E", title: "Term 2 fees due on 15 September", body: "Pay through the app or at the counter between 9 AM and 1 PM. Late payment attracts ₹200 per week." },
+        { from: "Transport Desk", date: "26 Aug 2026", tag: "Transport", bg: "#FDF2E2", fg: "#9A6316", title: "Route 7 timing revised", body: "Stop 4 pickup moves from 7:48 AM to 7:42 AM from 1 September because of road work on Third Avenue." },
+        { from: "Sports Department", date: "20 Aug 2026", tag: "Event", bg: "#E6EDFD", fg: "#1D4ED8", title: "Sports Day on 25 September", body: "Trials for athletics and kho-kho will be held during the games period this week. Grades 1–5 have a holiday." }
+      ],
+      stops: [
+        { name: "Depot · School", time: "7:10 AM", dot: "#C6D0DE", fg: "#8494AB", sub: "#A3AFC0" },
+        { name: "Stop 1 · Shanthi Colony", time: "7:28 AM", dot: "#C6D0DE", fg: "#8494AB", sub: "#A3AFC0" },
+        { name: "Stop 3 · Blue Star Junction", time: "7:36 AM", dot: "#C6D0DE", fg: "#8494AB", sub: "#A3AFC0" },
+        { name: "Stop 4 · Third Avenue", time: "7:42 AM", dot: "#2A62F0", fg: "#0F1B33", sub: "#1D4ED8" },
+        { name: "Stop 6 · Nehru Park", time: "7:51 AM", dot: "#C6D0DE", fg: "#8494AB", sub: "#A3AFC0" },
+        { name: "School gate", time: "8:05 AM", dot: "#C6D0DE", fg: "#8494AB", sub: "#A3AFC0" }
+      ],
+      profileSections: this.withLines([
+        { title: "Student", rows: [
+          { k: "Date of birth", v: "14 Mar 2013" },
+          { k: "Gender", v: "Male" },
+          { k: "Blood group", v: "O+" },
+          { k: "Aadhaar (last 4)", v: "XXXX 4187" },
+          { k: "Mother tongue", v: "Tamil" },
+          { k: "Second language", v: "Hindi" },
+          { k: "House", v: "Emerald · Green" },
+          { k: "Date of admission", v: "12 Jun 2019" }
+        ]},
+        { title: "Father / Guardian", rows: [
+          { k: "Name", v: "Suresh Kumar S" },
+          { k: "Relationship", v: "Father" },
+          { k: "Occupation", v: "Bank manager" },
+          { k: "Phone", v: "+91 98400 21145" },
+          { k: "Email", v: "suresh.k@email.com" }
+        ]},
+        { title: "Mother", rows: [
+          { k: "Name", v: "Priya Suresh" },
+          { k: "Occupation", v: "Physiotherapist" },
+          { k: "Phone", v: "+91 98410 33267" }
+        ]},
+        { title: "Emergency & address", rows: [
+          { k: "Emergency contact", v: "Meena R · Aunt" },
+          { k: "Emergency phone", v: "+91 90031 55420" },
+          { k: "Address", v: "12/4 Third Avenue" },
+          { k: "City", v: "Anna Nagar, Chennai 600040" }
+        ]},
+        { title: "School", rows: [
+          { k: "Class teacher", v: "Ms. Radhika V" },
+          { k: "Section", v: "8-B · Block B, Room 14" },
+          { k: "Bus route", v: "Route 7 · Stop 4" },
+          { k: "Fee category", v: "Regular · Term-wise" }
+        ]}
+      ]),
+      exams: [
+        { day: 22, mon: "SEP", subject: "English", time: "9:30 – 11:30 AM", marks: 80, syllabus: "Units 1–4" },
+        { day: 24, mon: "SEP", subject: "Mathematics", time: "9:30 – 11:30 AM", marks: 80, syllabus: "Ch. 1–7" },
+        { day: 26, mon: "SEP", subject: "Science", time: "9:30 – 11:30 AM", marks: 80, syllabus: "Ch. 1–8" },
+        { day: 29, mon: "SEP", subject: "Social Science", time: "9:30 – 11:30 AM", marks: 80, syllabus: "Ch. 1–6" },
+        { day: 1, mon: "OCT", subject: "Hindi", time: "9:30 – 11:30 AM", marks: 80, syllabus: "Ch. 1–5" },
+        { day: 3, mon: "OCT", subject: "Computer Science", time: "9:30 – 11:00 AM", marks: 50, syllabus: "Ch. 1–4" }
+      ],
+      subjects: [
+        { code: "EN", name: "English", teacher: "Ms. Radhika V", periods: 6, progress: 62 },
+        { code: "MA", name: "Mathematics", teacher: "Mr. Suresh K", periods: 7, progress: 58 },
+        { code: "SC", name: "Science", teacher: "Ms. Lakshmi P", periods: 7, progress: 64 },
+        { code: "SS", name: "Social Science", teacher: "Mr. Anand R", periods: 5, progress: 55 },
+        { code: "HI", name: "Hindi", teacher: "Ms. Neetu S", periods: 4, progress: 60 },
+        { code: "CS", name: "Computer Science", teacher: "Mr. Faizal A", periods: 3, progress: 48 }
+      ],
+      leaves: this.state.leaveExtra.concat([
+        { dates: "21 Aug 2026", reason: "Family function · 1 day", status: "Approved", bg: "#E4F5EA", fg: "#1B7F45" },
+        { dates: "4 Jul 2026", reason: "Dental appointment · half day", status: "Approved", bg: "#E4F5EA", fg: "#1B7F45" }
+      ]),
+      studentName: this.props.studentName ?? "Aarav S",
+      attendancePercent: this.props.attendancePercent ?? 94
+    };
+  }
+}
+</script>
+</body>
+</html>

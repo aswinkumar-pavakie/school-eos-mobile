@@ -119,16 +119,16 @@ function isExpiredOrExpiringSoon(token: string): boolean {
   return exp - Math.floor(Date.now() / 1000) <= EXPIRY_SKEW_SECONDS;
 }
 
-// Faculty (every assignment), Parent, Hostel Warden, Principal's mobile half, and
-// (per updated plan, 2026-09-03) Vice Principal -- the only app logins. Vice
-// Principal moved here from web-only -- see WEB_ALLOWED_ROLES in
+// Faculty (every assignment), Parent, Hostel Warden, Principal's mobile half,
+// Vice Principal, and (new) the standalone Community login -- the only app
+// logins. Vice Principal moved here from web-only -- see WEB_ALLOWED_ROLES in
 // school-eos-website/src/app/(auth)/login/actions.ts. Bus Attendant/Canteen Vendor
 // use a separate device-credential flow, not this one. The backend's /auth/login
 // itself doesn't restrict by client, so the platform boundary is enforced here.
 // Faculty always carries the base FACULTY role_code alongside any
 // assignment-specific ones (Class Advisor, Academic Coordinator, etc.), so
 // checking for FACULTY covers every assignment without having to enumerate them.
-const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL'];
+const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY'];
 
 /** Login succeeded against the backend, but this role has no mobile access. */
 export class PlatformNotAllowedError extends Error {
