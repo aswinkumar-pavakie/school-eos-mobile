@@ -27,9 +27,13 @@ export interface NightAttendanceRosterRow {
   admissionNo: string;
   roomNo: string | null;
   bedNo: string | null;
+  blockId: string | null;
+  blockName: string | null;
+  floorNo: number | null;
   attendanceId: string | null;
   status: NightAttendanceStatus | null;
   recordedAt: string | null;
+  hasApprovedLeaveToday: boolean;
 }
 
 export async function getNightAttendanceRoster(date: string): Promise<NightAttendanceRosterRow[]> {
@@ -292,6 +296,7 @@ export interface HostelAllocationRow {
   studentLastName: string | null;
   admissionNo: string;
   stateStudentId: string | null;
+  rollNo: number | null;
   photoUrl: string | null;
   bedId: string;
   bedNo: string;

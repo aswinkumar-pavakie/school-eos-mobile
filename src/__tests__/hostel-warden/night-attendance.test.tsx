@@ -23,9 +23,32 @@ const ROSTER = [
     admissionNo: 'SMS20250760',
     roomNo: '108',
     bedNo: '108-1',
+    blockId: 'block-1',
+    blockName: 'Block A',
+    floorNo: 1,
     attendanceId: null,
     status: null,
     recordedAt: null,
+    hasApprovedLeaveToday: false,
+  },
+];
+
+const ROSTER_WITH_LEAVE = [
+  ...ROSTER,
+  {
+    studentId: 'student-2',
+    firstName: 'Divya',
+    lastName: 'Menon',
+    admissionNo: 'SMS20250761',
+    roomNo: '204',
+    bedNo: '204-2',
+    blockId: 'block-2',
+    blockName: 'Block B',
+    floorNo: 2,
+    attendanceId: null,
+    status: null,
+    recordedAt: null,
+    hasApprovedLeaveToday: true,
   },
 ];
 
@@ -67,5 +90,41 @@ describe('NightAttendanceScreen', () => {
     jest.mocked(api.getNightAttendanceRoster).mockResolvedValue([]);
     await renderScreen();
     await waitFor(() => expect(screen.getByText(/No students currently allocated/)).toBeTruthy());
+  });
+
+  it('defaults an unmarked student with an approved leave to Absent, and everyone else to Present', async () => {
+    jest.mocked(api.getNightAttendanceRoster).mockResolvedValue(ROSTER_WITH_LEAVE as never);
+    await renderScreen();
+    await waitFor(() => expect(screen.getByText('Divya Menon')).toBeTruthy());
+
+    expect(screen.getAllByText(/Present · default/).length).toBe(1);
+    expect(screen.getAllByText(/Absent · default/).length).toBe(1);
+  });
+
+  it("'Mark all present' never sweeps a student defaulting to Absent from an approved leave", async () => {
+    jest.mocked(api.getNightAttendanceRoster).mockResolvedValue(ROSTER_WITH_LEAVE as never);
+    await renderScreen();
+    await waitFor(() => expect(screen.getByText('Divya Menon')).toBeTruthy());
+
+    fireEvent.press(screen.getByText('Mark all present'));
+
+    await waitFor(() =>
+      expect(api.markNightAttendance).toHaveBeenCalledWith(expect.any(String), [
+        { studentId: 'student-1', status: 'PRESENT' },
+      ]),
+    );
+  });
+
+  it('filters the roster by block', async () => {
+    jest.mocked(api.getNightAttendanceRoster).mockResolvedValue(ROSTER_WITH_LEAVE as never);
+    await renderScreen();
+    await waitFor(() => expect(screen.getByText('Divya Menon')).toBeTruthy());
+
+    fireEvent.press(screen.getByText('All blocks'));
+    await waitFor(() => expect(screen.getByText('Block A')).toBeTruthy());
+    fireEvent.press(screen.getByText('Block A'));
+
+    await waitFor(() => expect(screen.queryByText('Divya Menon')).toBeNull());
+    expect(screen.getByText('Ajith Perumal')).toBeTruthy();
   });
 });

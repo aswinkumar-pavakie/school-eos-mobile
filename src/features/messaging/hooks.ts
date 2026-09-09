@@ -8,6 +8,7 @@ import {
   searchStudentDirectory,
   sendMessage,
   startFacultyConversation,
+  startPrincipalConversation,
   startStudentConversation,
   translateMessage,
 } from './api';
@@ -100,6 +101,16 @@ export function useStartStudentConversation() {
   const invalidate = useInvalidateMessaging();
   return useMutation({
     mutationFn: (studentId: string) => startStudentConversation(studentId),
+    onSuccess: () => invalidate(),
+  });
+}
+
+// ---- Faculty: start a conversation with the Principal --------------------------
+
+export function useStartPrincipalConversation() {
+  const invalidate = useInvalidateMessaging();
+  return useMutation({
+    mutationFn: () => startPrincipalConversation(),
     onSuccess: () => invalidate(),
   });
 }

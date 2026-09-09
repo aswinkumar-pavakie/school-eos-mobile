@@ -98,3 +98,14 @@ export async function searchStudentDirectory(search: string): Promise<StudentDir
   const res = await authedRequest<{ data: StudentDirectoryEntry[] }>(`/messages/principal/students/search${query}`);
   return res.data;
 }
+
+// ---- Faculty: start a conversation with the Principal --------------------------
+// No target id -- PRINCIPAL is single-holder, resolved server-side. Faculty-only
+// server-side too (RolesGuard), same reasoning as the Principal-only calls above.
+
+export async function startPrincipalConversation(): Promise<ConversationSummary> {
+  const res = await authedRequest<Envelope<ConversationSummary>>('/messages/faculty/conversations/principal', {
+    method: 'POST',
+  });
+  return res.data;
+}
