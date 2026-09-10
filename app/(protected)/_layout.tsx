@@ -2,6 +2,7 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Redirect, Slot } from 'expo-router';
 import { useSession } from '@/lib/auth';
 import { useMe } from '@/hooks/useMe';
+import { useRegisterPushToken } from '@/services/notifications/push-token';
 import { BottomTabBar } from '@/components/BottomTabBar';
 import { parentColors } from '@/lib/theme';
 
@@ -18,6 +19,11 @@ import { parentColors } from '@/lib/theme';
 export default function ProtectedLayout() {
   const { status } = useSession();
   const me = useMe();
+  // The single real "every login" hook -- fires once a real session is
+  // confirmed, for every role that reaches this layout at all, whether that
+  // just happened via the login form or via a persisted session on app
+  // reopen (functionally, still "how they got in this time").
+  useRegisterPushToken(status);
 
   if (status === 'loading' || (status === 'signedIn' && me.isLoading)) {
     return (

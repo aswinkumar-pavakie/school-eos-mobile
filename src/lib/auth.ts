@@ -11,6 +11,7 @@ import { ApiError, apiRequest, type ApiRequestOptions } from './api';
 
 const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
+const PUSH_TOKEN_KEY = 'expoPushToken';
 
 // expo-secure-store has no web implementation (it's a Keychain/Keystore wrapper --
 // there's no OS-level secure enclave in a browser) and throws if called there. The
@@ -170,6 +171,12 @@ export async function login(identifier: string, password: string): Promise<Login
 }
 
 export async function logout(): Promise<void> {
+  // Best-effort: a device that's been signed out should stop receiving this
+  // person's push notifications, especially on a shared/handed-back device.
+  // Must run BEFORE clearTokens() -- it needs a still-valid session to call
+  // the authed unregister endpoint at all.
+  await unregisterCurrentPushToken();
+
   const refreshToken = await getStoredRefreshToken();
   if (refreshToken) {
     await apiRequest('/auth/logout', { method: 'POST', body: { refreshToken } }).catch(() => {
@@ -234,6 +241,36 @@ export async function authedRequest<T>(path: string, options: ApiRequestOptions 
       headers: { ...options.headers, Authorization: `Bearer ${refreshed.accessToken}` },
     });
   }
+}
+
+// ---- Push notification device token (session-lifecycle, not a feature concern) ---
+//
+// Lives here, not in a services/notifications file, for the same reason
+// storeTokens/clearTokens do: "what happens on login" / "what happens on
+// logout" for THIS device's session is auth.ts's own job. The Expo-SDK-specific
+// half (permission prompt, getExpoPushTokenAsync, notification-tap handling)
+// lives in src/services/notifications/push-token.ts and calls back into these
+// two functions -- never the other way around.
+
+/** Called once per real login (and again any time Expo hands the app a fresh
+ * token, e.g. after a reinstall). Remembers the token locally too, purely so
+ * logout() can unregister the exact same one later without re-deriving it. */
+export async function registerPushToken(expoPushToken: string, platform: 'ANDROID' | 'IOS'): Promise<void> {
+  await authedRequest('/notifications/device-token', {
+    method: 'POST',
+    body: { expoPushToken, platform },
+  });
+  await setSecureItem(PUSH_TOKEN_KEY, expoPushToken);
+}
+
+/** Best-effort -- a failed unregister (offline, expired session) should never
+ * block sign-out; the row is also harmless left behind (a stale token just
+ * fails delivery and gets pruned server-side on the next send attempt). */
+async function unregisterCurrentPushToken(): Promise<void> {
+  const token = await getSecureItem(PUSH_TOKEN_KEY);
+  if (!token) return;
+  await authedRequest(`/notifications/device-token/${encodeURIComponent(token)}`, { method: 'DELETE' }).catch(() => {});
+  await deleteSecureItem(PUSH_TOKEN_KEY);
 }
 
 // ---- Self-service password reset (Parent flow) -----------------------------------

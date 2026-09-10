@@ -63,6 +63,16 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         backgroundColor: '#ffffff',
       },
     ],
+    [
+      'expo-notifications',
+      {
+        // No dedicated notification icon/sound asset exists yet -- omitting
+        // `icon`/`color`/`sounds` here just falls back to the app icon and
+        // system default sound, same as leaving this plugin out entirely
+        // would on iOS; on Android it's what actually lets a real dev/prod
+        // build register the notification channel/permission correctly.
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
