@@ -3,6 +3,8 @@ import { Redirect, Slot } from 'expo-router';
 import { useSession } from '@/lib/auth';
 import { useMe } from '@/hooks/useMe';
 import { useRegisterPushToken } from '@/services/notifications/push-token';
+import { useE2eeBootstrap } from '@/services/messaging/bootstrap';
+import { useMessagingSocket } from '@/services/messaging/socket';
 import { BottomTabBar } from '@/components/BottomTabBar';
 import { parentColors } from '@/lib/theme';
 
@@ -24,6 +26,12 @@ export default function ProtectedLayout() {
   // just happened via the login form or via a persisted session on app
   // reopen (functionally, still "how they got in this time").
   useRegisterPushToken(status);
+  // Real E2EE messaging: generates/registers this device's MLS identity and
+  // keeps its KeyPackage pool replenished (bootstrap), then connects the
+  // realtime channel (socket) -- same "every login, every role, no role
+  // check" posture as push registration above.
+  useE2eeBootstrap(status);
+  useMessagingSocket(status);
 
   if (status === 'loading' || (status === 'signedIn' && me.isLoading)) {
     return (

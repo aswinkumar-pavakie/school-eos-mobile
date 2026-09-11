@@ -19,6 +19,17 @@ const API_BASE_URL_BY_ENV: Record<AppEnv, string> = {
   production: process.env.EXPO_PUBLIC_API_BASE_URL ?? 'https://api.PLACEHOLDER.example.com',
 };
 
+// The separate, independently-deployable School EOS Messaging microservice --
+// same env-branch pattern as API_BASE_URL_BY_ENV above, deliberately its own
+// env var rather than derived from apiBaseUrl (this is a genuinely different
+// service, not a route on Core).
+const MESSAGING_API_BASE_URL_BY_ENV: Record<AppEnv, string> = {
+  development: process.env.EXPO_PUBLIC_MESSAGING_API_BASE_URL ?? 'http://localhost:3001',
+  // PLACEHOLDER - company must replace with the real preview/production messaging hosts before release.
+  preview: process.env.EXPO_PUBLIC_MESSAGING_API_BASE_URL ?? 'https://messaging-preview.PLACEHOLDER.example.com',
+  production: process.env.EXPO_PUBLIC_MESSAGING_API_BASE_URL ?? 'https://messaging.PLACEHOLDER.example.com',
+};
+
 // PLACEHOLDER - company must register real bundle identifiers before any store submission. See docs/release/eas.md.
 const BUNDLE_IDENTIFIER = 'com.placeholder.schooleos';
 
@@ -79,6 +90,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   extra: {
     apiBaseUrl: API_BASE_URL_BY_ENV[APP_ENV],
+    messagingApiBaseUrl: MESSAGING_API_BASE_URL_BY_ENV[APP_ENV],
     environment: APP_ENV,
     // PLACEHOLDER - company must run `eas init` and replace this with the real project ID before EAS builds.
     eas: {
