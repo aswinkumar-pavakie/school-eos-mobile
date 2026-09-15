@@ -9,6 +9,7 @@
 
 import * as Crypto from 'expo-crypto';
 import { createCommit, createGroup, joinGroup, emptyPskIndex } from 'ts-mls';
+import { withConversationLock } from './conversationLock';
 import { getMlsCiphersuiteImpl } from './setup';
 import { generateOwnKeyPackage } from './keyPackage';
 import {
@@ -82,39 +83,41 @@ export async function joinConversationFromWelcome(
   conversationId: string,
   welcomeWire: string,
 ): Promise<void> {
-  const alreadyJoined = await loadGroupState(conversationId);
-  if (alreadyJoined) return; // idempotent: a retried ack-less fetch is a safe no-op
+  return withConversationLock(conversationId, async () => {
+    const alreadyJoined = await loadGroupState(conversationId);
+    if (alreadyJoined) return; // idempotent: a retried ack-less fetch is a safe no-op
 
-  const impl = await getMlsCiphersuiteImpl();
-  const welcome = decodeWelcomeFromWire(welcomeWire);
-  const pool = await listPoolEntries();
+    const impl = await getMlsCiphersuiteImpl();
+    const welcome = decodeWelcomeFromWire(welcomeWire);
+    const pool = await listPoolEntries();
 
-  let joined: { state: Awaited<ReturnType<typeof joinGroup>>; serverId: string } | null = null;
-  for (const entry of pool) {
-    try {
-      const state = await joinGroup(
-        welcome,
-        entry.publicPackage,
-        entry.privatePackage,
-        emptyPskIndex,
-        impl,
-      );
-      joined = { state, serverId: entry.serverId };
-      break;
-    } catch {
-      // Wrong KeyPackage for this Welcome -- expected for every pool entry
-      // except the one the server actually consumed; try the next.
-      continue;
+    let joined: { state: Awaited<ReturnType<typeof joinGroup>>; serverId: string } | null = null;
+    for (const entry of pool) {
+      try {
+        const state = await joinGroup(
+          welcome,
+          entry.publicPackage,
+          entry.privatePackage,
+          emptyPskIndex,
+          impl,
+        );
+        joined = { state, serverId: entry.serverId };
+        break;
+      } catch {
+        // Wrong KeyPackage for this Welcome -- expected for every pool entry
+        // except the one the server actually consumed; try the next.
+        continue;
+      }
     }
-  }
 
-  if (!joined) {
-    throw new Error(
-      'Could not join this conversation: no locally-cached KeyPackage matches the received Welcome. ' +
-        'This device may have republished/replenished since the Welcome was created, or state was lost.',
-    );
-  }
+    if (!joined) {
+      throw new Error(
+        'Could not join this conversation: no locally-cached KeyPackage matches the received Welcome. ' +
+          'This device may have republished/replenished since the Welcome was created, or state was lost.',
+      );
+    }
 
-  await saveGroupState(conversationId, joined.state);
-  await removeFromPool(joined.serverId);
+    await saveGroupState(conversationId, joined.state);
+    await removeFromPool(joined.serverId);
+  });
 }

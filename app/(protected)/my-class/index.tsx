@@ -16,6 +16,7 @@ interface ServiceItem {
   label: string;
   href?:
     | '/fees'
+    | '/(protected)/messaging'
     | '/(protected)/my-class/messages'
     | '/(protected)/my-class/results'
     | '/(protected)/my-class/homework'
@@ -67,7 +68,7 @@ const SECTIONS: { title: string; items: ServiceItem[] }[] = [
   {
     title: 'Family',
     items: [
-      { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
+      { key: 'messages', label: 'Messages', href: '/(protected)/messaging' },
       { key: 'consent', label: 'Permissions', href: '/permissions' },
       { key: 'settings', label: 'Settings', href: '/(protected)/my-class/settings' },
     ],

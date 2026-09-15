@@ -42,6 +42,10 @@ const SECTIONS: { title: string; items: FeatureItem[] }[] = [
     title: 'Maintenance',
     items: [{ key: 'complaints', label: 'Hostel complaints', href: '/(protected)/hostel-warden/complaints' }],
   },
+  {
+    title: 'Communication',
+    items: [{ key: 'messages', label: 'Messages', href: '/(protected)/messaging' }],
+  },
 ];
 
 // Best-effort "which hostel am I warden of" label for the header subtitle -- no

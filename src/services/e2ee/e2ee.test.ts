@@ -48,7 +48,12 @@ jest.mock('../../lib/messaging-api', () => ({
    the mock hoisting/timing reasoning explained there to hold. */
 import { ed25519 } from '@noble/curves/ed25519.js';
 import * as messagingApi from '../../lib/messaging-api';
-import { renameGroupState, saveDeviceIdentity } from './storage';
+import {
+  ensureIdentityForPerson,
+  hasGroupState,
+  renameGroupState,
+  saveDeviceIdentity,
+} from './storage';
 import { publishKeyPackageBatch } from './keyPackage';
 import { createGroupForConversation, joinConversationFromWelcome } from './group';
 import { decryptMessage, encryptMessage } from './cipher';
@@ -75,6 +80,7 @@ async function setupIdentity(deviceId: string) {
     deviceId,
     identityPublicKey: toBase64(kp.publicKey),
     identityPrivateKey: toBase64(kp.secretKey),
+    personId: `test-person-${deviceId}`,
   });
 }
 
@@ -163,5 +169,108 @@ describe('e2ee module composition (real ts-mls/@noble crypto, mocked network+Sec
     expect(await decryptMessage(CONVERSATION_ID, aliceSecondMessage.ciphertext)).toBe(
       'Second message.',
     );
+  });
+
+  it('joins correctly when the joiner has a full real-sized pool (30 KeyPackages) and the matching one is NOT the first published', async () => {
+    const CONVERSATION_ID_2 = 'conv-444';
+
+    // Bob publishes a real batch of 30 -- exactly what replenishKeyPackagesIfNeeded
+    // does on a real login (REPLENISH_BATCH_SIZE), unlike the single-entry pool
+    // the earlier test above uses.
+    setActiveDevice('bob');
+    await setupIdentity(BOB_DEVICE_ID);
+    let bobPublishedWires: string[] = [];
+    mockPublishMlsKeyPackages.mockImplementation(
+      async (_deviceId: string, keyPackages: string[]) => {
+        bobPublishedWires = keyPackages;
+        return { data: { ids: keyPackages.map((_, i) => `bob-server-kp-${i}`) } };
+      },
+    );
+    await publishKeyPackageBatch(30);
+    expect(bobPublishedWires.length).toBe(30);
+
+    // Simulates the server hitting Bob's KeyPackage inventory and returning
+    // one that is NOT first-published -- exactly as real consumption order
+    // isn't guaranteed to match local pool array order.
+    const targetWire = bobPublishedWires[17]!;
+
+    setActiveDevice('alice');
+    await setupIdentity(ALICE_DEVICE_ID);
+    const { welcomeWire, tempGroupId } = await createGroupForConversation(targetWire);
+    await renameGroupState(tempGroupId, CONVERSATION_ID_2);
+
+    setActiveDevice('bob');
+    await joinConversationFromWelcome(CONVERSATION_ID_2, welcomeWire);
+
+    setActiveDevice('alice');
+    const aliceToBob = await encryptMessage(CONVERSATION_ID_2, 'Hello from a real-sized pool.');
+
+    setActiveDevice('bob');
+    expect(await decryptMessage(CONVERSATION_ID_2, aliceToBob.ciphertext)).toBe(
+      'Hello from a real-sized pool.',
+    );
+  });
+
+  it('a different person signing in on the SAME physical device does not see the previous person\'s group state, but switching back restores it fully -- including being able to decrypt', async () => {
+    const CONVERSATION_ID_3 = 'conv-555';
+
+    // Bob's physical device, used first by "person X" (e.g. Bob's own real
+    // account): joins a real conversation with Alice.
+    setActiveDevice('bob');
+    const restoredForX = await ensureIdentityForPerson('person-X');
+    expect(restoredForX).toBeNull(); // never used this device before
+    const xKeypair = ed25519.keygen();
+    await saveDeviceIdentity({
+      deviceId: 'device-for-X',
+      identityPublicKey: toBase64(xKeypair.publicKey),
+      identityPrivateKey: toBase64(xKeypair.secretKey),
+      personId: 'person-X',
+    });
+    let bobWire = '';
+    mockPublishMlsKeyPackages.mockImplementation(async (_d: string, kps: string[]) => {
+      bobWire = kps[0]!;
+      return { data: { ids: ['bob-kp-1'] } };
+    });
+    await publishKeyPackageBatch(1);
+
+    setActiveDevice('alice');
+    await setupIdentity(ALICE_DEVICE_ID);
+    const { welcomeWire, tempGroupId } = await createGroupForConversation(bobWire);
+    await renameGroupState(tempGroupId, CONVERSATION_ID_3);
+    const aliceToX = await encryptMessage(CONVERSATION_ID_3, 'Hello person X.');
+
+    setActiveDevice('bob');
+    await joinConversationFromWelcome(CONVERSATION_ID_3, welcomeWire);
+    expect(await hasGroupState(CONVERSATION_ID_3)).toBe(true);
+    expect(await decryptMessage(CONVERSATION_ID_3, aliceToX.ciphertext)).toBe('Hello person X.');
+
+    // Someone ELSE ("person Y") now signs in on this SAME physical device --
+    // e.g. switching test accounts. Person X's group state must not be
+    // visible/usable by Y at all.
+    const restoredForY = await ensureIdentityForPerson('person-Y');
+    expect(restoredForY).toBeNull(); // Y has never used this device before
+    // Matches what bootstrap.ts's real ensureDeviceIdentity() does right
+    // after a null restore: register/save a brand-new identity for them.
+    await saveDeviceIdentity({
+      deviceId: 'device-for-Y',
+      identityPublicKey: toBase64(ed25519.keygen().publicKey),
+      identityPrivateKey: toBase64(ed25519.keygen().secretKey),
+      personId: 'person-Y',
+    });
+    expect(await hasGroupState(CONVERSATION_ID_3)).toBe(false);
+
+    // Person X signs back in on this SAME device (the exact real-world
+    // scenario that used to silently lose everything). Their identity, and
+    // this conversation's group state, must come back exactly as they left
+    // it -- not just "exist", but genuinely still able to decrypt correctly.
+    const restoredAgainForX = await ensureIdentityForPerson('person-X');
+    expect(restoredAgainForX).not.toBeNull();
+    expect(restoredAgainForX?.personId).toBe('person-X');
+    expect(await hasGroupState(CONVERSATION_ID_3)).toBe(true);
+
+    setActiveDevice('alice');
+    const aliceSecondToX = await encryptMessage(CONVERSATION_ID_3, 'Still there?');
+    setActiveDevice('bob');
+    expect(await decryptMessage(CONVERSATION_ID_3, aliceSecondToX.ciphertext)).toBe('Still there?');
   });
 });

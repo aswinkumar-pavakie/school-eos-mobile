@@ -100,16 +100,30 @@ export async function getStoredRefreshToken(): Promise<string | null> {
 
 // ---- JWT expiry (decode only, never trust for authorization) --------------------
 
-function decodeAccessTokenExpiry(token: string): number | null {
+function decodeAccessTokenPayload(token: string): { exp?: unknown; sub?: unknown } | null {
   try {
     const payload = token.split('.')[1] ?? '';
     const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
     const json = globalThis.atob(base64);
-    const decoded = JSON.parse(json) as { exp?: unknown };
-    return typeof decoded.exp === 'number' ? decoded.exp : null;
+    return JSON.parse(json) as { exp?: unknown; sub?: unknown };
   } catch {
     return null;
   }
+}
+
+function decodeAccessTokenExpiry(token: string): number | null {
+  const decoded = decodeAccessTokenPayload(token);
+  return decoded && typeof decoded.exp === 'number' ? decoded.exp : null;
+}
+
+/** The currently signed-in person's id (JWT `sub`), decode-only -- never
+ * used for authorization, only to tell "which person is this local device
+ * state for" apart (see e2ee/storage.ts's DeviceIdentity.personId). */
+export async function getCurrentPersonId(): Promise<string | null> {
+  const token = await getStoredAccessToken();
+  if (!token) return null;
+  const decoded = decodeAccessTokenPayload(token);
+  return decoded && typeof decoded.sub === 'string' ? decoded.sub : null;
 }
 
 const EXPIRY_SKEW_SECONDS = 30;

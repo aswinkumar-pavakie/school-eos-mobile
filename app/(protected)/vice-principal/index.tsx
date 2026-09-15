@@ -26,6 +26,11 @@ interface NavItem {
   key: ServiceIconKey;
   label: string;
   slug: string;
+  /** Overrides the default slug-based `/(protected)/vice-principal/:slug`
+   * route for an item that's actually a real screen living elsewhere (e.g.
+   * Messages, the shared messaging-v2 feature under /(protected)/messaging,
+   * not a VP-specific placeholder). */
+  href?: string;
 }
 
 interface NavSection {
@@ -75,6 +80,7 @@ const SECTIONS: NavSection[] = [
     items: [
       { key: 'communityProfile', label: 'Communities', slug: 'communities' },
       { key: 'announcements', label: 'Announcements', slug: 'announcements' },
+      { key: 'messages', label: 'Messages', slug: 'messages', href: '/(protected)/messaging' },
     ],
   },
   {
@@ -115,7 +121,8 @@ export default function VicePrincipalShell() {
                   style={styles.gridItem}
                   onPress={() =>
                     router.push(
-                      `/(protected)/vice-principal/${item.slug}?title=${encodeURIComponent(item.label)}` as never,
+                      (item.href ??
+                        `/(protected)/vice-principal/${item.slug}?title=${encodeURIComponent(item.label)}`) as never,
                     )
                   }
                 >

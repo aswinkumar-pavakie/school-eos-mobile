@@ -32,7 +32,7 @@ const STUDENT_TILES: ServiceItem[] = [
   { key: 'homework', label: 'Homework', href: '/(protected)/faculty/homework' },
   { key: 'classTeacher', label: 'Class Teacher', href: '/(protected)/faculty/class-teacher' },
   { key: 'meetings', label: 'Parent Meetings', href: '/(protected)/faculty/parent-meetings' },
-  { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
+  { key: 'messages', label: 'Messages', href: '/(protected)/messaging' },
   { key: 'events', label: 'Events', href: '/events' },
 ];
 

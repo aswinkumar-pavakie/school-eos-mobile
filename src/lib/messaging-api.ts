@@ -168,6 +168,10 @@ export interface CreateConversationResult {
   conversationId: string;
   state: 'ACTIVE' | 'PENDING';
   messagingMode: 'DIRECT' | 'REQUEST';
+  // False when a conversation with this person already existed -- the
+  // server never used this call's mlsWelcome/initialMessage in that case
+  // (see hooks.ts's useStartDirectConversation/useCreateRequest).
+  isNew: boolean;
 }
 
 export function createConversation(
@@ -248,6 +252,11 @@ export interface MessageDto {
   id: string;
   conversationId: string;
   senderPersonId: string;
+  // The sender's own locally-generated id for this send -- lets the sender's
+  // client recognize its own messages and show cached plaintext instead of
+  // attempting to decrypt them again (see e2ee/storage.ts's sent-plaintext
+  // cache).
+  clientMessageId: string;
   sequence: number;
   ciphertext: string;
   encryptionVersion: string;
@@ -353,8 +362,10 @@ export function publishMlsKeyPackages(
 
 export interface DeviceKeyBundleDto {
   deviceId: string;
-  identityPublicKey: string;
-  algorithm: string;
+  // Only ever populated for the old, now-inert X25519 prekey system --
+  // never read by this client, which uses mlsKeyPackage below exclusively.
+  identityPublicKey: string | null;
+  algorithm: string | null;
   signedPrekey: { publicKey: string; signature: string } | null;
   oneTimePrekey: string | null;
   mlsKeyPackage: { id: string; data: string } | null;

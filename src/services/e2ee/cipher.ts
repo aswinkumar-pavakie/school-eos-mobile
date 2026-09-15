@@ -11,8 +11,14 @@ import {
   processMessage,
 } from 'ts-mls';
 import { fromBase64, toBase64 } from './codec';
+import { withConversationLock } from './conversationLock';
 import { getMlsCiphersuiteImpl, MLS_ENCRYPTION_VERSION } from './setup';
-import { loadGroupState, saveGroupState } from './storage';
+import {
+  getReceivedPlaintext,
+  loadGroupState,
+  saveGroupState,
+  saveReceivedPlaintext,
+} from './storage';
 
 export class NoGroupStateError extends Error {
   constructor(conversationId: string) {
@@ -36,31 +42,29 @@ export async function encryptMessage(
   conversationId: string,
   plaintext: string,
 ): Promise<EncryptedMessage> {
-  const state = await loadGroupState(conversationId);
-  if (!state) throw new NoGroupStateError(conversationId);
+  return withConversationLock(conversationId, async () => {
+    const state = await loadGroupState(conversationId);
+    if (!state) throw new NoGroupStateError(conversationId);
 
-  const impl = await getMlsCiphersuiteImpl();
-  const result = await createApplicationMessage(
-    state,
-    new TextEncoder().encode(plaintext),
-    impl,
-  );
+    const impl = await getMlsCiphersuiteImpl();
+    const result = await createApplicationMessage(
+      state,
+      new TextEncoder().encode(plaintext),
+      impl,
+    );
 
-  await saveGroupState(conversationId, result.newState);
+    await saveGroupState(conversationId, result.newState);
 
-  const wire = encodeMlsMessage({
-    privateMessage: result.privateMessage,
-    wireformat: 'mls_private_message',
-    version: 'mls10',
+    const wire = encodeMlsMessage({
+      privateMessage: result.privateMessage,
+      wireformat: 'mls_private_message',
+      version: 'mls10',
+    });
+    return { ciphertext: toBase64(wire), encryptionVersion: MLS_ENCRYPTION_VERSION };
   });
-  return { ciphertext: toBase64(wire), encryptionVersion: MLS_ENCRYPTION_VERSION };
 }
 
-/** Decrypts one incoming message. Advances and durably persists this
- * conversation's group state BEFORE the plaintext is returned to the
- * caller -- never expose decrypted content from state that wasn't first
- * saved. */
-export async function decryptMessage(
+async function decryptMessageRaw(
   conversationId: string,
   ciphertextBase64: string,
 ): Promise<string> {
@@ -89,4 +93,45 @@ export async function decryptMessage(
     );
   }
   return new TextDecoder().decode(result.message);
+}
+
+/** Decrypts one incoming message. Advances and durably persists this
+ * conversation's group state BEFORE the plaintext is returned to the
+ * caller -- never expose decrypted content from state that wasn't first
+ * saved. Exported as-is for the real crypto integration test (e2ee.test.ts),
+ * which exercises the raw protocol directly; real app code should call
+ * decryptMessageCached below instead. */
+export async function decryptMessage(
+  conversationId: string,
+  ciphertextBase64: string,
+): Promise<string> {
+  return withConversationLock(conversationId, () =>
+    decryptMessageRaw(conversationId, ciphertextBase64),
+  );
+}
+
+/** The real app's entry point for decrypting a RECEIVED message (see
+ * useMessages) -- checking the already-decrypted-plaintext cache and the
+ * actual decrypt both happen inside the SAME lock acquisition, atomically.
+ * This matters because plain decryptMessage's lock only prevents two
+ * concurrent decrypts from corrupting each other's state -- it does NOT
+ * stop a second, serialized-behind-the-first caller from THEN attempting a
+ * real decrypt on a message the first caller already consumed (MLS only
+ * allows decrypting a given message once, ever). Checking the cache after
+ * acquiring the lock, not before, is what lets that second caller notice
+ * "someone already decrypted this" and use the cached result instead of
+ * making a doomed second attempt. */
+export async function decryptMessageCached(
+  conversationId: string,
+  messageId: string,
+  ciphertextBase64: string,
+): Promise<string> {
+  return withConversationLock(conversationId, async () => {
+    const cached = await getReceivedPlaintext(conversationId, messageId);
+    if (cached !== null) return cached;
+
+    const plaintext = await decryptMessageRaw(conversationId, ciphertextBase64);
+    await saveReceivedPlaintext(conversationId, messageId, plaintext);
+    return plaintext;
+  });
 }

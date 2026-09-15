@@ -46,8 +46,14 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
       headers: isFormData ? { ...headers } : { 'Content-Type': 'application/json', ...headers },
       body: isFormData ? (body as FormData) : body !== undefined ? JSON.stringify(body) : undefined,
     });
-  } catch {
-    throw new ApiError(0, 'Unable to reach the server. Check your connection.');
+  } catch (err) {
+    // TEMPORARY diagnostic detail (dev-only) -- surfaces the real fetch failure
+    // reason and target URL on-screen instead of a generic message, to find why
+    // "Unable to reach the server" kept recurring despite the backend/network
+    // being independently confirmed reachable. Revert to the generic message
+    // once root-caused.
+    const detail = __DEV__ ? ` [${API_BASE_URL}${path}] ${err instanceof Error ? err.message : String(err)}` : '';
+    throw new ApiError(0, `Unable to reach the server. Check your connection.${detail}`);
   }
 
   const json = await res.json().catch(() => null);
