@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
 import { SelectField } from '@/components/SelectField';
@@ -213,7 +213,7 @@ export default function ComplaintsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Hostel Complaints" subtitle="Report and track maintenance issues" onBack={() => router.back()} />
+      <WardenSubHeader title="Hostel Complaints" onBack={() => router.back()} />
       <SegmentedTabs
         tabs={[
           { key: 'report', label: 'Report an issue' },

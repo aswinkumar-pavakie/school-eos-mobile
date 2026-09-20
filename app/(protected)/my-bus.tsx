@@ -15,6 +15,7 @@ import { ErrorState } from '@/components/ScreenStates';
 import { ApiError } from '@/lib/api';
 import { getBusAllocation, type BusAllocation } from '@/lib/parent-api';
 import FacultyBusScreen from './faculty/bus';
+import { SportsBusScreen } from '@/components/sports/SportsBusScreen';
 import { cardShadow, parentColors } from '@/lib/theme';
 
 function BusIcon() {
@@ -156,8 +157,31 @@ function ParentMyBusScreen() {
   );
 }
 
+function NoBusForRoleScreen() {
+  const router = useRouter();
+  return (
+    <View style={styles.flex}>
+      <AppHeader title="My Bus" onBack={() => router.replace('/')} />
+      <View style={styles.body}>
+        <Text style={styles.text}>Bus allocation isn&apos;t tracked for this role yet.</Text>
+      </View>
+    </View>
+  );
+}
+
 export default function MyBusRoute() {
-  const { isFaculty, isLoading } = useCurrentRoles();
+  // Confirmed live as a real bug: every non-Faculty role (Principal, Vice
+  // Principal, Hostel Warden, Community -- none of whom have a "child" in
+  // the Parent sense) used to fall through to ParentMyBusScreen below,
+  // which calls useSelectedChild() -> /parent/children unconditionally.
+  // That's a Parent-only endpoint -- it 403'd for Principal on every single
+  // visit to this tab. This backend genuinely has no staff-transport-
+  // allocation endpoint (own-bus-as-staff) for THOSE roles, so they get an
+  // honest "not available" state instead of a misattributed Parent API call.
+  // Sports Admin is now a real exception: faculty-bus.controller.ts was
+  // widened to SPORTS_ADMIN (same "am I personally a driver/attendant"
+  // lookup Faculty already had), so it gets its own real screen instead.
+  const { isFaculty, isPrincipal, isVicePrincipal, isHostelWarden, isCommunity, isSportsAdmin, isLoading } = useCurrentRoles();
   if (isLoading) {
     return (
       <View style={[styles.flex, styles.body]}>
@@ -165,7 +189,10 @@ export default function MyBusRoute() {
       </View>
     );
   }
-  return isFaculty ? <FacultyBusScreen /> : <ParentMyBusScreen />;
+  if (isFaculty) return <FacultyBusScreen />;
+  if (isSportsAdmin) return <SportsBusScreen />;
+  if (isPrincipal || isVicePrincipal || isHostelWarden || isCommunity) return <NoBusForRoleScreen />;
+  return <ParentMyBusScreen />;
 }
 
 const styles = StyleSheet.create({

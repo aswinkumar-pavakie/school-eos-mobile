@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { ApiError } from '@/lib/api';
 import { createStudySession } from '@/lib/hostel-warden-api';
 import { parentColors, cardShadow } from '@/lib/theme';
@@ -62,7 +62,7 @@ export default function CreateStudySessionScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="New study session" onBack={() => router.back()} />
+      <WardenSubHeader title="New study session" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow]}>
           <Field label="Date">

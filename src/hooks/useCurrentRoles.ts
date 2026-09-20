@@ -20,6 +20,7 @@ export function useCurrentRoles() {
     isPrincipal: roleCodes.includes('PRINCIPAL'),
     isVicePrincipal: roleCodes.includes('VICE_PRINCIPAL'),
     isCommunity: roleCodes.includes('COMMUNITY'),
+    isSportsAdmin: roleCodes.includes('SPORTS_ADMIN'),
     isLoading: query.isLoading,
   };
 }

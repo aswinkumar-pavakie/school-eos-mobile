@@ -131,6 +131,10 @@ export interface OutingRequestRow {
   approvalRequestId: string | null;
   state: string;
   requestType: string | null;
+  calledByName: string | null;
+  calledByPhone: string | null;
+  purposeCategory: MovementLogPurpose | null;
+  actualReturnAt: string | null;
 }
 
 async function listOutingRequests(kind: 'gate-pass-requests' | 'emergency-exit-requests'): Promise<OutingRequestRow[]> {
@@ -173,6 +177,53 @@ export const approveEmergencyExitRequest = (id: string, comment?: string) =>
   decideOutingRequest('emergency-exit-requests', id, 'approve', comment);
 export const rejectEmergencyExitRequest = (id: string, comment: string) =>
   decideOutingRequest('emergency-exit-requests', id, 'reject', comment);
+
+// ---- Movement Log (Warden-authored, real -- see backend's own
+// outing-request.repository.ts createDirect/findDirectEntriesForHostels
+// comments and migration 0021_outing_request_movement_log_fields.sql; same
+// real endpoints the website Hostel Warden console uses) --------------------
+
+export const MOVEMENT_LOG_PURPOSES = ['HOME_LEAVE', 'LOCAL_OUTING', 'MEDICAL', 'SCHOOL_EVENT', 'OTHER'] as const;
+export type MovementLogPurpose = (typeof MOVEMENT_LOG_PURPOSES)[number];
+export const MOVEMENT_LOG_PURPOSE_LABELS: Record<MovementLogPurpose, string> = {
+  HOME_LEAVE: 'Home leave',
+  LOCAL_OUTING: 'Local outing',
+  MEDICAL: 'Medical',
+  SCHOOL_EVENT: 'School event',
+  OTHER: 'Other',
+};
+
+export async function listMovementLogEntries(): Promise<OutingRequestRow[]> {
+  const res = await authedRequest<ApiEnvelope<OutingRequestRow[]>>('/hostel/movement-log');
+  return res.data;
+}
+
+export async function createMovementLogEntry(input: {
+  studentId: string;
+  purposeCategory: MovementLogPurpose;
+  reason: string;
+  calledByName: string;
+  calledByPhone: string;
+  outFrom: string;
+  expectedReturn: string;
+  isOvernight?: boolean;
+}): Promise<OutingRequestRow> {
+  const res = await authedRequest<ApiEnvelope<OutingRequestRow>>('/hostel/movement-log', { method: 'POST', body: input });
+  return res.data;
+}
+
+export async function recordMovementLogReturn(id: string): Promise<OutingRequestRow> {
+  const res = await authedRequest<ApiEnvelope<OutingRequestRow>>(`/hostel/movement-log/${id}/return`, { method: 'POST' });
+  return res.data;
+}
+
+export async function amendMovementLogEntry(
+  id: string,
+  input: { expectedReturn?: string; reason?: string; calledByName?: string; calledByPhone?: string },
+): Promise<OutingRequestRow> {
+  const res = await authedRequest<ApiEnvelope<OutingRequestRow>>(`/hostel/movement-log/${id}`, { method: 'PATCH', body: input });
+  return res.data;
+}
 
 // ---- Call Requests -----------------------------------------------------------------
 
@@ -325,6 +376,25 @@ export async function getStudentRoom(studentId: string): Promise<HostelAllocatio
   return res.data;
 }
 
+// ---- Student fees (per-student, real; feeds the Hostel Fees screen) --------------
+
+export type StudentFeeOverallStatus = 'NO_ASSIGNMENT' | 'PAID' | 'PARTIAL' | 'PENDING' | 'OVERDUE';
+export interface StudentFeeSummary {
+  totalDuePaise: string;
+  totalPaidPaise: string;
+  totalOverduePaise: string;
+  overallStatus: StudentFeeOverallStatus;
+}
+
+// Reuses Finance's own StudentFeesService.getSummaryForStudent via the same
+// real GET /hostel/students/:studentId/fees the website's own Hostel Fees
+// page already uses (room-bed-view.service.ts's getStudentFees) -- scoped to
+// the Warden's own hostel(s), 404s for a student outside their scope.
+export async function getStudentFees(studentId: string): Promise<StudentFeeSummary> {
+  const res = await authedRequest<ApiEnvelope<StudentFeeSummary>>(`/hostel/students/${studentId}/fees`);
+  return res.data;
+}
+
 export interface StudentGuardianRow {
   personId: string;
   firstName: string;
@@ -344,6 +414,7 @@ export interface HostelStructureRoom {
   id: string;
   roomNo: string;
   floorNo: number;
+  bedCapacity: number;
 }
 
 export interface HostelStructureBlock {
@@ -357,6 +428,22 @@ export interface HostelStructureBlock {
 // Warden's own hostel(s).
 export async function listHostelStructure(): Promise<HostelStructureBlock[]> {
   const res = await authedRequest<ApiEnvelope<HostelStructureBlock[]>>('/hostel/blocks');
+  return res.data;
+}
+
+// ---- Warden roster ---------------------------------------------------------------
+
+export interface WardenRosterRow {
+  personId: string;
+  firstName: string;
+  lastName: string | null;
+  mobile: string | null;
+  hostelId: string;
+  hostelName: string;
+}
+
+export async function listWardenRoster(): Promise<WardenRosterRow[]> {
+  const res = await authedRequest<ApiEnvelope<WardenRosterRow[]>>('/hostel/warden-roster');
   return res.data;
 }
 

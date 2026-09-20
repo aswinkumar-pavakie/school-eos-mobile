@@ -78,6 +78,18 @@ export async function saveDeviceIdentity(
   await SecureStore.setItemAsync(DEVICE_IDENTITY_KEY, JSON.stringify(identity));
 }
 
+/** Called when the server rejects this device as DEVICE_REVOKED -- the
+ * locally-saved identity is now permanently unusable (the server will never
+ * accept it again), so bootstrap.ts wipes it (and the KeyPackage pool, which
+ * is keyed to that same dead device) and re-registers a fresh one on the
+ * same login. Same fix as the website's e2ee/storage.ts -- confirmed live
+ * there as a real, reproducing bug (a revoked device fails the exact same
+ * way forever on every load otherwise), not hypothetical. */
+export async function clearDeviceIdentity(): Promise<void> {
+  await SecureStore.deleteItemAsync(DEVICE_IDENTITY_KEY).catch(() => {});
+  await SecureStore.deleteItemAsync(KEY_PACKAGE_POOL_KEY).catch(() => {});
+}
+
 // ---- KeyPackage pool (published; not yet matched to a real join) -------
 
 const KEY_PACKAGE_POOL_KEY = 'e2ee.mls.keypackagepool';

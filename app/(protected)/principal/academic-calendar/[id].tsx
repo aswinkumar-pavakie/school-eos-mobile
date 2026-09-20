@@ -7,12 +7,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getCalendarEvent } from '@/lib/principal-academic-calendar-api';
 import { listGrades, listSections } from '@/lib/principal-students-api';
 
@@ -63,8 +63,8 @@ export default function PrincipalAcademicCalendarDetail() {
   if (eventQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Event" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Event" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -72,7 +72,7 @@ export default function PrincipalAcademicCalendarDetail() {
   if (eventQuery.isError || !eventQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Event" onBack={() => router.back()} />
+        <PrincipalHeader title="Event" onBack={() => router.back()} />
         <ErrorState
           message={eventQuery.error instanceof ApiError ? eventQuery.error.message : "Couldn't load this event."}
           onRetry={() => eventQuery.refetch()}
@@ -98,7 +98,7 @@ export default function PrincipalAcademicCalendarDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={event.title} onBack={() => router.back()} />
+      <PrincipalHeader title={event.title} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <View style={{ flex: 1, minWidth: 0 }}>
@@ -126,11 +126,11 @@ export default function PrincipalAcademicCalendarDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32, gap: 12 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  dateText: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  dateText: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
-  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 20 },
-  sectionTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 4 },
+  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 20 },
+  sectionTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 4 },
 });

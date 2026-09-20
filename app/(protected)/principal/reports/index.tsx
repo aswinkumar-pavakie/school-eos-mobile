@@ -11,12 +11,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatMoneySummary } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getReportsSummary } from '@/lib/principal-reports-api';
 
 const cardShadow = {
@@ -105,8 +105,8 @@ export default function PrincipalReportsScreen() {
   if (summaryQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Reports" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Reports" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -114,7 +114,7 @@ export default function PrincipalReportsScreen() {
   if (summaryQuery.isError || !summaryQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Reports" onBack={() => router.back()} />
+        <PrincipalHeader title="Reports" onBack={() => router.back()} />
         <ErrorState
           message={summaryQuery.error instanceof ApiError ? summaryQuery.error.message : 'Unable to load reports.'}
           onRetry={() => summaryQuery.refetch()}
@@ -127,7 +127,7 @@ export default function PrincipalReportsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Reports" subtitle="Institution-wide figures" onBack={() => router.back()} />
+      <PrincipalHeader title="Reports" subtitle="Institution-wide figures" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <SectionCard title="Enrollment">
           <View style={styles.statsRow}>
@@ -242,28 +242,28 @@ export default function PrincipalReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32, gap: 14 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 18, gap: 12 },
-  sectionTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  sectionTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
   subLabel: {
     fontSize: 11,
     fontFamily: 'PlusJakartaSans_700Bold',
-    color: parentColors.muted,
+    color: principalColors.muted,
     textTransform: 'uppercase',
     letterSpacing: 0.4,
     marginTop: 4,
   },
   statsRow: { flexDirection: 'row', gap: 10 },
-  statTile: { flex: 1, backgroundColor: parentColors.background, borderRadius: 12, paddingVertical: 12, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
+  statTile: { flex: 1, backgroundColor: principalColors.background, borderRadius: 12, paddingVertical: 12, alignItems: 'center', gap: 4 },
+  statValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
   barHeaderRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 4 },
-  barLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.ink, flexShrink: 1 },
-  barValue: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.muted },
-  barTrack: { height: 8, borderRadius: 4, backgroundColor: parentColors.borderSoft, overflow: 'hidden' },
-  barFill: { height: 8, borderRadius: 4, backgroundColor: parentColors.blue },
+  barLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.ink, flexShrink: 1 },
+  barValue: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.muted },
+  barTrack: { height: 8, borderRadius: 4, backgroundColor: principalColors.borderSoft, overflow: 'hidden' },
+  barFill: { height: 8, borderRadius: 4, backgroundColor: principalColors.primary },
   statusListRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  emptyText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.mutedLight },
-  generatedAt: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.mutedLight, textAlign: 'center', marginTop: 4 },
+  emptyText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.disabled },
+  generatedAt: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.disabled, textAlign: 'center', marginTop: 4 },
 });

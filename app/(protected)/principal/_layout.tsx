@@ -6,7 +6,7 @@
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Redirect, Slot } from 'expo-router';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 
 export default function PrincipalLayout() {
   const { isPrincipal, isLoading } = useCurrentRoles();
@@ -14,7 +14,7 @@ export default function PrincipalLayout() {
   if (isLoading) {
     return (
       <View style={styles.loading}>
-        <ActivityIndicator color={parentColors.blue} />
+        <ActivityIndicator color={principalColors.primary} />
       </View>
     );
   }
@@ -27,5 +27,5 @@ export default function PrincipalLayout() {
 }
 
 const styles = StyleSheet.create({
-  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: parentColors.background },
+  loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: principalColors.background },
 });

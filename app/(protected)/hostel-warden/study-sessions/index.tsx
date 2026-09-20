@@ -1,7 +1,7 @@
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
@@ -15,7 +15,7 @@ export default function StudySessionsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Study Attendance" subtitle="Configured study sessions" onBack={() => router.back()} />
+      <WardenSubHeader title="Study Attendance" onBack={() => router.back()} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={sessionsQuery.isFetching} onRefresh={() => sessionsQuery.refetch()} />}

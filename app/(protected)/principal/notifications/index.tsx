@@ -21,12 +21,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listNotifications, markNotificationRead, type NotificationRow } from '@/lib/principal-notifications-api';
 
 function humanize(code: string): string {
@@ -65,7 +65,7 @@ export default function PrincipalNotificationsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader
+      <PrincipalHeader
         title="Notifications"
         subtitle={unreadCount > 0 ? `${unreadCount} unread` : 'All caught up'}
         onBack={() => router.back()}
@@ -84,7 +84,7 @@ export default function PrincipalNotificationsScreen() {
         </View>
 
         {listQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
         ) : listQuery.isError ? (
           <ErrorState
             message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load notifications.'}
@@ -137,36 +137,36 @@ export default function PrincipalNotificationsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
-  row: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: parentColors.borderSoft, gap: 3 },
+  row: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: principalColors.borderSoft, gap: 3 },
   rowFirst: { borderTopWidth: 0 },
   rowHeader: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: parentColors.blue },
-  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.ink, flexShrink: 1 },
+  unreadDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: principalColors.primary },
+  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.ink, flexShrink: 1 },
   rowTitleUnread: { fontFamily: 'PlusJakartaSans_800ExtraBold' },
-  rowBody: { fontSize: 13, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.muted, lineHeight: 18 },
-  rowMeta: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.mutedLight, marginTop: 2 },
+  rowBody: { fontSize: 13, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.muted, lineHeight: 18 },
+  rowMeta: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.disabled, marginTop: 2 },
   viewButton: {
     alignSelf: 'flex-start',
     marginTop: 8,
     borderRadius: 10,
     paddingVertical: 8,
     paddingHorizontal: 14,
-    backgroundColor: parentColors.blue,
+    backgroundColor: principalColors.primary,
   },
   viewButtonText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: '#fff' },
 });

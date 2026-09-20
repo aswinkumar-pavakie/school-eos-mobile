@@ -14,14 +14,14 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
 import { SelectField } from '@/components/SelectField';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatDateTime, formatMoneyDetail, formatMoneySummary } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listAcademicYears } from '@/lib/principal-academics-api';
 import {
   getFeeOverview,
@@ -115,7 +115,7 @@ export default function PrincipalFinanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Finance" subtitle="School-wide fee collection overview" onBack={() => router.back()} />
+      <PrincipalHeader title="Finance" subtitle="School-wide fee collection overview" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={{ marginBottom: 12 }}>
           <SelectField
@@ -129,7 +129,7 @@ export default function PrincipalFinanceScreen() {
         </View>
 
         {overviewQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginBottom: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginBottom: 12 }} />
         ) : overviewQuery.isError ? (
           <ErrorState
             message={overviewQuery.error instanceof ApiError ? overviewQuery.error.message : 'Unable to load the fee overview.'}
@@ -209,7 +209,7 @@ function OutstandingFeesTab({ academicYearId, grades }: { academicYearId?: strin
         value={search}
         onChangeText={setSearch}
         placeholder="Search by student name or admission no…"
-        placeholderTextColor={parentColors.mutedLight}
+        placeholderTextColor={principalColors.disabled}
         style={styles.searchInput}
       />
       <View style={{ marginBottom: 12 }}>
@@ -234,7 +234,7 @@ function OutstandingFeesTab({ academicYearId, grades }: { academicYearId?: strin
       </View>
 
       {demandsQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : demandsQuery.isError ? (
         <ErrorState
           message={demandsQuery.error instanceof ApiError ? demandsQuery.error.message : 'Unable to load outstanding fees.'}
@@ -302,7 +302,7 @@ function FeeStructuresTab({
     <ScrollView contentContainerStyle={styles.tabContent}>
       <Text style={styles.sectionTitle}>Fee heads</Text>
       {feeHeadsQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} />
+        <ActivityIndicator color={principalColors.primary} />
       ) : feeHeads.length === 0 ? (
         <EmptyState message="No fee heads configured." />
       ) : (
@@ -353,7 +353,7 @@ function FeeStructuresTab({
       </View>
 
       {structuresQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : structuresQuery.isError ? (
         <ErrorState
           message={structuresQuery.error instanceof ApiError ? structuresQuery.error.message : 'Unable to load fee structures.'}
@@ -405,7 +405,7 @@ function PaymentsTab({ academicYearId }: { academicYearId?: string }) {
         value={search}
         onChangeText={setSearch}
         placeholder="Search by student name or receipt no…"
-        placeholderTextColor={parentColors.mutedLight}
+        placeholderTextColor={principalColors.disabled}
         style={styles.searchInput}
       />
       <View style={styles.statusRow}>
@@ -421,7 +421,7 @@ function PaymentsTab({ academicYearId }: { academicYearId?: string }) {
       </View>
 
       {paymentsQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : paymentsQuery.isError ? (
         <ErrorState
           message={paymentsQuery.error instanceof ApiError ? paymentsQuery.error.message : 'Unable to load payments.'}
@@ -474,7 +474,7 @@ function PurchaseRequestsTab({ router }: { router: ReturnType<typeof useRouter> 
       </Pressable>
 
       {listQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : listQuery.isError ? (
         <ErrorState
           message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load your requests.'}
@@ -504,43 +504,43 @@ function PurchaseRequestsTab({ router }: { router: ReturnType<typeof useRouter> 
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 8 },
   tabContent: { paddingHorizontal: 16, paddingBottom: 32 },
   heroCard: { backgroundColor: '#fff', borderRadius: 16, padding: 18, marginBottom: 10 },
-  heroLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  heroValue: { fontSize: 26, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 4 },
-  heroSub: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  heroLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  heroValue: { fontSize: 26, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 4 },
+  heroSub: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, paddingHorizontal: 8, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 16, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, textAlign: 'center' },
+  statValue: { fontSize: 16, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, textAlign: 'center' },
   statValueWarning: { color: '#B77A0A' },
-  statLabel: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 6, marginBottom: 10 },
+  statLabel: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 6, marginBottom: 10 },
   searchInput: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 13,
     fontSize: 14.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     marginBottom: 12,
   },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
-  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 4, marginBottom: 8 },
-  applyButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginBottom: 14 },
+  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 4, marginBottom: 8 },
+  applyButton: { backgroundColor: principalColors.primary, borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginBottom: 14 },
   applyButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 14, color: '#fff' },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   demandRow: {
     flexDirection: 'row',
@@ -558,7 +558,7 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   infoRow: {
     flexDirection: 'row',
@@ -566,10 +566,10 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  rowAmount: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  rowAmount: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
 });

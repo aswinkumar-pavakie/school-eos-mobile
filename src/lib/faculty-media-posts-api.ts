@@ -31,7 +31,13 @@ export interface MediaPost {
   assets: MediaPostAsset[];
 }
 
+// Explicitly requests state=PUBLISHED even though the backend already
+// forces this for FACULTY/PARENT/SPORTS_ADMIN/HOSTEL_WARDEN callers --
+// PRINCIPAL and CORRESPONDENT are "privileged" there (full Media Room
+// oversight elsewhere in the app) and would otherwise silently get drafts/
+// scheduled/cancelled posts mixed into a Home feed that must only ever show
+// what's actually live. Never omit this query param.
 export async function listPublishedMediaPosts(): Promise<MediaPost[]> {
-  const res = await authedRequest<ApiEnvelope<MediaPost[]>>('/media/posts');
+  const res = await authedRequest<ApiEnvelope<MediaPost[]>>('/media/posts?state=PUBLISHED');
   return res.data;
 }

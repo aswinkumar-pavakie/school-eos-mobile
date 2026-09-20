@@ -12,25 +12,33 @@
 // IMPORTANT (native limitation, not a bug in this code): Expo Go has not
 // supported remote push notifications since SDK 53 -- only a real development
 // or production build (`eas build --profile development`, or a prebuilt native
-// run) can obtain a real token and actually receive a push. In Expo Go this
-// degrades to a silent no-op (registerForPushNotificationsAsync returns null),
-// exactly like a simulator/emulator or a denied permission does below -- never
-// a crash, since push registration is a background enhancement, not something
-// any screen depends on to function.
+// run) can obtain a real token and actually receive a push. Older SDKs let you
+// still safely `import * as Notifications` under Expo Go and only had
+// individual calls no-op; as of SDK 53 the package itself throws synchronously
+// the moment it's imported inside Expo Go (confirmed live: "Android Push
+// notifications... was removed from Expo Go" crashes the whole app at import
+// time, before any of the guards below ever run). The real fix is to never
+// statically import the package -- detect Expo Go first, and only load the
+// module at all when running in a real dev/production build.
 
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { registerPushToken, type SessionStatus } from '@/lib/auth';
+
+// Running inside Expo Go (as opposed to a real dev/production build) --
+// `expo-notifications` must never even be imported in this case on SDK 53+.
+const IS_EXPO_GO = Constants.appOwnership === 'expo';
 
 /** Foreground behavior: a notification that arrives while the app is already
  * open still shows as a banner and lands in the OS notification list, same as
  * a background-arrived one -- an "your request was approved" alert would
  * otherwise be silently swallowed just because the app happened to be open. */
-export function configureNotificationHandler(): void {
+export async function configureNotificationHandler(): Promise<void> {
+  if (IS_EXPO_GO) return;
+  const Notifications = await import('expo-notifications');
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
       shouldShowBanner: true,
@@ -49,7 +57,10 @@ type DevicePlatform = 'ANDROID' | 'IOS';
  * token" as "skip silently," not an error to surface to the user. */
 export async function registerForPushNotificationsAsync(): Promise<{ token: string; platform: DevicePlatform } | null> {
   if (Platform.OS === 'web') return null;
+  if (IS_EXPO_GO) return null; // SDK 53+ removed this from Expo Go entirely -- see this file's own header comment
   if (!Device.isDevice) return null; // simulators/emulators don't get real, deliverable tokens
+
+  const Notifications = await import('expo-notifications');
 
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('default', {
@@ -93,18 +104,28 @@ export function useRegisterPushToken(status: SessionStatus): void {
   const configuredRef = useRef(false);
 
   useEffect(() => {
+    if (IS_EXPO_GO) return; // see this file's own header comment -- SDK 53+ removed this from Expo Go entirely
+
     if (!configuredRef.current) {
       configureNotificationHandler();
       configuredRef.current = true;
     }
 
-    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
-      const deepLink = response.notification.request.content.data?.deepLink;
-      if (typeof deepLink === 'string' && deepLink.length > 0) {
-        router.push(deepLink as never);
-      }
+    let subscription: { remove: () => void } | undefined;
+    let cancelled = false;
+    import('expo-notifications').then((Notifications) => {
+      if (cancelled) return;
+      subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+        const deepLink = response.notification.request.content.data?.deepLink;
+        if (typeof deepLink === 'string' && deepLink.length > 0) {
+          router.push(deepLink as never);
+        }
+      });
     });
-    return () => subscription.remove();
+    return () => {
+      cancelled = true;
+      subscription?.remove();
+    };
   }, [router]);
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
@@ -115,7 +115,7 @@ export default function CallRequestDetailScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Call Request" onBack={() => router.back()} />
+      <WardenSubHeader title="Call Request" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         {detailQuery.isLoading || !request ? (
           detailQuery.isError ? (

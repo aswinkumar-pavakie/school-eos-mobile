@@ -8,12 +8,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listDrivers, listRoutes, listVehicles } from '@/lib/principal-transport-api';
 
 const cardShadow = {
@@ -47,7 +47,7 @@ export default function PrincipalTransportScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Transport" subtitle="School transport operations" onBack={() => router.back()} />
+      <PrincipalHeader title="Transport" subtitle="School transport operations" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.statsRow}>
           <View style={[styles.statTile, cardShadow]}>
@@ -138,7 +138,7 @@ function ListSection<T>({
   renderRow: (item: T) => RowSpec;
 }) {
   if (query.isLoading) {
-    return <ActivityIndicator color={parentColors.blue} style={{ marginTop: 12 }} />;
+    return <ActivityIndicator color={principalColors.primary} style={{ marginTop: 12 }} />;
   }
   if (query.isError) {
     return (
@@ -177,12 +177,12 @@ function ListSection<T>({
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   statsRow: { flexDirection: 'row', gap: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
+  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
     flexDirection: 'row',
@@ -190,9 +190,9 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

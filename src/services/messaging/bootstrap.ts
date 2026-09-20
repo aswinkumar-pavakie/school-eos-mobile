@@ -10,13 +10,24 @@
 
 import { useEffect, useRef } from 'react';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 import { ed25519 } from '@noble/curves/ed25519.js';
 import { getCurrentPersonId, type SessionStatus } from '@/lib/auth';
-import { registerDevice } from '@/lib/messaging-api';
+import { MessagingApiError, registerDevice } from '@/lib/messaging-api';
 import { toBase64 } from '../e2ee/codec';
 import { replenishKeyPackagesIfNeeded } from '../e2ee/keyPackage';
 import { ensureCryptoInstalled } from '../e2ee/setup';
-import { ensureIdentityForPerson, saveDeviceIdentity } from '../e2ee/storage';
+import { clearDeviceIdentity, ensureIdentityForPerson, saveDeviceIdentity } from '../e2ee/storage';
+
+// react-native-quick-crypto is a native (JSI) module with no Expo Go build --
+// confirmed live: ed25519.keygen() below needs globalThis.crypto.getRandomValues,
+// which only exists once install() has genuinely run, which cannot happen
+// inside Expo Go at all. Skipping the whole bootstrap under Expo Go (once,
+// via console.warn) is correct and expected here -- not a bug to keep
+// retrying and re-logging on every single login -- a real development or
+// production build is required for E2EE messaging to work, same native-module
+// constraint documented in setup.ts.
+const IS_EXPO_GO = Constants.appOwnership === 'expo';
 
 async function ensureDeviceIdentity(): Promise<void> {
   const personId = await getCurrentPersonId();
@@ -61,13 +72,20 @@ export function useE2eeBootstrap(status: SessionStatus): void {
   const installedRef = useRef(false);
 
   useEffect(() => {
+    if (IS_EXPO_GO) return;
     if (!installedRef.current) {
-      ensureCryptoInstalled();
+      ensureCryptoInstalled().catch((err) => {
+        console.error('[e2ee bootstrap] native crypto install failed on a real build (not Expo Go -- investigate):', err);
+      });
       installedRef.current = true;
     }
   }, []);
 
   useEffect(() => {
+    if (IS_EXPO_GO) {
+      console.warn('[e2ee bootstrap] skipped -- E2EE messaging requires a real development/production build, not Expo Go.');
+      return;
+    }
     if (status !== 'signedIn') return;
 
     // Deliberately NOT cancellable partway through: this is one atomic "make
@@ -86,9 +104,23 @@ export function useE2eeBootstrap(status: SessionStatus): void {
       // logged (never a bare swallow) -- a brand-new device stuck at zero
       // KeyPackages is silently unreachable by everyone until it retries on
       // a later login, and that's worth being able to diagnose.
-      await replenishKeyPackagesIfNeeded().catch((err) => {
-        console.error('[e2ee bootstrap] KeyPackage replenish failed:', err);
-      });
+      try {
+        await replenishKeyPackagesIfNeeded();
+      } catch (err) {
+        if (err instanceof MessagingApiError && err.code === 'DEVICE_REVOKED') {
+          // Locally-restored identity is stale -- the server will never
+          // accept it again. Wipe it and register a fresh device on this
+          // same login, so a revoked device self-heals in one login instead
+          // of failing the same way forever. Mirrors the website's own fix.
+          await clearDeviceIdentity();
+          await ensureDeviceIdentity();
+          await replenishKeyPackagesIfNeeded().catch((retryErr) => {
+            console.error('[e2ee bootstrap] KeyPackage replenish failed after re-registering device:', retryErr);
+          });
+        } else {
+          console.error('[e2ee bootstrap] KeyPackage replenish failed:', err);
+        }
+      }
     })().catch((err) => {
       // Unlike the replenish above, a failed ensureDeviceIdentity() means
       // this person has NO registered device at all -- every message sent

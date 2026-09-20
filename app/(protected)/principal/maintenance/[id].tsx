@@ -14,12 +14,12 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getRepairRequest } from '@/lib/principal-maintenance-api';
 
 const cardShadow = {
@@ -53,8 +53,8 @@ export default function PrincipalMaintenanceDetail() {
   if (requestQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Request" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Request" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -62,7 +62,7 @@ export default function PrincipalMaintenanceDetail() {
   if (requestQuery.isError || !requestQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Request" onBack={() => router.back()} />
+        <PrincipalHeader title="Request" onBack={() => router.back()} />
         <ErrorState
           message={requestQuery.error instanceof ApiError ? requestQuery.error.message : "Couldn't load this request."}
           onRetry={() => requestQuery.refetch()}
@@ -75,7 +75,7 @@ export default function PrincipalMaintenanceDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={request.title} subtitle={humanize(request.issueType)} onBack={() => router.back()} />
+      <PrincipalHeader title={request.title} subtitle={humanize(request.issueType)} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.infoValue}>{request.location ?? 'No location noted'}</Text>
@@ -122,7 +122,7 @@ export default function PrincipalMaintenanceDetail() {
                   </Text>
                 ) : null}
               </View>
-              <Ionicons name="chevron-forward" size={18} color={parentColors.muted} />
+              <Ionicons name="chevron-forward" size={18} color={principalColors.muted} />
             </Pressable>
           </>
         ) : null}
@@ -172,18 +172,18 @@ export default function PrincipalMaintenanceDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   infoValueWarning: { color: '#B77A0A' },
-  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 20, marginTop: 4 },
+  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 20, marginTop: 4 },
   linkRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

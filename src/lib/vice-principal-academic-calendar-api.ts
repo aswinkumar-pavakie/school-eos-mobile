@@ -47,3 +47,29 @@ export async function getCalendarEvent(id: string): Promise<CalendarEventRow> {
   const res = await authedRequest<ApiEnvelope<CalendarEventRow>>(`/calendar-events/${id}`);
   return res.data;
 }
+
+// POST /calendar-events is @Roles('ADMIN', 'PRINCIPAL') on the real backend
+// (confirmed by the website's own principal/academics/academic-calendar
+// actions.ts) -- VICE_PRINCIPAL does not have this grant, so this function
+// lives here for PRINCIPAL's re-export only; it is not exported from this
+// module's own VP screens.
+export async function createCalendarEvent(input: {
+  academicYearId: string;
+  title: string;
+  eventType: string;
+  isoDate: string;
+}): Promise<CalendarEventRow> {
+  const res = await authedRequest<ApiEnvelope<CalendarEventRow>>('/calendar-events', {
+    method: 'POST',
+    body: {
+      academicYearId: input.academicYearId,
+      title: input.title,
+      eventType: input.eventType,
+      isHoliday: input.eventType === 'HOLIDAY',
+      startDate: input.isoDate,
+      endDate: input.isoDate,
+      scopeType: 'SCHOOL',
+    },
+  });
+  return res.data;
+}

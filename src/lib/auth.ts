@@ -143,7 +143,7 @@ function isExpiredOrExpiringSoon(token: string): boolean {
 // Faculty always carries the base FACULTY role_code alongside any
 // assignment-specific ones (Class Advisor, Academic Coordinator, etc.), so
 // checking for FACULTY covers every assignment without having to enumerate them.
-const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY'];
+const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN'];
 
 /** Login succeeded against the backend, but this role has no mobile access. */
 export class PlatformNotAllowedError extends Error {
@@ -200,7 +200,13 @@ export async function logout(): Promise<void> {
   await clearTokens();
 }
 
-async function refreshTokens(): Promise<TokenPair | null> {
+/** Exported so callers with their own non-header-based auth transport (e.g.
+ * ai-bot-api.ts, whose bot forwards the access token in a JSON body, not an
+ * Authorization header) can force a real refresh on their own 401 instead of
+ * re-deriving this logic -- getValidAccessToken() alone won't do it, since it
+ * only refreshes when the LOCAL expiry check says so, not on a server-side
+ * revoke the local clock can't see. */
+export async function refreshTokens(): Promise<TokenPair | null> {
   const refreshToken = await getStoredRefreshToken();
   if (!refreshToken) return null;
 

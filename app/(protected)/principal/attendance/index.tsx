@@ -19,13 +19,14 @@ import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, 
 import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
+import { StatCards } from '@/components/principal/StatCards';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getStaffAttendanceRoster, markStaffAttendance, type StaffDailyStatusRow } from '@/lib/principal-attendance-api';
 import { listGrades, listSections } from '@/lib/principal-students-api';
 
@@ -122,17 +123,28 @@ export default function PrincipalAttendanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Attendance" subtitle="Mark and review staff attendance" onBack={() => router.back()} />
+      <PrincipalHeader title="Attendance" subtitle="Mark and review staff attendance" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.dateNav}>
           <Pressable style={styles.dateArrow} onPress={() => shiftDate(-1)}>
-            <Ionicons name="chevron-back" size={18} color={parentColors.ink} />
+            <Ionicons name="chevron-back" size={18} color={principalColors.ink} />
           </Pressable>
           <Text style={styles.dateLabel}>{formatDate(dateStr)}</Text>
           <Pressable style={styles.dateArrow} onPress={() => shiftDate(1)}>
-            <Ionicons name="chevron-forward" size={18} color={parentColors.ink} />
+            <Ionicons name="chevron-forward" size={18} color={principalColors.ink} />
           </Pressable>
         </View>
+
+        {!rosterQuery.isLoading && roster.length > 0 ? (
+          <StatCards
+            items={[
+              { label: 'Marked today', value: `${roster.filter((r) => r.status !== null).length}/${roster.length}` },
+              { label: 'Present', value: String(roster.filter((r) => r.status === 'CHECK_IN').length), valueColor: principalColors.green },
+              { label: 'Absent', value: String(roster.filter((r) => r.status === 'ABSENT').length), valueColor: principalColors.red },
+              { label: 'Not marked', value: String(roster.filter((r) => r.status === null).length) },
+            ]}
+          />
+        ) : null}
 
         <View style={styles.statusRow}>
           {[
@@ -201,7 +213,7 @@ export default function PrincipalAttendanceScreen() {
               value={reason}
               onChangeText={setReason}
               placeholder="e.g. School inspection duty"
-              placeholderTextColor={parentColors.mutedLight}
+              placeholderTextColor={principalColors.disabled}
               style={styles.reasonInput}
               multiline
             />
@@ -222,7 +234,7 @@ export default function PrincipalAttendanceScreen() {
         ) : null}
 
         {rosterQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 24 }} />
         ) : rosterQuery.isError ? (
           <ErrorState
             message={rosterQuery.error instanceof ApiError ? rosterQuery.error.message : 'Unable to load the roster.'}
@@ -266,7 +278,7 @@ export default function PrincipalAttendanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32, gap: 4 },
   dateNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 },
   dateArrow: {
@@ -274,23 +286,23 @@ const styles = StyleSheet.create({
     height: 32,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  dateLabel: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  dateLabel: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
   filterRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
   actionBar: {
@@ -303,29 +315,29 @@ const styles = StyleSheet.create({
     marginTop: 12,
     marginBottom: 8,
   },
-  actionBarText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  actionBarText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   actionButton: { borderRadius: 999, paddingVertical: 8, paddingHorizontal: 14 },
   presentButton: { backgroundColor: '#1E8A4C' },
   absentButton: { backgroundColor: '#B33A2E' },
   actionButtonText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: '#fff' },
   reasonCard: { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 12 },
-  reasonLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, marginBottom: 8 },
+  reasonLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, marginBottom: 8 },
   reasonInput: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 10,
     padding: 10,
     fontSize: 13.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     minHeight: 44,
   },
   errorText: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: '#B33A2E', marginTop: 6 },
-  confirmButton: { flex: 1, backgroundColor: parentColors.blue, borderRadius: 10, paddingVertical: 11, alignItems: 'center' },
+  confirmButton: { flex: 1, backgroundColor: principalColors.primary, borderRadius: 10, paddingVertical: 11, alignItems: 'center' },
   confirmButtonDisabled: { opacity: 0.6 },
   confirmButtonText: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: '#fff' },
-  cancelButton: { flex: 1, borderWidth: 1, borderColor: parentColors.border, borderRadius: 10, paddingVertical: 11, alignItems: 'center' },
-  cancelButtonText: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  cancelButton: { flex: 1, borderWidth: 1, borderColor: principalColors.border, borderRadius: 10, paddingVertical: 11, alignItems: 'center' },
+  cancelButtonText: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14, marginTop: 8 },
   row: {
     flexDirection: 'row',
@@ -333,7 +345,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
   checkbox: {
@@ -341,11 +353,11 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxChecked: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  rowName: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  checkboxChecked: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  rowName: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

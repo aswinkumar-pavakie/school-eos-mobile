@@ -7,12 +7,12 @@
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { initialsOf } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getParent } from '@/lib/principal-parents-api';
 
 const cardShadow = {
@@ -47,8 +47,8 @@ export default function PrincipalParentDetail() {
   if (parentQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Parent" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Parent" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -56,7 +56,7 @@ export default function PrincipalParentDetail() {
   if (parentQuery.isError || !parentQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Parent" onBack={() => router.back()} />
+        <PrincipalHeader title="Parent" onBack={() => router.back()} />
         <ErrorState
           message={parentQuery.error instanceof ApiError ? parentQuery.error.message : "Couldn't load this parent."}
           onRetry={() => parentQuery.refetch()}
@@ -70,7 +70,7 @@ export default function PrincipalParentDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={`${parent.firstName} ${parent.lastName ?? ''}`} subtitle="Parent / guardian" onBack={() => router.back()} />
+      <PrincipalHeader title={`${parent.firstName} ${parent.lastName ?? ''}`} subtitle="Parent / guardian" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.identityCard, cardShadow]}>
           {parent.photoUrl ? (
@@ -151,7 +151,7 @@ export default function PrincipalParentDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   identityCard: {
     backgroundColor: '#fff',
@@ -162,32 +162,32 @@ const styles = StyleSheet.create({
     gap: 14,
     marginBottom: 6,
   },
-  avatarImage: { width: 54, height: 54, borderRadius: 27, backgroundColor: parentColors.borderSoft },
+  avatarImage: { width: 54, height: 54, borderRadius: 27, backgroundColor: principalColors.borderSoft },
   avatarFallback: {
     width: 54,
     height: 54,
     borderRadius: 27,
-    backgroundColor: parentColors.blue,
+    backgroundColor: principalColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   avatarFallbackText: { fontSize: 16, fontFamily: 'PlusJakartaSans_800ExtraBold', color: '#fff' },
-  identityName: { fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  identityMeta: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  identityName: { fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  identityMeta: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  standaloneValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, paddingVertical: 14 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  standaloneValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, paddingVertical: 14 },
   studentRow: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingVertical: 12 },
-  studentAvatarImage: { width: 40, height: 40, borderRadius: 20, backgroundColor: parentColors.borderSoft },
+  studentAvatarImage: { width: 40, height: 40, borderRadius: 20, backgroundColor: principalColors.borderSoft },
   studentAvatarFallback: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: parentColors.blue,
+    backgroundColor: principalColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },

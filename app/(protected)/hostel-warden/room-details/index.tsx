@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Modal, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
 import { ApiError } from '@/lib/api';
@@ -23,6 +23,7 @@ interface FlatRoom {
   roomNo: string;
   floorNo: number;
   blockName: string;
+  bedCapacity: number;
 }
 
 export default function RoomDetailsScreen() {
@@ -40,7 +41,7 @@ export default function RoomDetailsScreen() {
     const flat: FlatRoom[] = [];
     for (const block of blocks) {
       for (const room of block.rooms) {
-        flat.push({ id: room.id, roomNo: room.roomNo, floorNo: room.floorNo, blockName: block.name });
+        flat.push({ id: room.id, roomNo: room.roomNo, floorNo: room.floorNo, blockName: block.name, bedCapacity: room.bedCapacity });
       }
     }
     return flat;
@@ -82,7 +83,7 @@ export default function RoomDetailsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Room Details" subtitle="Every room in your hostel" onBack={() => router.back()} />
+      <WardenSubHeader title="Room Details" onBack={() => router.back()} />
 
       <View style={styles.searchRow}>
         <TextInput
@@ -118,8 +119,14 @@ export default function RoomDetailsScreen() {
         ) : (
           filtered.map((room) => {
             const occupants = occupantsByRoomId.get(room.id) ?? [];
+            // Bed-level fill-state indicator (empty/partial/full), matching
+            // the website rooms page's own color-coded heat map -- same
+            // occupied/capacity data already fetched, just a visual cue.
+            const fillColor =
+              occupants.length === 0 ? parentColors.mutedLight : occupants.length >= room.bedCapacity ? parentColors.redDark : parentColors.blueDeep;
             return (
               <Pressable key={room.id} style={[styles.card, cardShadow]} onPress={() => setSelectedRoom(room)}>
+                <View style={[styles.fillDot, { backgroundColor: fillColor }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.roomTitle}>
                     {room.blockName} · Room {room.roomNo}
@@ -127,7 +134,7 @@ export default function RoomDetailsScreen() {
                   <Text style={styles.meta}>Floor {room.floorNo}</Text>
                 </View>
                 <Text style={styles.occupantCount}>
-                  {occupants.length} student{occupants.length === 1 ? '' : 's'}
+                  {occupants.length} / {room.bedCapacity} beds
                 </Text>
                 <Text style={styles.chevron}>›</Text>
               </Pressable>
@@ -198,6 +205,7 @@ const styles = StyleSheet.create({
   filterField: { flex: 1 },
   content: { padding: 16, paddingTop: 12, gap: 12, paddingBottom: 32 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16, flexDirection: 'row', alignItems: 'center', gap: 10 },
+  fillDot: { width: 10, height: 10, borderRadius: 5 },
   roomTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
   meta: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
   occupantCount: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.blueDeep },

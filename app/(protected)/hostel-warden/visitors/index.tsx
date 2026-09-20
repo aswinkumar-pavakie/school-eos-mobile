@@ -17,7 +17,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
@@ -232,7 +232,7 @@ export default function VisitorsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Visitor Log" subtitle="Entry and exit for your hostel" onBack={() => router.back()} />
+      <WardenSubHeader title="Visitor Log" onBack={() => router.back()} />
       <SegmentedTabs
         tabs={[
           { key: 'record', label: 'Record visit' },

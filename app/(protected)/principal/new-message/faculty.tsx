@@ -9,7 +9,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ApiError } from '@/lib/api';
 import { colors, fonts } from '@/lib/theme';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { Avatar } from '@/features/messaging/components/Avatar';
 import { useSearchFaculty, useStartFacultyConversation } from '@/features/messaging/hooks';
@@ -42,7 +42,7 @@ export default function NewMessageFacultyScreen() {
 
   return (
     <View style={styles.screen}>
-      <AppHeader title="Message a faculty member" onBack={() => router.back()} />
+      <PrincipalHeader title="Message a faculty member" onBack={() => router.back()} />
       <View style={styles.searchRow}>
         <Ionicons name="search" size={16} color={colors.textMuted} />
         <TextInput

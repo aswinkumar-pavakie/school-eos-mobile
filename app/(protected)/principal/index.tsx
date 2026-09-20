@@ -1,52 +1,56 @@
-// Principal's ERP shell -- expanded from its earlier "Messages only" minimal
-// state to the real Principal feature set, built entirely against Principal's
-// OWN authorization and real web application (a full audit of every route
-// under school-eos-website/src/app/(dashboard)/principal/ and its backend
-// @Roles was done before writing a single screen here -- see each module's
-// own api file comment for its specific evidence). This is NOT a copy of
-// Vice Principal's own ERP menu: several items here are broader than VP's
-// (Attendance is write-capable staff attendance marking, not VP's read-only
-// module; Finance includes raising a Purchase Request, a Principal-exclusive
-// backend capability; Announcements includes creating one; Reports and Audit
-// Log are full, unredacted Admin-parity views VP has none or a redacted
-// version of), and Examination Timetable / Examinations are deliberately
-// OMITTED -- both are still <ComingSoon> placeholders even on Principal's own
-// web app, Admin-only end to end, not a real Principal capability to adapt.
-// Same 3-per-row icon grid launcher pattern as vice-principal/index.tsx.
-// Reuse is UI-only, this file grants no permissions of its own; every screen
-// it navigates to is gated by this same PRINCIPAL-only layout (see
-// principal/_layout.tsx). Dashboard lives on the shared Home tab instead
-// (see app/(protected)/index.tsx + PrincipalHome.tsx) -- a tile here would
-// just duplicate it.
+// Principal's ERP shell -- pixel-rebuilt from the design's own `isSchool`
+// icon-grid screen (brain/SIS Principal - App/Principal App.dc.html): same
+// circular-icon-in-tinted-circle grid, principalColors, own icon set
+// (src/components/principal/icons.tsx) instead of the generic ServiceIcon.
 //
-// Messages was the one real feature this shell already had before this
-// expansion (a working link into the existing my-class/messages screen) --
-// preserved here in COMMUNICATION rather than dropped, per this task's own
-// "do not remove existing Principal capabilities" rule.
+// Real capability preserved 1:1 from the pre-rebuild version -- nothing
+// removed. The design's own School grid only covers People/Academics/
+// Operations/Administration/Employee; several real, already-working
+// Principal capabilities have no equivalent in the mock at all (Parents,
+// Inventory, Finance, Communities, Reports, Audit Log, My Day, Notifications,
+// Profile, Settings) -- kept in their own sections below rather than dropped,
+// same "MORE group" precedent already used for the Faculty Portal rebuild
+// when a design mock covered a narrower surface than the real shipped app.
 //
-// MY WORKSPACE (added after the first implementation pass, on real evidence
-// found on a second, deeper pass over staff.controller.ts): My Day, My
-// Attendance, and My Leave are the Principal's OWN self-service records,
-// distinct from the institutional Attendance module above (which is the
-// Principal marking OTHER staff's attendance, not their own). GET/POST
-// /staff/me/attendance-history and /staff/me/leave-requests* all carry
-// `@Roles('ADMIN', 'PRINCIPAL', 'VICE_PRINCIPAL')` -- PRINCIPAL was already
-// explicitly granted these, identical to VICE_PRINCIPAL's own self-service
-// grant, and this was simply missed the first time these screens were built.
-// See principal-my-attendance-api.ts / principal-my-leave-api.ts for the
-// full evidence and a disclosed real approval_policy caveat on My Leave.
+// Sports is a real, backend-supported oversight capability
+// (sports-admin-overview.controller.ts, @Roles PRINCIPAL) that has no mobile
+// screen or API client yet -- deliberately not linked here until that screen
+// is actually built (a later phase), so this never ships a dead nav item.
 
 import { ScrollView, StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppHeader } from '@/components/AppHeader';
+import { principalColors } from '@/lib/theme';
+import {
+  PeopleIcon,
+  TeacherIcon,
+  AttendanceIcon,
+  AcademicCapIcon,
+  TimetableIcon,
+  CalendarIcon,
+  BusIcon,
+  HostelIcon,
+  LibraryIcon,
+  RepairIcon,
+  ApprovalIcon,
+  NoticeIcon,
+  ChatIcon,
+  LeaveIcon,
+  ODIcon,
+  HRIcon,
+  PayslipIcon,
+  AppraisalIcon,
+  SportsIcon,
+} from '@/components/principal/icons';
 import { ServiceIcon, type ServiceIconKey } from '@/components/ServiceIcon';
-import { parentColors } from '@/lib/theme';
+
+type IconRenderer = (props: { color: string; size: number }) => React.ReactElement;
 
 interface NavItem {
-  key: ServiceIconKey;
   label: string;
   slug: string;
   href?: string;
+  icon?: IconRenderer;
+  fallbackKey?: ServiceIconKey;
 }
 
 interface NavSection {
@@ -58,67 +62,82 @@ const SECTIONS: NavSection[] = [
   {
     title: 'PEOPLE',
     items: [
-      { key: 'students', label: 'Students', slug: 'students' },
-      { key: 'parents', label: 'Parents', slug: 'parents' },
-      { key: 'classTeacher', label: 'Faculty', slug: 'faculty' },
+      { label: 'Students', slug: 'students', icon: (p) => <PeopleIcon {...p} /> },
+      { label: 'Faculty', slug: 'faculty', icon: (p) => <TeacherIcon {...p} /> },
+      { label: 'Parents', slug: 'parents', fallbackKey: 'parents' },
+      { label: 'Staff attendance', slug: 'attendance', icon: (p) => <AttendanceIcon {...p} /> },
     ],
   },
   {
     title: 'ACADEMICS',
     items: [
-      { key: 'academicsSection', label: 'Academics', slug: 'academics' },
-      { key: 'timetable', label: 'Class Timetable', slug: 'class-timetable' },
-      { key: 'events', label: 'Academic Calendar', slug: 'academic-calendar' },
+      { label: 'Academic structure', slug: 'academics', icon: (p) => <AcademicCapIcon {...p} /> },
+      { label: 'Class timetable', slug: 'class-timetable', icon: (p) => <TimetableIcon {...p} /> },
+      { label: 'Academic calendar', slug: 'academic-calendar', icon: (p) => <CalendarIcon {...p} /> },
+      // Class-level attendance oversight -- distinct from "Staff
+      // attendance" above -- full feature parity with the website's own
+      // /principal/attendance-sessions page, previously mobile-missing.
+      { label: 'Attendance sessions', slug: 'attendance-sessions', icon: (p) => <AttendanceIcon {...p} /> },
+      // Full feature parity with the website's own subject-mapping page,
+      // previously mobile-missing.
+      { label: 'Subjects & mapping', slug: 'subject-mapping', icon: (p) => <AcademicCapIcon {...p} /> },
+      // Full feature parity with the website's own examination-timetable
+      // page, previously mobile-missing.
+      { label: 'Examination timetable', slug: 'examination-timetable', icon: (p) => <CalendarIcon {...p} /> },
     ],
   },
   {
-    title: 'ATTENDANCE',
-    items: [{ key: 'attendance', label: 'Attendance', slug: 'attendance' }],
-  },
-  {
-    title: 'SCHOOL OPERATIONS',
+    title: 'OPERATIONS',
     items: [
-      { key: 'transport', label: 'Transport', slug: 'transport' },
-      { key: 'roomBed', label: 'Hostel', slug: 'hostel' },
-      { key: 'inventory', label: 'Inventory', slug: 'inventory' },
-      { key: 'library', label: 'Library', slug: 'library' },
-      { key: 'maintenance', label: 'Repair & Maintenance', slug: 'maintenance' },
+      { label: 'Transport', slug: 'transport', icon: (p) => <BusIcon {...p} /> },
+      { label: 'Hostel', slug: 'hostel', icon: (p) => <HostelIcon {...p} /> },
+      { label: 'Inventory', slug: 'inventory', fallbackKey: 'inventory' },
+      { label: 'Library', slug: 'library', icon: (p) => <LibraryIcon {...p} /> },
+      { label: 'Sports', slug: 'sports', icon: (p) => <SportsIcon {...p} /> },
+      { label: 'Repairs', slug: 'maintenance', icon: (p) => <RepairIcon {...p} /> },
+      // Full feature parity with the website's own Health & Infirmary
+      // page, previously mobile-missing.
+      { label: 'Health & Infirmary', slug: 'health', fallbackKey: 'health' },
     ],
   },
   {
     title: 'FINANCE',
-    items: [{ key: 'fees', label: 'Finance', slug: 'finance' }],
+    items: [{ label: 'Finance', slug: 'finance', fallbackKey: 'fees' }],
   },
   {
     title: 'COMMUNICATION',
     items: [
-      { key: 'communityProfile', label: 'Communities', slug: 'communities' },
-      { key: 'announcements', label: 'Announcements', slug: 'announcements' },
-      { key: 'messages', label: 'Messages', slug: 'messages', href: '/(protected)/messaging' },
+      { label: 'Communities', slug: 'communities', fallbackKey: 'communityProfile' },
+      { label: 'Notices', slug: 'announcements', icon: (p) => <NoticeIcon {...p} /> },
+      { label: 'Messages', slug: 'messages', href: '/(protected)/messaging', icon: (p) => <ChatIcon {...p} /> },
     ],
   },
   {
     title: 'ADMINISTRATION',
     items: [
-      { key: 'report', label: 'Reports', slug: 'reports' },
-      { key: 'records', label: 'Audit Log', slug: 'audit-log' },
-      { key: 'consent', label: 'Requests & Approvals', slug: 'requests-approvals' },
+      { label: 'Approvals', slug: 'requests-approvals', icon: (p) => <ApprovalIcon {...p} /> },
+      { label: 'Reports', slug: 'reports', fallbackKey: 'report' },
+      { label: 'Audit log', slug: 'audit-log', fallbackKey: 'records' },
     ],
   },
   {
-    title: 'MY WORKSPACE',
+    title: 'EMPLOYEE',
     items: [
-      { key: 'myDay', label: 'My Day', slug: 'my-day' },
-      { key: 'myAttendance', label: 'My Attendance', slug: 'my-attendance' },
-      { key: 'myLeave', label: 'My Leave', slug: 'my-leave' },
+      { label: 'My day', slug: 'my-day', fallbackKey: 'myDay' },
+      { label: 'My attendance', slug: 'my-attendance', icon: (p) => <AttendanceIcon {...p} /> },
+      { label: 'My leave', slug: 'my-leave', icon: (p) => <LeaveIcon {...p} /> },
+      { label: 'OD', slug: 'my-od', icon: (p) => <ODIcon {...p} /> },
+      { label: 'HR payroll', slug: 'hr-payroll', icon: (p) => <HRIcon {...p} /> },
+      { label: 'Payslip', slug: 'payslip', icon: (p) => <PayslipIcon {...p} /> },
+      { label: 'Appraisal', slug: 'appraisal', icon: (p) => <AppraisalIcon {...p} /> },
     ],
   },
   {
     title: 'SYSTEM',
     items: [
-      { key: 'notifications', label: 'Notifications', slug: 'notifications' },
-      { key: 'profile', label: 'Profile', slug: 'profile' },
-      { key: 'settings', label: 'Settings', slug: 'settings' },
+      { label: 'Notifications', slug: 'notifications', fallbackKey: 'notifications' },
+      { label: 'Profile', slug: 'profile', fallbackKey: 'profile' },
+      { label: 'Settings', slug: 'settings', fallbackKey: 'settings' },
     ],
   },
 ];
@@ -128,7 +147,10 @@ export default function PrincipalShell() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Principal" subtitle="School administration" onBack={() => router.replace('/')} />
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Principal</Text>
+        <Text style={styles.headerSubtitle}>School administration</Text>
+      </View>
       <ScrollView contentContainerStyle={styles.content}>
         {SECTIONS.map((section) => (
           <View key={section.title} style={styles.section}>
@@ -145,7 +167,7 @@ export default function PrincipalShell() {
                   }
                 >
                   <View style={styles.iconCircle}>
-                    <ServiceIcon name={item.key} color="#fff" />
+                    {item.icon ? item.icon({ color: '#fff', size: 24 }) : <ServiceIcon name={item.fallbackKey!} color="#fff" />}
                   </View>
                   <Text style={styles.gridItemLabel}>{item.label}</Text>
                 </Pressable>
@@ -159,14 +181,17 @@ export default function PrincipalShell() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#fff' },
+  flex: { flex: 1, backgroundColor: principalColors.background },
+  header: { backgroundColor: principalColors.primary, paddingHorizontal: 18, paddingTop: 54, paddingBottom: 18 },
+  headerTitle: { color: '#fff', fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold' },
+  headerSubtitle: { color: 'rgba(255,255,255,0.78)', fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 2 },
   content: { padding: 18, paddingBottom: 32 },
   section: { marginBottom: 22 },
   sectionTitle: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'PlusJakartaSans_700Bold',
     letterSpacing: 1.2,
-    color: parentColors.muted,
+    color: principalColors.tertiary,
     marginBottom: 14,
   },
   grid: {
@@ -175,23 +200,23 @@ const styles = StyleSheet.create({
     rowGap: 20,
   },
   gridItem: {
-    width: '33.33%',
+    width: '25%',
     alignItems: 'center',
     gap: 9,
   },
   iconCircle: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: parentColors.blue,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: principalColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
   gridItemLabel: {
-    fontSize: 12.5,
+    fontSize: 11.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     textAlign: 'center',
-    lineHeight: 16,
+    lineHeight: 15,
   },
 });

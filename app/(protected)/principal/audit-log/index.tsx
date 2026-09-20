@@ -10,12 +10,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listAuditLog } from '@/lib/principal-audit-api';
 
 function humanize(code: string): string {
@@ -46,10 +46,10 @@ export default function PrincipalAuditLogScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Audit Log" subtitle="Every consequential action, immutable" onBack={() => router.back()} />
+      <PrincipalHeader title="Audit Log" subtitle="Every consequential action, immutable" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         {query.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 24 }} />
         ) : query.isError ? (
           <ErrorState
             message={query.error instanceof ApiError ? query.error.message : 'Unable to load the audit log.'}
@@ -112,16 +112,16 @@ export default function PrincipalAuditLogScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
-  row: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: parentColors.borderSoft, gap: 3 },
+  row: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: principalColors.borderSoft, gap: 3 },
   rowFirst: { borderTopWidth: 0 },
   rowHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 8 },
-  rowTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, flexShrink: 1 },
-  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  diffBlock: { marginTop: 8, backgroundColor: parentColors.background, borderRadius: 10, padding: 10 },
-  diffText: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, marginBottom: 6 },
+  rowTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, flexShrink: 1 },
+  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  diffBlock: { marginTop: 8, backgroundColor: principalColors.background, borderRadius: 10, padding: 10 },
+  diffText: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, marginBottom: 6 },
   loadMoreButton: { marginTop: 14, alignItems: 'center', paddingVertical: 12 },
-  loadMoreText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.blue },
+  loadMoreText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.primary },
 });

@@ -10,11 +10,11 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { DateSelectorPill } from '@/components/DateSelectorPill';
 import { SelectField } from '@/components/SelectField';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { createMyLeaveRequest, type StaffLeaveType } from '@/lib/principal-my-leave-api';
 
 const LEAVE_TYPE_VALUES: StaffLeaveType[] = ['CASUAL', 'MEDICAL', 'EARNED', 'ON_DUTY'];
@@ -59,7 +59,7 @@ export default function PrincipalApplyLeaveScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Apply for leave" onBack={() => router.back()} />
+      <PrincipalHeader title="Apply for leave" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.fieldLabel}>Leave type</Text>
         <SelectField
@@ -87,7 +87,7 @@ export default function PrincipalApplyLeaveScreen() {
           value={reason}
           onChangeText={setReason}
           placeholder="Enter your reason…"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.textArea}
           multiline
         />
@@ -101,21 +101,21 @@ export default function PrincipalApplyLeaveScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  fieldLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.muted, marginTop: 16, marginBottom: 8 },
+  fieldLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.muted, marginTop: 16, marginBottom: 8 },
   textArea: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 13,
     minHeight: 90,
     textAlignVertical: 'top',
     fontSize: 14.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
   },
-  submitButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
-  submitButtonDisabled: { backgroundColor: parentColors.disabled },
+  submitButton: { backgroundColor: principalColors.primary, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+  submitButtonDisabled: { backgroundColor: principalColors.disabled },
   submitButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 14.5, color: '#fff' },
 });

@@ -36,12 +36,12 @@
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listUpcomingCalendarEvents } from '@/lib/principal-dashboard-api';
 import { getMyAttendanceHistory } from '@/lib/principal-my-attendance-api';
 import { listMyLeaveRequests } from '@/lib/principal-my-leave-api';
@@ -111,13 +111,13 @@ export default function PrincipalMyDayScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="My Day" subtitle="Your personal overview" onBack={() => router.back()} />
+      <PrincipalHeader title="My Day" subtitle="Your personal overview" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.sectionHeaderRow}>
           <Text style={styles.sectionTitle}>Today&rsquo;s attendance</Text>
         </View>
         {attendanceQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : attendanceQuery.isError ? (
           <ErrorState
             message={attendanceQuery.error instanceof ApiError ? attendanceQuery.error.message : 'Unable to load your attendance.'}
@@ -163,7 +163,7 @@ export default function PrincipalMyDayScreen() {
           </Pressable>
         </View>
         {leaveQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : leaveQuery.isError ? (
           <ErrorState
             message={leaveQuery.error instanceof ApiError ? leaveQuery.error.message : 'Unable to load your leave requests.'}
@@ -187,7 +187,7 @@ export default function PrincipalMyDayScreen() {
           </Pressable>
         </View>
         {pendingActionsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : pendingActionsQuery.isError ? (
           <ErrorState
             message={pendingActionsQuery.error instanceof ApiError ? pendingActionsQuery.error.message : 'Unable to load pending actions.'}
@@ -220,7 +220,7 @@ export default function PrincipalMyDayScreen() {
           <Text style={styles.sectionTitle}>Upcoming</Text>
         </View>
         {eventsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : eventsQuery.isError ? (
           <ErrorState
             message={eventsQuery.error instanceof ApiError ? eventsQuery.error.message : 'Unable to load upcoming events.'}
@@ -251,7 +251,7 @@ export default function PrincipalMyDayScreen() {
           </Pressable>
         </View>
         {notificationsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : notificationsQuery.isError ? (
           <ErrorState
             message={notificationsQuery.error instanceof ApiError ? notificationsQuery.error.message : 'Unable to load notifications.'}
@@ -298,7 +298,7 @@ export default function PrincipalMyDayScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   sectionHeaderRow: {
     marginTop: 20,
@@ -307,17 +307,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  sectionTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  viewAll: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.blue },
+  sectionTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  viewAll: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.primary },
   rowBetween: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   statsRow: { flexDirection: 'row', gap: 10, marginTop: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 16, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
+  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
   infoCard: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
-  infoLabel: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  infoValue: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  infoMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 4 },
+  infoLabel: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  infoValue: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  infoMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 4 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   listRow: {
     flexDirection: 'row',
@@ -326,15 +326,15 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   listRowFirst: { borderTopWidth: 0 },
-  listRowTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  listRowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  listRowTitle: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  listRowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
   unreadFooter: {
     fontSize: 11.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.muted,
+    color: principalColors.muted,
     paddingVertical: 10,
     textAlign: 'center',
   },
@@ -342,10 +342,10 @@ const styles = StyleSheet.create({
   actionChip: {
     backgroundColor: '#fff',
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 9,
     paddingHorizontal: 14,
   },
-  actionChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  actionChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
 });

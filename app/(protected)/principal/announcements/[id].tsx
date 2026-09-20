@@ -11,12 +11,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listAnnouncements, type AnnouncementAudience } from '@/lib/principal-announcements-api';
 
 const cardShadow = {
@@ -60,8 +60,8 @@ export default function PrincipalAnnouncementDetail() {
   if (allQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Announcement" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -69,7 +69,7 @@ export default function PrincipalAnnouncementDetail() {
   if (allQuery.isError) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Announcement" onBack={() => router.back()} />
+        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
         <ErrorState
           message={allQuery.error instanceof ApiError ? allQuery.error.message : "Couldn't load this announcement."}
           onRetry={() => allQuery.refetch()}
@@ -81,7 +81,7 @@ export default function PrincipalAnnouncementDetail() {
   if (!announcement) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Announcement" onBack={() => router.back()} />
+        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
         <ErrorState message="This announcement could not be found." onRetry={() => allQuery.refetch()} />
       </View>
     );
@@ -91,7 +91,7 @@ export default function PrincipalAnnouncementDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={announcement.title} subtitle={announcement.category ?? undefined} onBack={() => router.back()} />
+      <PrincipalHeader title={announcement.title} subtitle={announcement.category ?? undefined} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <StatusBadge {...meta} />
@@ -145,15 +145,15 @@ export default function PrincipalAnnouncementDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 21 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 21 },
 });

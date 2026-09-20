@@ -16,16 +16,15 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader, Card, StatusPill } from '@/components/hostel-warden/primitives';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { ReasonModal } from '@/components/ReasonModal';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
-import { StatusBadge } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
 import type { OutingRequestRow } from '@/lib/hostel-warden-api';
 import { fullName, outingRequestStatusMeta } from '@/lib/hostel-warden-status';
-import { parentColors, cardShadow } from '@/lib/theme';
+import { hostelWardenColors } from '@/lib/theme';
 
 interface Props {
   title: string;
@@ -58,7 +57,7 @@ function RequestCard({
   const router = useRouter();
   const meta = outingRequestStatusMeta(request.state);
   return (
-    <View style={[styles.card, cardShadow]}>
+    <Card>
       <Pressable onPress={() => router.push(detailHref(request.id) as never)}>
         <View style={styles.cardTop}>
           <View style={{ flex: 1 }}>
@@ -69,13 +68,13 @@ function RequestCard({
               {request.reason}
             </Text>
           </View>
-          <StatusBadge label={meta.label} tone={meta.tone} />
+          <StatusPill label={meta.label} />
         </View>
         <Text style={styles.meta}>Out: {formatDateTime(request.outFrom)}</Text>
         <Text style={styles.meta}>Expected return: {formatDateTime(request.expectedReturn)}</Text>
       </Pressable>
       {children}
-    </View>
+    </Card>
   );
 }
 
@@ -145,7 +144,7 @@ export function OutingRequestListScreen({
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={title} subtitle={subtitle} onBack={() => router.back()} />
+      <WardenSubHeader title={title} onBack={() => router.back()} />
       <SegmentedTabs
         tabs={[
           { key: 'approval', label: `Approval${pending.length > 0 ? ` (${pending.length})` : ''}` },
@@ -159,7 +158,7 @@ export function OutingRequestListScreen({
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}
       >
         {listQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={hostelWardenColors.primary} style={{ marginTop: 24 }} />
         ) : listQuery.isError ? (
           <ErrorState
             message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load requests.'}
@@ -213,13 +212,12 @@ export function OutingRequestListScreen({
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: hostelWardenColors.background },
   content: { padding: 16, paddingTop: 8, gap: 12, paddingBottom: 32 },
-  card: { backgroundColor: '#fff', borderRadius: 16, padding: 16 },
   cardTop: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, marginBottom: 8 },
-  studentName: { fontSize: 15.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  reason: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 3 },
-  meta: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.mutedLight, marginTop: 2 },
+  studentName: { fontSize: 15.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: hostelWardenColors.ink },
+  reason: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: hostelWardenColors.body, marginTop: 3 },
+  meta: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: hostelWardenColors.muted, marginTop: 2 },
   actionsRow: { flexDirection: 'row', gap: 10, marginTop: 12 },
   declineButton: {
     flex: 1,
@@ -228,10 +226,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: '#F3C3BC',
-    backgroundColor: '#FDECEA',
+    borderColor: hostelWardenColors.redBg,
+    backgroundColor: hostelWardenColors.redBg,
   },
-  declineButtonText: { color: '#B33A2E', fontFamily: 'PlusJakartaSans_700Bold', fontSize: 13.5 },
-  acceptButton: { flex: 1, minHeight: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: parentColors.blue },
+  declineButtonText: { color: hostelWardenColors.red, fontFamily: 'PlusJakartaSans_700Bold', fontSize: 13.5 },
+  acceptButton: { flex: 1, minHeight: 42, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: hostelWardenColors.primary },
   acceptButtonText: { color: '#fff', fontFamily: 'PlusJakartaSans_700Bold', fontSize: 13.5 },
 });
