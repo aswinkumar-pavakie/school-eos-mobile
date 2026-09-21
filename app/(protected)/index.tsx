@@ -45,6 +45,7 @@ import { PrincipalHome } from '@/components/principal/PrincipalHome';
 import { ParentHome } from '@/components/parent/ParentHome';
 import { SportsHome } from '@/components/sports/SportsHome';
 import { HostelWardenHome } from '@/components/hostel-warden/HostelWardenHome';
+import { DriverHome } from '@/components/driver/DriverHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -56,7 +57,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -77,6 +78,14 @@ export default function ProtectedHome() {
     // data.
     queryClient.clear();
     router.replace('/(auth)/login');
+  }
+
+  // Driver is checked before FACULTY -- a person who happens to also hold a
+  // FACULTY role assignment (data-level, not a code concern) still gets the
+  // Driver-only experience when they have a DRIVER role at all. Driver never
+  // inherits or shows another role's screens (Academics, My Class, etc.).
+  if (me && isDriver) {
+    return <DriverHome personName={me.person.firstName} onSignOut={handleSignOut} />;
   }
 
   if (me && hasRole(me.roles, 'FACULTY')) {
@@ -106,8 +115,9 @@ export default function ProtectedHome() {
     return <HostelWardenHome personName={me.person.firstName} />;
   }
 
-  // Community, Vice Principal, Principal, Sports Admin, and Hostel Warden
-  // are all handled above (returns early); everyone else is Parent.
+  // Community, Vice Principal, Principal, Sports Admin, Hostel Warden, and
+  // Driver (checked above, before FACULTY) are all handled above (returns
+  // early); everyone else is Parent.
   if (me) {
     return <ParentHome />;
   }
