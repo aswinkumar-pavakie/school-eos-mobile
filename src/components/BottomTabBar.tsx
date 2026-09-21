@@ -25,7 +25,7 @@ import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { HostelIcon } from '@/components/hostel-warden/icons';
 import { parentColors } from '@/lib/theme';
 
-type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate';
+type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'students' | 'profile';
 
 // Sports Admin's own real tab set, pixel-matched to Sports Staff Mobile
 // App.dc.html's own `const TABS = [['home','Home','⌂'],['sports','Sports','◎'],
@@ -57,6 +57,45 @@ function activeTabForHostelWarden(pathname: string): TabKey {
   if (pathname.startsWith('/hostel-warden/gate')) return 'gate';
   if (pathname.startsWith('/hostel-warden') || pathname.startsWith('/erp')) return 'hostel';
   return 'hostel';
+}
+
+// Driver's own real 4-tab set -- Home, My Students, My Bus, My Profile are
+// the role's only real destinations (same routes DriverHome's own menu tiles
+// already point at: app/(protected)/driver/{students,bus,profile}). No
+// Academics, no My class -- neither concept exists for this role.
+function StudentsIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9}>
+      <Path d="M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM16 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
+      <Path d="M2.5 20v-1.5A4.5 4.5 0 0 1 7 14h2a4.5 4.5 0 0 1 4.5 4.5V20M14.5 14.3A4 4 0 0 1 18 18v2" />
+    </Svg>
+  );
+}
+function DriverProfileIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9}>
+      <Rect x={3} y={5} width={18} height={14} rx={2} />
+      <Path d="M8 15a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM5.5 17.5A2.8 2.8 0 0 1 8 16h0a2.8 2.8 0 0 1 2.5 1.5M14 9h5M14 13h5" />
+    </Svg>
+  );
+}
+const DRIVER_TABS: {
+  key: TabKey;
+  label: string;
+  href: '/' | '/(protected)/driver/students' | '/(protected)/driver/bus' | '/(protected)/driver/profile';
+  Icon: typeof HomeIcon;
+}[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
+  { key: 'students', label: 'Students', href: '/(protected)/driver/students', Icon: StudentsIcon },
+  { key: 'bus', label: 'My Bus', href: '/(protected)/driver/bus', Icon: BusIcon },
+  { key: 'profile', label: 'Profile', href: '/(protected)/driver/profile', Icon: DriverProfileIcon },
+];
+
+function activeTabForDriver(pathname: string): TabKey {
+  if (pathname.startsWith('/driver/students')) return 'students';
+  if (pathname.startsWith('/driver/bus')) return 'bus';
+  if (pathname.startsWith('/driver/profile')) return 'profile';
+  return 'home';
 }
 
 function HomeIcon({ color }: { color: string }) {
@@ -152,17 +191,23 @@ export function BottomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin } = useCurrentRoles();
-  const TABS = isSportsAdmin
-    ? SPORTS_TABS
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
+  const TABS = isDriver
+    ? DRIVER_TABS
+    : isSportsAdmin
+      ? SPORTS_TABS
+      : isHostelWarden
+        ? HOSTEL_WARDEN_TABS
+        : tabsFor(
+            isFaculty || isPrincipal || isVicePrincipal || isCommunity,
+            isVicePrincipal || isCommunity,
+            isCommunity,
+          );
+  const active = isDriver
+    ? activeTabForDriver(pathname)
     : isHostelWarden
-      ? HOSTEL_WARDEN_TABS
-      : tabsFor(
-          isFaculty || isPrincipal || isVicePrincipal || isCommunity,
-          isVicePrincipal || isCommunity,
-          isCommunity,
-        );
-  const active = isHostelWarden ? activeTabForHostelWarden(pathname) : activeTabFor(pathname);
+      ? activeTabForHostelWarden(pathname)
+      : activeTabFor(pathname);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>

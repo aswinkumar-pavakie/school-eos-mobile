@@ -143,7 +143,7 @@ function isExpiredOrExpiringSoon(token: string): boolean {
 // Faculty always carries the base FACULTY role_code alongside any
 // assignment-specific ones (Class Advisor, Academic Coordinator, etc.), so
 // checking for FACULTY covers every assignment without having to enumerate them.
-const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN'];
+const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN', 'DRIVER'];
 
 /** Login succeeded against the backend, but this role has no mobile access. */
 export class PlatformNotAllowedError extends Error {

@@ -21,6 +21,7 @@ export function useCurrentRoles() {
     isVicePrincipal: roleCodes.includes('VICE_PRINCIPAL'),
     isCommunity: roleCodes.includes('COMMUNITY'),
     isSportsAdmin: roleCodes.includes('SPORTS_ADMIN'),
+    isDriver: roleCodes.includes('DRIVER'),
     isLoading: query.isLoading,
   };
 }
