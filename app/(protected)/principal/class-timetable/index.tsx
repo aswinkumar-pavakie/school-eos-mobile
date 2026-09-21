@@ -10,11 +10,11 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getSectionTimetable } from '@/lib/principal-timetable-api';
 import { listGrades, listSections } from '@/lib/principal-students-api';
 
@@ -65,7 +65,7 @@ export default function PrincipalClassTimetableScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Class Timetable" subtitle="Weekly schedule by section" onBack={() => router.back()} />
+      <PrincipalHeader title="Class Timetable" subtitle="Weekly schedule by section" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.filterRow}>
           <View style={{ flex: 1 }}>
@@ -110,7 +110,7 @@ export default function PrincipalClassTimetableScreen() {
             </View>
 
             {timetableQuery.isLoading ? (
-              <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+              <ActivityIndicator color={principalColors.primary} style={{ marginTop: 24 }} />
             ) : timetableQuery.isError ? (
               <ErrorState
                 message={timetableQuery.error instanceof ApiError ? timetableQuery.error.message : 'Unable to load the timetable.'}
@@ -149,7 +149,7 @@ export default function PrincipalClassTimetableScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   filterRow: { flexDirection: 'row', gap: 12, marginBottom: 8 },
   dayRow: { flexDirection: 'row', gap: 8, marginTop: 16, marginBottom: 14 },
@@ -157,13 +157,13 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 10,
     paddingVertical: 9,
     backgroundColor: '#fff',
   },
-  dayChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  dayChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  dayChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  dayChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   dayChipTextActive: { color: '#fff' },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
@@ -172,12 +172,12 @@ const styles = StyleSheet.create({
     gap: 14,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
   timeCol: { width: 78 },
-  periodLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  timeText: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  subjectText: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  metaText: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  periodLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  timeText: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  subjectText: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  metaText: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

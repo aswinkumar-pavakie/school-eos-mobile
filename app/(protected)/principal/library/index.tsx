@@ -8,11 +8,11 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getLibraryOverview, type LibraryOverview } from '@/lib/principal-library-api';
 
 const cardShadow = {
@@ -36,10 +36,10 @@ export default function PrincipalLibraryScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Library" subtitle="School-wide library overview" onBack={() => router.back()} />
+      <PrincipalHeader title="Library" subtitle="School-wide library overview" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         {overviewQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 24 }} />
         ) : overviewQuery.isError ? (
           <ErrorState
             message={overviewQuery.error instanceof ApiError ? overviewQuery.error.message : 'Unable to load the library overview.'}
@@ -149,18 +149,18 @@ function LibraryOverviewBody({ overview }: { overview: LibraryOverview }) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   statsRow: { flexDirection: 'row', gap: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
   statValueWarning: { color: '#B33A2E' },
-  statLabel: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
+  statLabel: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   activityRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  activityRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  activityAction: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  activityDetail: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  activityDate: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.mutedLight },
+  activityRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  activityAction: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  activityDetail: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  activityDate: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.disabled },
 });

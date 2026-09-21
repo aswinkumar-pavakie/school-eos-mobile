@@ -10,6 +10,10 @@ import {
   PlusJakartaSans_700Bold,
   PlusJakartaSans_800ExtraBold,
 } from '@expo-google-fonts/plus-jakarta-sans';
+// Principal module's own design reference uses IBM Plex Mono for IDs, dates,
+// phone numbers and codes -- same additive font-load pattern as Plus Jakarta
+// Sans above, no other role's fonts touched.
+import { IBMPlexMono_400Regular, IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,6 +38,8 @@ export default function RootLayout() {
     PlusJakartaSans_600SemiBold,
     PlusJakartaSans_700Bold,
     PlusJakartaSans_800ExtraBold,
+    IBMPlexMono_400Regular,
+    IBMPlexMono_500Medium,
   });
 
   useEffect(() => {

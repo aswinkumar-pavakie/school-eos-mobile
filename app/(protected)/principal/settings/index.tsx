@@ -21,13 +21,13 @@ import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { Avatar } from '@/components/Avatar';
 import { ErrorState } from '@/components/ScreenStates';
 import { useMe } from '@/hooks/useMe';
 import { ApiError } from '@/lib/api';
 import { logout } from '@/lib/auth';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getSchoolInfo } from '@/lib/principal-profile-api';
 
 const cardShadow = {
@@ -71,7 +71,7 @@ function SettingsRow({
           </Text>
         ) : null}
       </View>
-      <Ionicons name="chevron-forward" size={18} color={parentColors.muted} />
+      <Ionicons name="chevron-forward" size={18} color={principalColors.muted} />
     </Pressable>
   );
 }
@@ -98,10 +98,10 @@ export default function PrincipalSettingsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Settings" onBack={() => router.back()} />
+      <PrincipalHeader title="Settings" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         {meQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginBottom: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginBottom: 12 }} />
         ) : person ? (
           <Pressable
             style={[styles.card, cardShadow, styles.identityCard]}
@@ -116,13 +116,13 @@ export default function PrincipalSettingsScreen() {
                 {primaryRole ? humanize(primaryRole.role_code) : ''}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color={parentColors.muted} />
+            <Ionicons name="chevron-forward" size={18} color={principalColors.muted} />
           </Pressable>
         ) : null}
 
         <Text style={styles.sectionTitle}>School profile</Text>
         {schoolQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginBottom: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginBottom: 12 }} />
         ) : schoolQuery.isError ? (
           <ErrorState
             message={schoolQuery.error instanceof ApiError ? schoolQuery.error.message : 'Unable to load school profile.'}
@@ -187,21 +187,21 @@ export default function PrincipalSettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16 },
   identityCard: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 },
-  identityName: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  identityRole: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  identityName: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  identityRole: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   row: { paddingVertical: 14, flexDirection: 'row', alignItems: 'center', gap: 10 },
-  rowLabel: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  rowLabel: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   rowLabelDestructive: { color: '#B33A2E' },
-  rowDetail: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  divider: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
+  rowDetail: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  divider: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, textAlign: 'right', flexShrink: 1 },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, textAlign: 'right', flexShrink: 1 },
   infoValueWrap: { flex: 1 },
 });

@@ -22,9 +22,42 @@ import { useRouter, usePathname } from 'expo-router';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { HostelIcon } from '@/components/hostel-warden/icons';
 import { parentColors } from '@/lib/theme';
 
-type TabKey = 'home' | 'school' | 'academics' | 'bus';
+type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate';
+
+// Sports Admin's own real tab set, pixel-matched to Sports Staff Mobile
+// App.dc.html's own `const TABS = [['home','Home','⌂'],['sports','Sports','◎'],
+// ['bus','Bus','⊟']]` -- exactly 3 tabs, no Academics tab at all (Academics
+// has no meaning for this role), and the design's own glyph icons (unicode
+// text, not custom SVGs -- replicated as-is, the design itself never draws
+// real icon paths for these).
+function GlyphIcon({ glyph, color }: { glyph: string; color: string }) {
+  return <Text style={{ fontSize: 21, color, lineHeight: 24 }}>{glyph}</Text>;
+}
+const SPORTS_TABS: { key: TabKey; label: string; href: '/' | '/sports' | '/my-bus'; Icon: typeof HomeIcon }[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: ({ color }) => <GlyphIcon glyph="⌂" color={color} /> },
+  { key: 'school', label: 'Sports', href: '/sports', Icon: ({ color }) => <GlyphIcon glyph="◎" color={color} /> },
+  { key: 'bus', label: 'Bus', href: '/my-bus', Icon: ({ color }) => <GlyphIcon glyph="⊟" color={color} /> },
+];
+
+// Hostel Warden's own real tab set, pixel-matched to Warden App.dc.html's
+// own `NAV = [['home','Home',...],['hostel','Hostel',...],['gate','Gate',...]]`
+// -- exactly 3 tabs (no Academics/My Bus for this role), real vector icons
+// (not glyphs) ported from the design's own path data via HostelIcon.
+const HOSTEL_WARDEN_TABS: { key: TabKey; label: string; href: '/' | '/(protected)/hostel-warden' | '/(protected)/hostel-warden/gate'; Icon: typeof HomeIcon }[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: ({ color }) => <HostelIcon name="home" color={color} size={22} strokeWidth={1.9} /> },
+  { key: 'hostel', label: 'Hostel', href: '/(protected)/hostel-warden', Icon: ({ color }) => <HostelIcon name="hostel" color={color} size={22} strokeWidth={1.9} /> },
+  { key: 'gate', label: 'Gate', href: '/(protected)/hostel-warden/gate', Icon: ({ color }) => <HostelIcon name="gate" color={color} size={22} strokeWidth={1.9} /> },
+];
+
+function activeTabForHostelWarden(pathname: string): TabKey {
+  if (pathname === '/' || pathname === '') return 'home';
+  if (pathname.startsWith('/hostel-warden/gate')) return 'gate';
+  if (pathname.startsWith('/hostel-warden') || pathname.startsWith('/erp')) return 'hostel';
+  return 'hostel';
+}
 
 function HomeIcon({ color }: { color: string }) {
   return (
@@ -72,9 +105,10 @@ type SecondTabHref = '/my-class' | '/erp';
 // Vice Principal drops ONLY Academics -- its own Academics now lives inside
 // its ERP shell (vice-principal/index.tsx's ACADEMICS section) instead of
 // this bottom-tab placeholder; My Bus is left as-is for VP, scope limited to
-// exactly what was asked. Hostel Warden/Principal keep the same 4-tab layout
-// everyone else has (a pre-existing characteristic of this bar, not
-// something touched here).
+// exactly what was asked. Hostel Warden no longer goes through this generic
+// function at all -- see HOSTEL_WARDEN_TABS below (its own real 3-tab set,
+// pixel-matched to its own design), bypassed the same way Sports Admin's
+// SPORTS_TABS already is.
 function tabsFor(
   showErp: boolean,
   hideAcademics: boolean,
@@ -103,6 +137,7 @@ function activeTabFor(pathname: string): TabKey {
     pathname.startsWith('/erp') ||
     pathname.startsWith('/events') ||
     pathname.startsWith('/permissions') ||
+    pathname.startsWith('/sports') ||
     // Covers both the Warden's own /hostel-warden subtree and the Parent's
     // /hostel/{gate-pass,emergency-exit,call}-requests subtree.
     pathname.startsWith('/hostel')
@@ -117,13 +152,17 @@ export function BottomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const active = activeTabFor(pathname);
-  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
-  const TABS = tabsFor(
-    isFaculty || isHostelWarden || isPrincipal || isVicePrincipal || isCommunity,
-    isVicePrincipal || isCommunity,
-    isCommunity,
-  );
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin } = useCurrentRoles();
+  const TABS = isSportsAdmin
+    ? SPORTS_TABS
+    : isHostelWarden
+      ? HOSTEL_WARDEN_TABS
+      : tabsFor(
+          isFaculty || isPrincipal || isVicePrincipal || isCommunity,
+          isVicePrincipal || isCommunity,
+          isCommunity,
+        );
+  const active = isHostelWarden ? activeTabForHostelWarden(pathname) : activeTabFor(pathname);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>

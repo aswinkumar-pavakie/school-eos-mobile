@@ -15,9 +15,20 @@
 // Announcements, real Media Room posts (ParentHome resolves the selected
 // child itself via useSelectedChild).
 //
-// Hostel Warden is the only role left on this plain fallback Home tab -- its
-// own operational launcher lives behind the ERP tab instead (see
-// hostel-warden/index.tsx), so Home just shows a plain greeting + sign out.
+// Sports Admin gets its own real Home screen too (see SportsHome.tsx),
+// pixel-matched to "brain/SIS Sports - App/Sports Staff Mobile App.dc.html".
+// Branched BEFORE the ParentHome fallback -- the exact same real bug
+// Principal hit before its own fix above: with no isSportsAdmin branch here,
+// a Sports Admin login would silently render ParentHome (the wrong role's
+// UI entirely, and one with no meaning for this role -- no child to select).
+//
+// Hostel Warden now gets its own real Home screen too (see
+// HostelWardenHome.tsx), pixel-matched to "brain/SIS Hostel Warden - App/
+// Warden App.dc.html". Previously the only role left on the plain fallback
+// below with its own operational launcher hidden behind an "ERP" tab label
+// (a placeholder, not this design's real 3-tab Home/Hostel/Gate structure).
+// Kept on ITS OWN branch (not folded into the `!isHostelWarden` fallback
+// check below) so the ordering stays correct if that check is ever touched.
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -32,6 +43,8 @@ import { CommunityHome } from '@/components/community/CommunityHome';
 import { VicePrincipalHome } from '@/components/vice-principal/VicePrincipalHome';
 import { PrincipalHome } from '@/components/principal/PrincipalHome';
 import { ParentHome } from '@/components/parent/ParentHome';
+import { SportsHome } from '@/components/sports/SportsHome';
+import { HostelWardenHome } from '@/components/hostel-warden/HostelWardenHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -43,7 +56,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -85,25 +98,24 @@ export default function ProtectedHome() {
     return <PrincipalHome personName={me.person.firstName} />;
   }
 
-  // Community, Vice Principal, and Principal are all handled above (returns
-  // early); everyone else who isn't Hostel Warden is Parent.
-  if (me && !isHostelWarden) {
+  if (me && isSportsAdmin) {
+    return <SportsHome personName={me.person.firstName} />;
+  }
+
+  if (me && isHostelWarden) {
+    return <HostelWardenHome personName={me.person.firstName} />;
+  }
+
+  // Community, Vice Principal, Principal, Sports Admin, and Hostel Warden
+  // are all handled above (returns early); everyone else is Parent.
+  if (me) {
     return <ParentHome />;
   }
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.content}>
-        {error ? (
-          <Text style={styles.subtitle}>{error}</Text>
-        ) : !me ? (
-          <ActivityIndicator color={parentColors.blue} />
-        ) : (
-          <>
-            <Text style={styles.title}>Hi, {me.person.firstName}</Text>
-            <Text style={styles.hint}>Open &ldquo;ERP&rdquo; below for your daily hostel operations.</Text>
-          </>
-        )}
+        {error ? <Text style={styles.subtitle}>{error}</Text> : <ActivityIndicator color={parentColors.blue} />}
 
         <Pressable onPress={handleSignOut} style={styles.button}>
           <Text style={styles.buttonText}>Sign out</Text>

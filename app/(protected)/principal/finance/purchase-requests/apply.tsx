@@ -13,9 +13,9 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { createPurchaseRequest, type PurchaseRequestType } from '@/lib/principal-finance-api';
 
 export default function PrincipalPurchaseRequestApply() {
@@ -59,7 +59,7 @@ export default function PrincipalPurchaseRequestApply() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="New Request" subtitle="Purchase or service request" onBack={() => router.back()} />
+      <PrincipalHeader title="New Request" subtitle="Purchase or service request" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.label}>Request type</Text>
         <View style={styles.typeRow}>
@@ -81,7 +81,7 @@ export default function PrincipalPurchaseRequestApply() {
           value={itemName}
           onChangeText={setItemName}
           placeholder="e.g. Science lab microscopes"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.input}
         />
 
@@ -90,7 +90,7 @@ export default function PrincipalPurchaseRequestApply() {
           value={description}
           onChangeText={setDescription}
           placeholder="Details about what's needed and why"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={[styles.input, styles.textArea]}
           multiline
         />
@@ -102,7 +102,7 @@ export default function PrincipalPurchaseRequestApply() {
               value={quantity}
               onChangeText={setQuantity}
               placeholder="e.g. 10"
-              placeholderTextColor={parentColors.mutedLight}
+              placeholderTextColor={principalColors.disabled}
               style={styles.input}
               keyboardType="number-pad"
             />
@@ -113,7 +113,7 @@ export default function PrincipalPurchaseRequestApply() {
               value={estimatedAmount}
               onChangeText={setEstimatedAmount}
               placeholder="e.g. 25000"
-              placeholderTextColor={parentColors.mutedLight}
+              placeholderTextColor={principalColors.disabled}
               style={styles.input}
               keyboardType="decimal-pad"
             />
@@ -125,7 +125,7 @@ export default function PrincipalPurchaseRequestApply() {
           value={vendorName}
           onChangeText={setVendorName}
           placeholder="e.g. Global Lab Supplies"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.input}
         />
 
@@ -134,7 +134,7 @@ export default function PrincipalPurchaseRequestApply() {
           value={neededBy}
           onChangeText={setNeededBy}
           placeholder="YYYY-MM-DD"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.input}
         />
 
@@ -149,17 +149,17 @@ export default function PrincipalPurchaseRequestApply() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  label: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, marginTop: 14, marginBottom: 6 },
+  label: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, marginTop: 14, marginBottom: 6 },
   input: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 12,
     fontSize: 14,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     backgroundColor: '#fff',
   },
   textArea: { minHeight: 80, textAlignVertical: 'top' },
@@ -168,17 +168,17 @@ const styles = StyleSheet.create({
   typeChip: {
     flex: 1,
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 12,
     paddingVertical: 12,
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  typeChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  typeChipText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  typeChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  typeChipText: { fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   typeChipTextActive: { color: '#fff' },
   errorText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: '#B33A2E', marginTop: 14 },
-  submitButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+  submitButton: { backgroundColor: principalColors.primary, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
   submitButtonDisabled: { opacity: 0.6 },
   submitButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 15, color: '#fff' },
 });

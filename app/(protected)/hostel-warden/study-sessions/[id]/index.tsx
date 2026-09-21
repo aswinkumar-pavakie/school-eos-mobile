@@ -10,7 +10,7 @@ import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleS
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { countRoster, RosterStatTiles } from '@/components/RosterStatTiles';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
@@ -82,9 +82,8 @@ export default function StudySessionRosterScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader
-        title={session ? formatDate(session.sessionDate) : 'Study session'}
-        subtitle={session ? `${session.startTime.slice(0, 5)} – ${session.endTime.slice(0, 5)}` : undefined}
+      <WardenSubHeader
+        title={session ? `${formatDate(session.sessionDate)} · ${session.startTime.slice(0, 5)}–${session.endTime.slice(0, 5)}` : 'Study session'}
         onBack={() => router.back()}
       />
       <ScrollView

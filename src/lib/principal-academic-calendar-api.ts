@@ -7,6 +7,7 @@
 export {
   listCalendarEvents,
   getCalendarEvent,
+  createCalendarEvent,
   type CalendarEventRow,
   type CalendarEventListParams,
 } from './vice-principal-academic-calendar-api';

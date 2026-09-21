@@ -4,16 +4,16 @@
 
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ServiceIcon } from '@/components/ServiceIcon';
-import { parentColors, cardShadow } from '@/lib/theme';
+import { principalColors, cardShadow } from '@/lib/theme';
 
 export default function NewMessageScreen() {
   const router = useRouter();
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="New Message" subtitle="Who do you want to message?" onBack={() => router.back()} />
+      <PrincipalHeader title="New Message" subtitle="Who do you want to message?" onBack={() => router.back()} />
       <View style={styles.content}>
         <Pressable
           style={[styles.card, cardShadow]}
@@ -42,7 +42,7 @@ export default function NewMessageScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 18, gap: 14 },
   card: {
     backgroundColor: '#fff',
@@ -55,11 +55,11 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: parentColors.blue,
+    backgroundColor: principalColors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 6,
   },
-  cardTitle: { fontSize: 16.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  cardSubtitle: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
+  cardTitle: { fontSize: 16.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  cardSubtitle: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
 });

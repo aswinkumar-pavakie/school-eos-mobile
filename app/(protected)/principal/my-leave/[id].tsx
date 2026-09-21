@@ -14,12 +14,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getMyLeaveRequest, withdrawMyLeaveRequest } from '@/lib/principal-my-leave-api';
 
 const cardShadow = {
@@ -83,8 +83,8 @@ export default function PrincipalMyLeaveDetail() {
   if (query.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Leave request" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Leave request" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -92,7 +92,7 @@ export default function PrincipalMyLeaveDetail() {
   if (query.isError || !query.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Leave request" onBack={() => router.back()} />
+        <PrincipalHeader title="Leave request" onBack={() => router.back()} />
         <ErrorState
           message={query.error instanceof ApiError ? query.error.message : "Couldn't load this leave request."}
           onRetry={() => query.refetch()}
@@ -107,7 +107,7 @@ export default function PrincipalMyLeaveDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={humanize(leave.leaveType)} onBack={() => router.back()} />
+      <PrincipalHeader title={humanize(leave.leaveType)} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.infoValue}>
@@ -174,18 +174,18 @@ export default function PrincipalMyLeaveDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 20 },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 20 },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
   withdrawButton: {
     marginTop: 22,
     borderRadius: 14,

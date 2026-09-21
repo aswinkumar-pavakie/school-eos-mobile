@@ -13,14 +13,14 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { Avatar } from '@/components/Avatar';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { useMe } from '@/hooks/useMe';
 import { ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getMyStaffProfile, getSchoolInfo } from '@/lib/principal-profile-api';
 
 const cardShadow = {
@@ -60,8 +60,8 @@ export default function PrincipalProfileScreen() {
   if (isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Profile" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Profile" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -70,7 +70,7 @@ export default function PrincipalProfileScreen() {
     const error = meQuery.error ?? staffQuery.error;
     return (
       <View style={styles.flex}>
-        <AppHeader title="Profile" onBack={() => router.back()} />
+        <PrincipalHeader title="Profile" onBack={() => router.back()} />
         <ErrorState
           message={error instanceof ApiError ? error.message : "Couldn't load your profile."}
           onRetry={() => {
@@ -92,7 +92,7 @@ export default function PrincipalProfileScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Profile" onBack={() => router.back()} />
+      <PrincipalHeader title="Profile" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerCard]}>
           <Avatar firstName={person.firstName} lastName={person.lastName} photoUrl={staff.photoUrl} size={64} />
@@ -192,17 +192,17 @@ export default function PrincipalProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 18 },
   headerCard: { flexDirection: 'row', alignItems: 'center', gap: 14 },
-  name: { fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  designation: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  name: { fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  designation: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, textAlign: 'right', flexShrink: 1 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, textAlign: 'right', flexShrink: 1 },
   infoValueWrap: { flex: 1 },
 });

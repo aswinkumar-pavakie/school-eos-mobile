@@ -1,15 +1,12 @@
-// Principal Dashboard -- adapts the REAL Principal web dashboard
-// (principal/page.tsx), not Vice Principal's own fuller Home dashboard (which
-// additionally shows upcoming calendar events, examinations, and
-// announcements -- none of which Principal's own real dashboard displays).
-// Confirmed by direct audit of principal/page.tsx: exactly 3 KPI cards
-// (active students, active staff, current academic year) plus an "Awaiting
-// your decision" pending-approvals list -- nothing more, nothing invented.
-//
-// GET /principal/dashboard-summary -- principal-dashboard.controller.ts:
-// @Roles('PRINCIPAL', 'VICE_PRINCIPAL'), single GET, no write endpoint on
-// this controller to accidentally widen. Same real, minimal leadership
-// summary VP's own dashboard partially reuses -- not a duplicate query.
+// Principal Dashboard -- GET /principal/dashboard-summary
+// (principal-dashboard.controller.ts, @Roles('PRINCIPAL', 'VICE_PRINCIPAL')).
+// A previous pass here under-typed this response to only 4 fields based on a
+// web-page audit; a real live call against the running backend (2026-09-17)
+// confirms the endpoint actually returns considerably more -- staffMarkedToday
+// and hostelOccupancy in particular are exactly the two real data points the
+// Principal mobile design's own (shipped `display:none`) Home stat tiles
+// wanted. Widened to match the real response instead of re-hiding data that
+// genuinely exists. No write endpoint on this controller to accidentally widen.
 //
 // listPendingApprovals/ApprovalRequestRow are the SAME generic-engine
 // functions re-exported from principal-requests-approvals-api.ts -- not
@@ -25,6 +22,15 @@ export interface PrincipalDashboardSummary {
   activeStudents: number;
   activeStaff: number;
   currentAcademicYear: { id: string; name: string; startDate: string; endDate: string } | null;
+  staffMarkedToday: { present: number; absent: number; onLeave: number; total: number };
+  hostelOccupancy: { occupiedBeds: number; totalBeds: number };
+  staffSplit: { teaching: number; support: number };
+  studentResidence: { hostellers: number; dayScholars: number };
+  activeSectionsCount: number;
+  subjectsCount: number;
+  vehiclesCount: number;
+  parentLoginsIssued: { issued: number; totalFamilies: number };
+  needsAttention: { label: string; sub: string; count: number }[];
   generatedAt: string;
 }
 

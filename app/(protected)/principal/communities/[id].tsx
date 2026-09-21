@@ -9,13 +9,13 @@ import { useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import {
   getCommunity,
   listCommunityActivities,
@@ -77,8 +77,8 @@ export default function PrincipalCommunityDetail() {
   if (communityQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Community" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Community" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -86,7 +86,7 @@ export default function PrincipalCommunityDetail() {
   if (communityQuery.isError || !communityQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Community" onBack={() => router.back()} />
+        <PrincipalHeader title="Community" onBack={() => router.back()} />
         <ErrorState
           message={communityQuery.error instanceof ApiError ? communityQuery.error.message : "Couldn't load this community."}
           onRetry={() => communityQuery.refetch()}
@@ -106,7 +106,7 @@ export default function PrincipalCommunityDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={community.name} subtitle={humanize(community.communityCategory)} onBack={() => router.back()} />
+      <PrincipalHeader title={community.name} subtitle={humanize(community.communityCategory)} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.infoValue}>{inchargeName}</Text>
@@ -174,7 +174,7 @@ function ActivitiesTab({ communityId }: { communityId: string }) {
   return (
     <ScrollView contentContainerStyle={styles.tabContent}>
       {activitiesQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : activitiesQuery.isError ? (
         <ErrorState
           message={activitiesQuery.error instanceof ApiError ? activitiesQuery.error.message : 'Unable to load activities.'}
@@ -215,7 +215,7 @@ function MembersTab({ communityId }: { communityId: string }) {
   return (
     <ScrollView contentContainerStyle={styles.tabContent}>
       {membershipsQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : membershipsQuery.isError ? (
         <ErrorState
           message={membershipsQuery.error instanceof ApiError ? membershipsQuery.error.message : 'Unable to load members.'}
@@ -257,7 +257,7 @@ function AnnouncementsTab({ communityId }: { communityId: string }) {
   return (
     <ScrollView contentContainerStyle={styles.tabContent}>
       {announcementsQuery.isLoading ? (
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
       ) : announcementsQuery.isError ? (
         <ErrorState
           message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load announcements.'}
@@ -294,18 +294,18 @@ function AnnouncementsTab({ communityId }: { communityId: string }) {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 8 },
   tabContent: { paddingHorizontal: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  body: { fontSize: 13, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 19, marginTop: 4 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  body: { fontSize: 13, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 19, marginTop: 4 },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
     flexDirection: 'row',
@@ -313,12 +313,12 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
-  stackedRow: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: parentColors.borderSoft, gap: 2 },
+  stackedRow: { paddingVertical: 12, borderTopWidth: 1, borderTopColor: principalColors.borderSoft, gap: 2 },
   demandRowHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, flexShrink: 1 },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
-  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 4, marginBottom: 8 },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, flexShrink: 1 },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 4, marginBottom: 8 },
 });

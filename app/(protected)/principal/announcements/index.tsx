@@ -9,13 +9,13 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listAnnouncements, type AnnouncementRow } from '@/lib/principal-announcements-api';
 
 function humanize(code: string): string {
@@ -85,7 +85,7 @@ export default function PrincipalAnnouncementsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Announcements" subtitle="School-wide announcements" onBack={() => router.back()} />
+      <PrincipalHeader title="Announcements" subtitle="School-wide announcements" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Pressable style={styles.createButton} onPress={() => router.push('/(protected)/principal/announcements/create' as never)}>
           <Text style={styles.createButtonText}>+ New announcement</Text>
@@ -95,7 +95,7 @@ export default function PrincipalAnnouncementsScreen() {
           value={search}
           onChangeText={setSearch}
           placeholder="Search by title or content…"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.searchInput}
         />
 
@@ -129,7 +129,7 @@ export default function PrincipalAnnouncementsScreen() {
         </View>
 
         {announcementsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
         ) : announcementsQuery.isError ? (
           <ErrorState
             message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load announcements.'}
@@ -172,31 +172,31 @@ export default function PrincipalAnnouncementsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  createButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginBottom: 14 },
+  createButton: { backgroundColor: principalColors.primary, borderRadius: 14, paddingVertical: 14, alignItems: 'center', marginBottom: 14 },
   createButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 14, color: '#fff' },
   searchInput: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 13,
     fontSize: 14.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     marginBottom: 12,
   },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
@@ -205,9 +205,9 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

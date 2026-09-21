@@ -21,14 +21,14 @@ import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { ReasonModal } from '@/components/ReasonModal';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { useMe } from '@/hooks/useMe';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import {
   approveRequest,
   getApprovalRequest,
@@ -46,6 +46,19 @@ const cardShadow = {
 };
 
 const OPEN_STATES = ['PENDING', 'RETROSPECTIVE_PENDING'];
+
+// Mirrors the website's own principal/requests/[id]/page.tsx SUBJECT_LINKS
+// map exactly. `purchase_request` is omitted here (unlike the website)
+// because mobile has no purchase-requests/[id] detail screen yet -- only an
+// apply form -- so the link is left out rather than pointed at a screen
+// that doesn't exist, same "don't fabricate a destination" rule the
+// website's own comment already documents for subject types with no real
+// destination.
+const SUBJECT_LINKS: Record<string, (id: string) => string> = {
+  concession: (id) => `/(protected)/principal/finance/concessions/${id}`,
+  fee_structure: (id) => `/(protected)/principal/finance/structures/${id}`,
+  expense: (id) => `/(protected)/principal/finance/expenses/${id}`,
+};
 
 function humanize(code: string): string {
   return code
@@ -135,8 +148,8 @@ export default function PrincipalRequestDetail() {
   if (detailQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Request" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Request" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -144,7 +157,7 @@ export default function PrincipalRequestDetail() {
   if (detailQuery.isError || !detailQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Request" onBack={() => router.back()} />
+        <PrincipalHeader title="Request" onBack={() => router.back()} />
         <ErrorState
           message={
             detailQuery.error instanceof ApiError
@@ -162,10 +175,11 @@ export default function PrincipalRequestDetail() {
   const isRequester = !!meQuery.data?.person && request.requestedBy === meQuery.data.person.id;
   const canDecide = isOpen && !isRequester;
   const canWithdraw = isOpen && isRequester;
+  const subjectHref = SUBJECT_LINKS[request.subjectObjectType]?.(request.subjectObjectId);
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={humanize(request.requestType)} onBack={() => router.back()} />
+      <PrincipalHeader title={humanize(request.requestType)} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.infoValue}>{request.requestedByName ?? 'Unknown requester'}</Text>
@@ -197,6 +211,12 @@ export default function PrincipalRequestDetail() {
             </View>
           ) : null}
         </View>
+
+        {subjectHref ? (
+          <Pressable style={styles.viewRecordButton} onPress={() => router.push(subjectHref as never)}>
+            <Text style={styles.viewRecordButtonText}>View underlying record →</Text>
+          </Pressable>
+        ) : null}
 
         <Text style={styles.sectionTitle}>Approval history</Text>
         <View style={[styles.listCard, cardShadow]}>
@@ -232,7 +252,7 @@ export default function PrincipalRequestDetail() {
           </View>
         ) : canWithdraw ? (
           <Pressable style={styles.withdrawButton} onPress={handleWithdraw} disabled={busy}>
-            {busy ? <ActivityIndicator color={parentColors.ink} /> : <Text style={styles.withdrawButtonText}>Withdraw request</Text>}
+            {busy ? <ActivityIndicator color={principalColors.ink} /> : <Text style={styles.withdrawButtonText}>Withdraw request</Text>}
           </Pressable>
         ) : null}
       </ScrollView>
@@ -258,17 +278,19 @@ export default function PrincipalRequestDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
+  viewRecordButton: { marginTop: 12, alignSelf: 'flex-start' },
+  viewRecordButtonText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.primary },
   actionsRow: { flexDirection: 'row', gap: 10, marginTop: 20 },
   actionButton: { flex: 1, borderRadius: 14, paddingVertical: 14, alignItems: 'center' },
   approveButton: { backgroundColor: '#1E8A4C' },
@@ -279,10 +301,10 @@ const styles = StyleSheet.create({
   withdrawButton: {
     marginTop: 20,
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
   },
-  withdrawButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 13.5, color: parentColors.ink },
+  withdrawButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 13.5, color: principalColors.ink },
 });

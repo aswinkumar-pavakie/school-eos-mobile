@@ -4,17 +4,14 @@
 // allow VICE_PRINCIPAL -- see each controller's own comment. No new backend
 // service, no duplicated model.
 //
-// Deliberately excludes: vehicle documents/maintenance (Repair & Maintenance
-// -- a separate module this phase's own instructions explicitly exclude, and
-// VICE_PRINCIPAL was never granted those two sub-resources on the backend
-// either -- see vehicles.controller.ts's own comment), attendants and GPS
-// devices/mappings (no Principal precedent, not explicitly requested by this
-// phase, so left untouched per this session's own established discipline of
-// only granting what's either already precedented or explicitly asked for),
-// and student-transport-allocations as its own controller (no Principal
-// precedent there either -- instead this module reuses routes.controller.ts's
-// own already-Principal-authorized GET /routes/:id/assigned-students, which
-// internally queries the exact same student_transport_allocation table).
+// Vehicle documents/maintenance/fuel-log/spec/gps-status, driver documents
+// and attendants WERE later added below (re-audited: vehicles.controller.ts,
+// drivers.controller.ts and attendants.controller.ts all now carry
+// @Roles(...,'VICE_PRINCIPAL',...) on every one of these GET routes,
+// confirmed live -- the exclusion note above is now stale for those
+// specific sub-resources; it still holds for GPS device/mapping WRITE
+// endpoints and student-transport-allocations as its own controller, which
+// remain untouched.
 //
 // NFC boundary (this phase's own explicit instruction): there is no boarding-
 // event / NFC-tap API anywhere in this backend at all (confirmed by
@@ -129,6 +126,7 @@ export interface VehicleRouteAssignmentRow {
   vehicleId: string;
   routeId: string;
   driverId: string | null;
+  attendantId: string | null;
   effectiveFrom: string;
   effectiveTo: string | null;
 }
@@ -147,5 +145,119 @@ export async function listAssignments(params: {
   if (params.routeId) query.set('routeId', params.routeId);
   if (params.currentOnly) query.set('currentOnly', 'true');
   const res = await authedRequest<ApiEnvelope<VehicleRouteAssignmentRow[]>>(`/vehicle-route-assignments?${query.toString()}`);
+  return res.data;
+}
+
+// ---- Vehicle spec / GPS / documents / maintenance / fuel log (real -- see
+// this file's own updated top comment) ---------------------------------
+
+export interface VehicleSpec {
+  vehicleId: string;
+  manufacturer: string | null;
+  fuelType: string | null;
+  seatingLayout: string | null;
+  hasCctv: boolean | null;
+  hasGps: boolean | null;
+  hasFireExtinguisher: boolean | null;
+  hasFirstAidKit: boolean | null;
+}
+export async function getVehicleSpec(vehicleId: string): Promise<VehicleSpec | null> {
+  try {
+    const res = await authedRequest<ApiEnvelope<VehicleSpec>>(`/vehicles/${vehicleId}/spec`);
+    return res.data;
+  } catch {
+    return null;
+  }
+}
+
+export interface GpsStatus {
+  deviceUid: string;
+  status: string;
+}
+export async function getGpsStatus(vehicleId: string): Promise<GpsStatus | null> {
+  try {
+    const res = await authedRequest<ApiEnvelope<GpsStatus>>(`/vehicles/${vehicleId}/gps-status`);
+    return res.data;
+  } catch {
+    return null;
+  }
+}
+
+export interface VehicleDocRow {
+  id: string;
+  docType: string;
+  docNo: string | null;
+  validTo: string;
+}
+export async function listVehicleDocuments(vehicleId: string): Promise<VehicleDocRow[]> {
+  const res = await authedRequest<ApiEnvelope<VehicleDocRow[]>>(`/vehicles/${vehicleId}/documents`);
+  return res.data;
+}
+
+export interface DriverDocRow {
+  id: string;
+  docType: string;
+  docNo: string | null;
+  validTo: string;
+}
+export async function listDriverDocuments(driverId: string): Promise<DriverDocRow[]> {
+  const res = await authedRequest<ApiEnvelope<DriverDocRow[]>>(`/drivers/${driverId}/documents`);
+  return res.data;
+}
+
+export interface MaintenanceRow {
+  id: string;
+  performedOn: string;
+  serviceType: string;
+  odometerKm: number | null;
+  costPaise: string | number | null;
+}
+export async function listMaintenance(vehicleId: string): Promise<MaintenanceRow[]> {
+  const res = await authedRequest<ApiEnvelope<MaintenanceRow[]>>(`/vehicles/${vehicleId}/maintenance`);
+  return res.data;
+}
+
+export interface FuelLogEntry {
+  id: string;
+  filledOn: string;
+  litres: string | number;
+  odometerKm: number | null;
+}
+export async function listFuelLog(vehicleId: string): Promise<FuelLogEntry[]> {
+  const res = await authedRequest<ApiEnvelope<FuelLogEntry[]>>(`/vehicles/${vehicleId}/fuel-log`);
+  return res.data;
+}
+
+/** Real mileage from consecutive real fuel-log odometer readings -- mirrors
+ * the website's own TransportOversightRouteDetail computeMileage exactly.
+ * Returns null (shown as "—") without at least one usable consecutive pair
+ * with both odometer readings recorded -- never fabricated. */
+export function computeMileage(entries: FuelLogEntry[]): number | null {
+  const withOdo = [...entries].filter((e) => e.odometerKm != null).sort((a, b) => (a.filledOn < b.filledOn ? -1 : 1));
+  if (withOdo.length < 2) return null;
+  let totalKm = 0;
+  let totalLitres = 0;
+  for (let i = 1; i < withOdo.length; i++) {
+    const cur = withOdo[i];
+    const prev = withOdo[i - 1];
+    if (!cur || !prev) continue;
+    const km = (cur.odometerKm as number) - (prev.odometerKm as number);
+    const litres = Number(cur.litres);
+    if (km > 0 && litres > 0) {
+      totalKm += km;
+      totalLitres += litres;
+    }
+  }
+  return totalLitres > 0 ? totalKm / totalLitres : null;
+}
+
+export interface AttendantRow {
+  id: string;
+  fullName: string;
+  phone: string | null;
+  status: string;
+}
+export async function getAttendant(id: string): Promise<AttendantRow> {
+  const res = await authedRequest<ApiEnvelope<AttendantRow>>(`/attendants/${id}`);
   return res.data;
 }

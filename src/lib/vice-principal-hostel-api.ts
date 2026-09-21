@@ -106,6 +106,70 @@ export async function listAllocations(params: {
   return res.data;
 }
 
+// ---- Oversight (real -- same endpoints the website's shared
+// HostelOverview.tsx uses for Admin/Principal/Vice Principal alike; see its
+// own comment for exactly which fields are real vs. honestly not tracked
+// (no hostel fee/mess-feedback subsystem exists in this schema)) ----------
+
+export interface HostelRosterEntry {
+  studentId: string;
+  status: string | null;
+}
+export async function getNightAttendanceOversight(date: string): Promise<HostelRosterEntry[]> {
+  const res = await authedRequest<ApiEnvelope<HostelRosterEntry[]>>(`/hostel/night-attendance/oversight?date=${encodeURIComponent(date)}`);
+  return res.data;
+}
+
+export interface HostelBlockOversight {
+  id: string;
+  name: string;
+  hostelId: string;
+  hostelName: string;
+  roomCount: number;
+  capacity: number;
+  occupied: number;
+  wardenFirstName: string | null;
+  wardenLastName: string | null;
+}
+export async function listHostelBlocksOversight(): Promise<HostelBlockOversight[]> {
+  const res = await authedRequest<ApiEnvelope<HostelBlockOversight[]>>('/hostel-blocks-oversight');
+  return res.data;
+}
+
+export interface HostelOutingEntry {
+  id: string;
+  studentId: string;
+  studentFirstName: string;
+  studentLastName: string | null;
+  outFrom: string;
+  expectedReturn: string;
+  reason: string;
+  destination: string | null;
+  state: string;
+  requestType: string | null;
+  decidedAt: string | null;
+}
+export async function listActiveOutings(): Promise<HostelOutingEntry[]> {
+  const res = await authedRequest<ApiEnvelope<HostelOutingEntry[]>>('/hostel/outings/oversight');
+  return res.data;
+}
+export async function listRecentOutingDecisions(): Promise<HostelOutingEntry[]> {
+  const res = await authedRequest<ApiEnvelope<HostelOutingEntry[]>>('/hostel/outings/recent-decisions');
+  return res.data;
+}
+
+export interface HostelComplaintEntry {
+  id: string;
+  issueType: string;
+  subject: string;
+  state: string;
+  createdAt: string;
+}
+export async function listHostelComplaintsOversight(): Promise<HostelComplaintEntry[]> {
+  const res = await authedRequest<ApiEnvelope<HostelComplaintEntry[]>>('/hostel/complaints/oversight');
+  return res.data;
+}
+
 /** Walks Hostel -> Blocks -> Floors -> Rooms once to compute real, aggregate
  * room/bed-capacity structure for one hostel -- no separate per-bed fetch
  * (see this file's own top comment for why). */

@@ -17,7 +17,7 @@ import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View }
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { Ionicons } from '@expo/vector-icons';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { DateSelectorPill } from '@/components/DateSelectorPill';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
@@ -54,7 +54,7 @@ export default function ClassAbsenceAlertsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Class Absence Alerts" onBack={() => router.back()} />
+      <WardenSubHeader title="Class Absence Alerts" onBack={() => router.back()} />
 
       <View style={styles.headerRow}>
         <DateSelectorPill date={date} onChange={setDate} containerStyle={styles.pillContainer} />

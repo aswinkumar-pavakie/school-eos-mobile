@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SegmentedTabs } from '@/components/SegmentedTabs';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -78,7 +78,7 @@ export default function CallRequestsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Parent Call Approval" subtitle="Approve a communication time window" onBack={() => router.back()} />
+      <WardenSubHeader title="Parent Call Approval" onBack={() => router.back()} />
       <SegmentedTabs
         tabs={[
           { key: 'approval', label: `Approval${pending.length > 0 ? ` (${pending.length})` : ''}` },

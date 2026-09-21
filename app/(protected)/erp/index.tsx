@@ -32,7 +32,7 @@ const STUDENT_TILES: ServiceItem[] = [
   { key: 'homework', label: 'Homework', href: '/(protected)/faculty/homework' },
   { key: 'classTeacher', label: 'Class Teacher', href: '/(protected)/faculty/class-teacher' },
   { key: 'meetings', label: 'Parent Meetings', href: '/(protected)/faculty/parent-meetings' },
-  { key: 'messages', label: 'Messages', href: '/(protected)/my-class/messages' },
+  { key: 'messages', label: 'Messages', href: '/(protected)/messaging' },
   { key: 'events', label: 'Events', href: '/events' },
 ];
 
@@ -74,9 +74,19 @@ export default function ErpScreen() {
   // feature, not part of the static Faculty Module design) -- its own tile
   // only ever appears for a real, currently-active coordinator, checked live
   // on every load, never assumed from a cached flag. Called unconditionally
-  // (Rules of Hooks) even though a Hostel Warden/Principal redirects away
-  // below before ever rendering anything that uses it.
-  const meQuery = useQuery({ queryKey: ['faculty-academic-coordinator-me'], queryFn: getCoordinatorMe });
+  // (Rules of Hooks) even though a Hostel Warden/Principal/Vice Principal/
+  // Community redirects away below before ever rendering anything that uses
+  // it -- but `enabled: false` for those roles, confirmed live as a real
+  // bug otherwise: useQuery's queryFn fires on mount regardless of what JSX
+  // the component eventually returns, so Principal was getting a real 403
+  // from this FACULTY-only endpoint on every single visit to this tab
+  // before the redirect below ever ran.
+  const isRedirectingAway = isHostelWarden || isPrincipal || isVicePrincipal || isCommunity;
+  const meQuery = useQuery({
+    queryKey: ['faculty-academic-coordinator-me'],
+    queryFn: getCoordinatorMe,
+    enabled: !isRedirectingAway,
+  });
 
   // The ERP tab is Hostel Warden's own operational home for that role -- see
   // hostel-warden/index.tsx -- rather than the Faculty services grid below.

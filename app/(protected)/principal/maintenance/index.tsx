@@ -9,12 +9,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getRepairRequestOverview, listRepairRequests } from '@/lib/principal-maintenance-api';
 
 const cardShadow = {
@@ -82,10 +82,10 @@ export default function PrincipalMaintenanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Repair & Maintenance" subtitle="School-wide maintenance overview" onBack={() => router.back()} />
+      <PrincipalHeader title="Repair & Maintenance" subtitle="School-wide maintenance overview" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         {overviewQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginBottom: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginBottom: 12 }} />
         ) : overview ? (
           <>
             <View style={styles.statsRow}>
@@ -124,14 +124,14 @@ export default function PrincipalMaintenanceScreen() {
           value={search}
           onChangeText={setSearch}
           placeholder="Search by title…"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.searchInput}
         />
         <TextInput
           value={location}
           onChangeText={setLocation}
           placeholder="Filter by location…"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.searchInput}
         />
 
@@ -169,7 +169,7 @@ export default function PrincipalMaintenanceScreen() {
         </View>
 
         {requestsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
         ) : requestsQuery.isError ? (
           <ErrorState
             message={requestsQuery.error instanceof ApiError ? requestsQuery.error.message : 'Unable to load repair requests.'}
@@ -212,38 +212,38 @@ export default function PrincipalMaintenanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   statsRow: { flexDirection: 'row', gap: 10, marginBottom: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
+  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
   statValueWarning: { color: '#B77A0A' },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   searchInput: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 13,
     fontSize: 14.5,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     marginBottom: 12,
   },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
   filterRow: { flexDirection: 'row', gap: 10, marginBottom: 8 },
-  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 4, marginBottom: 8 },
+  resultCount: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 4, marginBottom: 8 },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
     flexDirection: 'row',
@@ -251,9 +251,9 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

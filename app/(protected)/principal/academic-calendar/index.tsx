@@ -1,32 +1,30 @@
-// Principal -> Academic Calendar -- school-level oversight, real backend data
-// only (calendar-events, confirmed identical method-level access for
-// PRINCIPAL as VICE_PRINCIPAL by direct backend audit -- see
-// principal-academic-calendar-api.ts's own comment). Guarded by the parent
-// principal/_layout.tsx.
+// Principal -> Academic Calendar -- pixel-rebuilt from the design's own
+// `isCalendar` screen: month-grid + "this month" event list, replacing the
+// previous agenda-list layout. Real backend data only (calendar-events,
+// confirmed identical method-level access for PRINCIPAL as VICE_PRINCIPAL by
+// direct backend audit -- see principal-academic-calendar-api.ts's own
+// comment). Guarded by the parent principal/_layout.tsx.
 //
-// Agenda/list view (grouped by real date), not a month grid -- the backend
-// has no month-oriented endpoint, just fromDate/toDate range filtering.
-// Event-type chips filter the already-loaded, already date-bounded set
-// client-side -- there is no backend eventType filter param.
+// The backend has no month-oriented endpoint, just fromDate/toDate range
+// filtering -- this screen fetches a window covering the visible month
+// (1st of month to 1st of next month) and does the month-grid rendering
+// entirely client-side over that real, already-bounded data.
 
 import { useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
-import { DateSelectorPill } from '@/components/DateSelectorPill';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
+import { MonthGrid } from '@/components/principal/MonthGrid';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
-import { SelectField } from '@/components/SelectField';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
-import { listCalendarEvents, type CalendarEventRow } from '@/lib/principal-academic-calendar-api';
+import { principalColors } from '@/lib/theme';
 import { listAcademicYears } from '@/lib/principal-academics-api';
+import { createCalendarEvent, listCalendarEvents, type CalendarEventRow } from '@/lib/principal-academic-calendar-api';
 
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+const EVENT_TYPES = ['HOLIDAY', 'TERM_START', 'TERM_END', 'EXAM_WINDOW', 'PTM', 'FUNCTION', 'COMPETITION', 'WORKING_SATURDAY', 'OTHER'] as const;
 
 function humanize(code: string): string {
   return code
@@ -48,112 +46,150 @@ function eventTypeMeta(row: CalendarEventRow): { label: string; tone: StatusTone
   }
 }
 
-function groupByDate(rows: CalendarEventRow[]): { date: string; rows: CalendarEventRow[] }[] {
-  const map = new Map<string, CalendarEventRow[]>();
-  for (const row of rows) {
-    const list = map.get(row.startDate) ?? [];
-    list.push(row);
-    map.set(row.startDate, list);
-  }
-  return Array.from(map.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([date, groupRows]) => ({ date, rows: groupRows }));
-}
-
 export default function PrincipalAcademicCalendarScreen() {
   const router = useRouter();
-  const [date, setDate] = useState(todayIso());
-  const [yearName, setYearName] = useState<string | null>(null);
-  const [eventType, setEventType] = useState<string | null>(null);
+  const qc = useQueryClient();
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth());
+  const [showAdd, setShowAdd] = useState(false);
+  const [title, setTitle] = useState('');
+  const [eventType, setEventType] = useState<(typeof EVENT_TYPES)[number]>('FUNCTION');
+  const [isoDate, setIsoDate] = useState('');
 
-  const yearsQuery = useQuery({ queryKey: ['principal-calendar', 'years'], queryFn: listAcademicYears });
-  const year = useMemo(() => yearsQuery.data?.find((y) => y.name === yearName) ?? null, [yearsQuery.data, yearName]);
-  const currentYear = yearsQuery.data?.find((y) => y.isCurrent);
+  const fromDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const toDate = new Date(year, month + 1, 0).toISOString().slice(0, 10);
 
   const eventsQuery = useQuery({
-    queryKey: ['principal-calendar', 'events', date, year?.id],
-    queryFn: () => listCalendarEvents({ fromDate: date, academicYearId: year?.id }),
+    queryKey: ['principal-calendar', 'month', year, month],
+    queryFn: () => listCalendarEvents({ fromDate, toDate }),
+  });
+  const yearsQuery = useQuery({ queryKey: ['principal-academic-years'], queryFn: listAcademicYears, enabled: showAdd });
+
+  const createMutation = useMutation({
+    mutationFn: () => {
+      const currentYear = (yearsQuery.data ?? []).find((y) => y.isCurrent) ?? (yearsQuery.data ?? [])[0];
+      if (!currentYear) throw new Error('No academic year is set up.');
+      if (!title.trim()) throw new Error('Enter a title.');
+      if (!isoDate) throw new Error('Pick a date.');
+      return createCalendarEvent({ academicYearId: currentYear.id, title: title.trim(), eventType, isoDate });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['principal-calendar'] });
+      setShowAdd(false);
+      setTitle('');
+      setEventType('FUNCTION');
+      setIsoDate('');
+    },
   });
 
-  const allEvents = eventsQuery.data ?? [];
-  const eventTypes = Array.from(new Set(allEvents.map((e) => e.eventType)));
-  const events = eventType ? allEvents.filter((e) => e.eventType === eventType) : allEvents;
-  const groups = groupByDate(events);
+  const events = eventsQuery.data ?? [];
+  const eventsByDay = useMemo(() => {
+    const map = new Map<string, CalendarEventRow[]>();
+    for (const e of events) {
+      // Mark every day in the event's [startDate, endDate] range that falls
+      // within the visible month, not just the start day -- multi-day events
+      // (e.g. exam windows) should show on every day they cover.
+      const s = e.startDate < fromDate ? fromDate : e.startDate;
+      const en = e.endDate > toDate ? toDate : e.endDate;
+      for (let d = new Date(s); d <= new Date(en); d.setDate(d.getDate() + 1)) {
+        const key = d.toISOString().slice(0, 10);
+        map.set(key, [...(map.get(key) ?? []), e]);
+      }
+    }
+    return map;
+  }, [events, fromDate, toDate]);
+
+  const monthEvents = [...events].sort((a, b) => a.startDate.localeCompare(b.startDate));
+
+  function shiftMonth(delta: number) {
+    const d = new Date(year, month + delta, 1);
+    setYear(d.getFullYear());
+    setMonth(d.getMonth());
+  }
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Academic Calendar" subtitle="Upcoming academic events" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        {currentYear ? (
-          <View style={styles.yearCard}>
-            <Text style={styles.yearLabel}>Current academic year</Text>
-            <Text style={styles.yearValue}>{currentYear.name}</Text>
-          </View>
-        ) : null}
-
-        <DateSelectorPill date={date} onChange={setDate} containerStyle={{ paddingHorizontal: 0, paddingTop: 0, marginBottom: 14 }} />
-
-        <View style={{ marginBottom: 12 }}>
-          <SelectField
-            label="Academic year filter"
-            value={yearName}
-            placeholder={yearsQuery.isLoading ? 'Loading…' : 'Current + all years'}
-            options={(yearsQuery.data ?? []).map((y) => y.name)}
-            onSelect={setYearName}
-            disabled={yearsQuery.isLoading}
-          />
-        </View>
-
-        {eventTypes.length > 0 ? (
-          <View style={styles.chipRow}>
-            <Pressable onPress={() => setEventType(null)} style={[styles.chip, eventType === null && styles.chipActive]}>
-              <Text style={[styles.chipText, eventType === null && styles.chipTextActive]}>All</Text>
+      <PrincipalHeader title="Academic Calendar" subtitle={`${monthEvents.length} events this month`} onBack={() => router.back()} />
+      <ScrollView contentContainerStyle={styles.content}>
+        <Pressable style={styles.addButton} onPress={() => setShowAdd((v) => !v)}>
+          <Text style={styles.addButtonText}>{showAdd ? 'Close' : '+ Add event'}</Text>
+        </Pressable>
+        {showAdd ? (
+          <View style={styles.addCard}>
+            <Text style={styles.addLabel}>Title</Text>
+            <TextInput value={title} onChangeText={setTitle} placeholder="Annual day" placeholderTextColor={principalColors.tertiary} style={styles.addInput} />
+            <Text style={styles.addLabel}>Type</Text>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+              {EVENT_TYPES.map((t) => (
+                <Pressable key={t} onPress={() => setEventType(t)} style={[styles.chip, eventType === t && styles.chipActive]}>
+                  <Text style={[styles.chipText, eventType === t && styles.chipTextActive]}>{humanize(t)}</Text>
+                </Pressable>
+              ))}
+            </View>
+            <Text style={styles.addLabel}>Date</Text>
+            <TextInput value={isoDate} onChangeText={setIsoDate} placeholder="2026-10-12" placeholderTextColor={principalColors.tertiary} style={styles.addInput} />
+            {createMutation.isError ? <Text style={styles.errorText}>{(createMutation.error as Error).message}</Text> : null}
+            <Pressable style={styles.saveButton} onPress={() => createMutation.mutate()}>
+              <Text style={styles.addButtonText}>{createMutation.isPending ? 'Saving…' : 'Save event'}</Text>
             </Pressable>
-            {eventTypes.map((t) => (
-              <Pressable key={t} onPress={() => setEventType(t)} style={[styles.chip, eventType === t && styles.chipActive]}>
-                <Text style={[styles.chipText, eventType === t && styles.chipTextActive]}>{humanize(t)}</Text>
-              </Pressable>
-            ))}
           </View>
         ) : null}
+        <MonthGrid
+          year={year}
+          month={month}
+          onPrevMonth={() => shiftMonth(-1)}
+          onNextMonth={() => shiftMonth(1)}
+          renderDay={(dateStr) => {
+            const dayEvents = eventsByDay.get(dateStr);
+            if (!dayEvents || dayEvents.length === 0) return undefined;
+            const hasHoliday = dayEvents.some((e) => e.isHoliday);
+            return {
+              backgroundColor: principalColors.tint,
+              textColor: principalColors.primary,
+              dotColor: hasHoliday ? principalColors.red : principalColors.primary,
+            };
+          }}
+        />
 
+        <Text style={styles.sectionTitle}>This month</Text>
         {eventsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 12 }} />
         ) : eventsQuery.isError ? (
           <ErrorState
             message={eventsQuery.error instanceof ApiError ? eventsQuery.error.message : 'Unable to load the calendar.'}
             onRetry={() => eventsQuery.refetch()}
           />
-        ) : groups.length === 0 ? (
-          <EmptyState message="No academic events found from this date onward." />
+        ) : monthEvents.length === 0 ? (
+          <EmptyState message="No events this month." />
         ) : (
-          groups.map((group) => (
-            <View key={group.date} style={{ marginBottom: 16 }}>
-              <Text style={styles.dateHeading}>{formatDate(group.date)}</Text>
-              <View style={styles.list}>
-                {group.rows.map((event, index) => {
-                  const meta = eventTypeMeta(event);
-                  return (
-                    <Pressable
-                      key={event.id}
-                      style={[styles.row, index === 0 && styles.rowFirst]}
-                      onPress={() => router.push(`/(protected)/principal/academic-calendar/${event.id}` as never)}
-                    >
-                      <View style={{ flex: 1, minWidth: 0 }}>
-                        <Text style={styles.rowTitle} numberOfLines={1}>
-                          {event.title}
-                        </Text>
-                        {event.endDate !== event.startDate ? (
-                          <Text style={styles.rowMeta}>Through {formatDate(event.endDate)}</Text>
-                        ) : null}
-                      </View>
-                      <StatusBadge {...meta} />
-                    </Pressable>
-                  );
-                })}
-              </View>
-            </View>
-          ))
+          <View style={styles.list}>
+            {monthEvents.map((event, index) => {
+              const meta = eventTypeMeta(event);
+              const s = new Date(event.startDate);
+              return (
+                <Pressable
+                  key={event.id}
+                  style={[styles.row, index === 0 && styles.rowFirst]}
+                  onPress={() => router.push(`/(protected)/principal/academic-calendar/${event.id}` as never)}
+                >
+                  <View style={styles.dateBadge}>
+                    <Text style={styles.dateBadgeDay}>{s.getDate()}</Text>
+                    <Text style={styles.dateBadgeMonth}>{s.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}</Text>
+                  </View>
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={styles.rowTitle} numberOfLines={1}>
+                      {event.title}
+                    </Text>
+                    {event.endDate !== event.startDate ? (
+                      <Text style={styles.rowMeta}>Through {formatDate(event.endDate)}</Text>
+                    ) : null}
+                  </View>
+                  <StatusBadge {...meta} />
+                </Pressable>
+              );
+            })}
+          </View>
         )}
       </ScrollView>
     </View>
@@ -161,34 +197,40 @@ export default function PrincipalAcademicCalendarScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  yearCard: { backgroundColor: '#fff', borderRadius: 14, padding: 14, marginBottom: 16 },
-  yearLabel: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  yearValue: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 2 },
-  chipRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
-  chip: {
-    borderWidth: 1,
-    borderColor: parentColors.border,
-    borderRadius: 999,
-    paddingVertical: 7,
-    paddingHorizontal: 13,
-    backgroundColor: '#fff',
-  },
-  chipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  chipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  addButton: { backgroundColor: principalColors.primary, borderRadius: 13, paddingVertical: 14, alignItems: 'center', marginBottom: 14 },
+  addButtonText: { color: '#fff', fontSize: 14.5, fontFamily: 'PlusJakartaSans_800ExtraBold' },
+  addCard: { backgroundColor: principalColors.surface, borderRadius: 14, padding: 16, gap: 10, marginBottom: 16 },
+  addLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_700Bold', letterSpacing: 1, color: principalColors.tertiary },
+  addInput: { borderWidth: 1, borderColor: principalColors.border, borderRadius: 11, paddingHorizontal: 14, paddingVertical: 12, fontSize: 13.5, color: principalColors.ink },
+  chip: { borderWidth: 1, borderColor: principalColors.border, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 7 },
+  chipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  chipText: { fontSize: 12, color: principalColors.ink, fontFamily: 'PlusJakartaSans_600SemiBold' },
   chipTextActive: { color: '#fff' },
-  dateHeading: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.muted, marginBottom: 8 },
-  list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
+  errorText: { fontSize: 12.5, color: principalColors.red },
+  saveButton: { backgroundColor: principalColors.primary, borderRadius: 11, paddingVertical: 13, alignItems: 'center', marginTop: 4 },
+  sectionTitle: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 20, marginBottom: 10 },
+  list: { backgroundColor: principalColors.surface, borderRadius: 14, paddingHorizontal: 14 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  dateBadge: {
+    width: 42,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: principalColors.border,
+    borderRadius: 10,
+    paddingVertical: 6,
+  },
+  dateBadgeDay: { fontSize: 15, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.primaryDark },
+  dateBadgeMonth: { fontSize: 9, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.tertiary, marginTop: 1 },
+  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

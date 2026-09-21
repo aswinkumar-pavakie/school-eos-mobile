@@ -11,13 +11,13 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { Ionicons } from '@expo/vector-icons';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
+import { MonthGrid } from '@/components/principal/MonthGrid';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getMyAttendanceHistory } from '@/lib/principal-my-attendance-api';
 
 const cardShadow = {
@@ -27,11 +27,6 @@ const cardShadow = {
   shadowOffset: { width: 0, height: 3 },
   elevation: 2,
 };
-
-const MONTH_NAMES = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
 
 function statusMeta(status: string): { label: string; tone: StatusTone } {
   if (status === 'CHECK_IN') return { label: 'Present', tone: 'positive' };
@@ -58,10 +53,10 @@ export default function PrincipalMyAttendanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="My Attendance" subtitle="Your own attendance record" onBack={() => router.back()} />
+      <PrincipalHeader title="My Attendance" subtitle="Your own attendance record" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         {query.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 24 }} />
         ) : query.isError ? (
           <ErrorState
             message={query.error instanceof ApiError ? query.error.message : 'Unable to load your attendance.'}
@@ -69,24 +64,6 @@ export default function PrincipalMyAttendanceScreen() {
           />
         ) : (
           <>
-            <View style={styles.monthNav}>
-              <Pressable
-                style={styles.monthArrow}
-                onPress={() => setCursor((c) => (c.month === 0 ? { year: c.year - 1, month: 11 } : { year: c.year, month: c.month - 1 }))}
-              >
-                <Ionicons name="chevron-back" size={18} color={parentColors.ink} />
-              </Pressable>
-              <Text style={styles.monthNavLabel}>
-                {MONTH_NAMES[cursor.month]} {cursor.year}
-              </Text>
-              <Pressable
-                style={styles.monthArrow}
-                onPress={() => setCursor((c) => (c.month === 11 ? { year: c.year + 1, month: 0 } : { year: c.year, month: c.month + 1 }))}
-              >
-                <Ionicons name="chevron-forward" size={18} color={parentColors.ink} />
-              </Pressable>
-            </View>
-
             <Text style={styles.sectionTitle}>This month</Text>
             <View style={styles.statsRow}>
               <View style={[styles.statTile, cardShadow]}>
@@ -109,6 +86,30 @@ export default function PrincipalMyAttendanceScreen() {
                 {allTime?.percentage != null ? `${allTime.percentage}%` : '—'}
                 <Text style={styles.allTimeDetail}> · {allTime?.presentCount ?? 0} of {allTime?.totalCount ?? 0} marked days</Text>
               </Text>
+            </View>
+
+            <Text style={styles.sectionTitle}>Calendar</Text>
+            <MonthGrid
+              year={cursor.year}
+              month={cursor.month}
+              onPrevMonth={() => setCursor((c) => (c.month === 0 ? { year: c.year - 1, month: 11 } : { year: c.year, month: c.month - 1 }))}
+              onNextMonth={() => setCursor((c) => (c.month === 11 ? { year: c.year + 1, month: 0 } : { year: c.year, month: c.month + 1 }))}
+              renderDay={(dateStr) => {
+                const day = days.find((d) => d.date === dateStr);
+                if (!day) return undefined;
+                if (day.status === 'CHECK_IN') return { backgroundColor: principalColors.greenBg, textColor: principalColors.green };
+                return { backgroundColor: principalColors.redBg, textColor: principalColors.red };
+              }}
+            />
+            <View style={styles.legendRow}>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: principalColors.greenBg }]} />
+                <Text style={styles.legendText}>Present</Text>
+              </View>
+              <View style={styles.legendItem}>
+                <View style={[styles.legendDot, { backgroundColor: principalColors.redBg }]} />
+                <Text style={styles.legendText}>Absent</Text>
+              </View>
             </View>
 
             <Text style={styles.sectionTitle}>Daily record</Text>
@@ -140,29 +141,21 @@ export default function PrincipalMyAttendanceScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  monthNav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 },
-  monthArrow: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: parentColors.border,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  monthNavLabel: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 4, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
+  legendRow: { flexDirection: 'row', gap: 16, marginTop: 12 },
+  legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  legendDot: { width: 10, height: 10, borderRadius: 5 },
+  legendText: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
   statsRow: { flexDirection: 'row', gap: 10 },
   statTile: { flex: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, textAlign: 'center' },
+  statValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, textAlign: 'center' },
   allTimeCard: { backgroundColor: '#fff', borderRadius: 14, padding: 16, marginTop: 14 },
-  allTimeLabel: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.muted, letterSpacing: 0.4 },
-  allTimeValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 4 },
-  allTimeDetail: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
+  allTimeLabel: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.muted, letterSpacing: 0.4 },
+  allTimeValue: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 4 },
+  allTimeDetail: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
     flexDirection: 'row',
@@ -170,9 +163,9 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

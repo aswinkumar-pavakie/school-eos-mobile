@@ -11,12 +11,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import {
   listAcademicYears,
   listDepartments,
@@ -52,8 +52,8 @@ export default function PrincipalAcademicsScreen() {
   if (isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Academics" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Academics" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -61,7 +61,7 @@ export default function PrincipalAcademicsScreen() {
   if (firstError) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Academics" onBack={() => router.back()} />
+        <PrincipalHeader title="Academics" onBack={() => router.back()} />
         <ErrorState
           message={firstError.error instanceof ApiError ? firstError.error.message : 'Unable to load academic information.'}
           onRetry={() => {
@@ -88,7 +88,7 @@ export default function PrincipalAcademicsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Academics" subtitle="School-wide academic structure" onBack={() => router.back()} />
+      <PrincipalHeader title="Academics" subtitle="School-wide academic structure" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.sectionTitle}>Academic year</Text>
         {currentYear ? (
@@ -203,17 +203,17 @@ export default function PrincipalAcademicsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
   stackedRow: { paddingVertical: 12 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  infoMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 4 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  infoMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 4 },
   statsRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   statTile: { flexBasis: '47%', flexGrow: 1, backgroundColor: '#fff', borderRadius: 14, paddingVertical: 14, alignItems: 'center', gap: 4 },
-  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
+  statValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  statLabel: { fontSize: 11, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
 });

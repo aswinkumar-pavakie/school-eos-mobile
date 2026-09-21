@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ApiError } from '@/lib/api';
 import { colors, fonts } from '@/lib/theme';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { Avatar } from '@/features/messaging/components/Avatar';
 import { useSearchStudents, useStartStudentConversation } from '@/features/messaging/hooks';
@@ -52,7 +52,7 @@ export default function NewMessageStudentScreen() {
 
   return (
     <View style={styles.screen}>
-      <AppHeader title="Message a student's family" onBack={() => router.back()} />
+      <PrincipalHeader title="Message a student's family" onBack={() => router.back()} />
       <View style={styles.searchRow}>
         <Ionicons name="search" size={16} color={colors.textMuted} />
         <TextInput

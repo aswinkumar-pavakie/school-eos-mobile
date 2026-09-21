@@ -8,14 +8,22 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader, StatusPill } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { ErrorState } from '@/components/ScreenStates';
 import { ApiError } from '@/lib/api';
-import { formatDate } from '@/lib/format';
-import { listRoomAllocations, listStudentGuardians } from '@/lib/hostel-warden-api';
+import { formatDate, formatMoneySummary } from '@/lib/format';
+import { getStudentFees, listRoomAllocations, listStudentGuardians, type StudentFeeOverallStatus } from '@/lib/hostel-warden-api';
 import { fullName } from '@/lib/hostel-warden-status';
 import { parentColors, cardShadow } from '@/lib/theme';
+
+const FEE_STATUS_LABEL: Record<StudentFeeOverallStatus, string> = {
+  NO_ASSIGNMENT: 'No fee plan',
+  PAID: 'Paid',
+  PARTIAL: 'Partially paid',
+  PENDING: 'Pending',
+  OVERDUE: 'Overdue',
+};
 
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
@@ -35,12 +43,17 @@ export default function StudentProfileScreen() {
     queryFn: () => listStudentGuardians(studentId!),
     enabled: !!studentId,
   });
+  const feesQuery = useQuery({
+    queryKey: ['hostel-warden', 'student-fees', studentId],
+    queryFn: () => getStudentFees(studentId!),
+    enabled: !!studentId,
+  });
 
   const student = (allocationsQuery.data ?? []).find((row) => row.studentId === studentId);
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={student ? fullName(student.studentFirstName, student.studentLastName) : 'Student'} onBack={() => router.back()} />
+      <WardenSubHeader title={student ? fullName(student.studentFirstName, student.studentLastName) : 'Student'} onBack={() => router.back()} />
       {allocationsQuery.isLoading ? (
         <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
       ) : allocationsQuery.isError ? (
@@ -74,6 +87,24 @@ export default function StudentProfileScreen() {
             <DetailRow label="Room" value={student.roomNo} />
             <DetailRow label="Bed" value={student.bedNo} />
             <DetailRow label="Allocated from" value={formatDate(student.allocatedFrom)} />
+          </View>
+
+          <View style={[styles.card, cardShadow]}>
+            <View style={styles.feesHeader}>
+              <Text style={styles.sectionTitle}>FEES</Text>
+              {feesQuery.data ? <StatusPill label={FEE_STATUS_LABEL[feesQuery.data.overallStatus]} /> : null}
+            </View>
+            {feesQuery.isLoading ? (
+              <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 8 }} />
+            ) : feesQuery.isError ? (
+              <Text style={styles.noGuardians}>Unable to load fee status.</Text>
+            ) : feesQuery.data ? (
+              <>
+                <DetailRow label="Total due" value={formatMoneySummary(Number(feesQuery.data.totalDuePaise))} />
+                <DetailRow label="Total paid" value={formatMoneySummary(Number(feesQuery.data.totalPaidPaise))} />
+                <DetailRow label="Overdue" value={formatMoneySummary(Number(feesQuery.data.totalOverduePaise))} />
+              </>
+            ) : null}
           </View>
 
           <View style={[styles.card, cardShadow]}>
@@ -114,6 +145,7 @@ const styles = StyleSheet.create({
   admissionNo: { fontSize: 13, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
   card: { backgroundColor: '#fff', borderRadius: 16, padding: 16 },
   sectionTitle: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.muted, letterSpacing: 1, marginBottom: 10 },
+  feesHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 },
   detailRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
   detailLabel: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
   detailValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },

@@ -17,10 +17,10 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { DateSelectorPill } from '@/components/DateSelectorPill';
 import { ApiError } from '@/lib/api';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import {
   createAnnouncement,
   type AnnouncementAudienceType,
@@ -107,14 +107,14 @@ export default function PrincipalAnnouncementCreate() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="New Announcement" subtitle={subtitle} onBack={() => router.back()} />
+      <PrincipalHeader title="New Announcement" subtitle={subtitle} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.label}>Title *</Text>
         <TextInput
           value={title}
           onChangeText={setTitle}
           placeholder="e.g. School closed Friday for maintenance"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.input}
         />
 
@@ -123,7 +123,7 @@ export default function PrincipalAnnouncementCreate() {
           value={body}
           onChangeText={setBody}
           placeholder="Full announcement text"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={[styles.input, styles.textArea]}
           multiline
         />
@@ -133,7 +133,7 @@ export default function PrincipalAnnouncementCreate() {
           value={category}
           onChangeText={setCategory}
           placeholder="e.g. Operations (optional)"
-          placeholderTextColor={parentColors.mutedLight}
+          placeholderTextColor={principalColors.disabled}
           style={styles.input}
         />
 
@@ -182,13 +182,13 @@ export default function PrincipalAnnouncementCreate() {
 
         <View style={styles.switchRow}>
           <Text style={styles.label}>Set an expiry date</Text>
-          <Switch value={hasExpiry} onValueChange={setHasExpiry} trackColor={{ true: parentColors.blue }} />
+          <Switch value={hasExpiry} onValueChange={setHasExpiry} trackColor={{ true: principalColors.primary }} />
         </View>
         {hasExpiry ? <DateSelectorPill date={expiresAt} onChange={setExpiresAt} /> : null}
 
         <View style={styles.switchRow}>
           <Text style={styles.label}>Mark as emergency</Text>
-          <Switch value={isEmergency} onValueChange={setIsEmergency} trackColor={{ true: parentColors.blue }} />
+          <Switch value={isEmergency} onValueChange={setIsEmergency} trackColor={{ true: principalColors.primary }} />
         </View>
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -202,17 +202,17 @@ export default function PrincipalAnnouncementCreate() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
-  label: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink, marginTop: 14, marginBottom: 6 },
+  label: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink, marginTop: 14, marginBottom: 6 },
   input: {
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 12,
     fontSize: 14,
     fontFamily: 'PlusJakartaSans_600SemiBold',
-    color: parentColors.ink,
+    color: principalColors.ink,
     backgroundColor: '#fff',
   },
   textArea: { minHeight: 110, textAlignVertical: 'top' },
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
   priorityChip: {
     flex: 1,
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 9,
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  priorityChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  priorityChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  priorityChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  priorityChipText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   priorityChipTextActive: { color: '#fff' },
   rolesGrid: {
     flexDirection: 'row',
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 10,
     borderWidth: 1,
-    borderColor: parentColors.fieldBorder,
+    borderColor: principalColors.borderSoft,
     borderRadius: 12,
     padding: 12,
     backgroundColor: '#fff',
@@ -246,16 +246,16 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 5,
     borderWidth: 1.5,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxChecked: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
+  checkboxChecked: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
   checkboxMark: { color: '#fff', fontSize: 12, fontFamily: 'PlusJakartaSans_800ExtraBold' },
-  roleCheckboxLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.ink, flexShrink: 1 },
+  roleCheckboxLabel: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.ink, flexShrink: 1 },
   switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 18 },
   errorText: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: '#B33A2E', marginTop: 14 },
-  submitButton: { backgroundColor: parentColors.blue, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
+  submitButton: { backgroundColor: principalColors.primary, borderRadius: 14, paddingVertical: 15, alignItems: 'center', marginTop: 24 },
   submitButtonDisabled: { opacity: 0.6 },
   submitButtonText: { fontFamily: 'PlusJakartaSans_800ExtraBold', fontSize: 15, color: '#fff' },
 });

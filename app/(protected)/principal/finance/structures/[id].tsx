@@ -7,12 +7,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate, formatMoneyDetail } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listAcademicYears } from '@/lib/principal-academics-api';
 import { getFeeStructure, listFeeHeads } from '@/lib/principal-finance-api';
 import { listGrades } from '@/lib/principal-students-api';
@@ -50,8 +50,8 @@ export default function PrincipalFeeStructureDetail() {
   if (structureQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Fee Structure" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Fee Structure" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -59,7 +59,7 @@ export default function PrincipalFeeStructureDetail() {
   if (structureQuery.isError || !structureQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Fee Structure" onBack={() => router.back()} />
+        <PrincipalHeader title="Fee Structure" onBack={() => router.back()} />
         <ErrorState
           message={structureQuery.error instanceof ApiError ? structureQuery.error.message : "Couldn't load this fee structure."}
           onRetry={() => structureQuery.refetch()}
@@ -75,7 +75,7 @@ export default function PrincipalFeeStructureDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={gradeName} subtitle={structure.category ?? undefined} onBack={() => router.back()} />
+      <PrincipalHeader title={gradeName} subtitle={structure.category ?? undefined} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.heroValue}>{formatMoneyDetail(structure.totalPaise)}</Text>
@@ -134,18 +134,18 @@ export default function PrincipalFeeStructureDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10, marginBottom: 6 },
-  heroValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  heroValue: { fontSize: 20, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: parentColors.ink, lineHeight: 20 },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  body: { fontSize: 14, fontFamily: 'PlusJakartaSans_500Medium', color: principalColors.ink, lineHeight: 20 },
   lineRow: {
     paddingVertical: 12,
     flexDirection: 'row',
@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 10,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });

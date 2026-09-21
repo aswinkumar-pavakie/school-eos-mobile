@@ -10,7 +10,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { DateSelectorPill } from '@/components/DateSelectorPill';
 import { countRoster, RosterStatTiles } from '@/components/RosterStatTiles';
@@ -123,7 +123,7 @@ export default function NightAttendanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Night Attendance" onBack={() => router.back()} />
+      <WardenSubHeader title="Night Attendance" onBack={() => router.back()} />
 
       <DateSelectorPill date={date} onChange={setDate} />
 

@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { WardenSubHeader } from '@/components/hostel-warden/primitives';
 import { Avatar } from '@/components/Avatar';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { SelectField } from '@/components/SelectField';
@@ -52,7 +52,7 @@ export default function RoomBedScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Students" subtitle="Read-only allocation view" onBack={() => router.back()} />
+      <WardenSubHeader title="Students" onBack={() => router.back()} />
       <View style={styles.searchRow}>
         <TextInput
           style={styles.searchInput}

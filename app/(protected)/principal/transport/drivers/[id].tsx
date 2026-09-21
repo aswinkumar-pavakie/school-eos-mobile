@@ -7,12 +7,12 @@
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDate } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { getDriver, listAssignments, listRoutes, listVehicles } from '@/lib/principal-transport-api';
 
 const cardShadow = {
@@ -54,8 +54,8 @@ export default function PrincipalDriverDetail() {
   if (driverQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Driver" onBack={() => router.back()} />
-        <ActivityIndicator color={parentColors.blue} style={{ marginTop: 40 }} />
+        <PrincipalHeader title="Driver" onBack={() => router.back()} />
+        <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
   }
@@ -63,7 +63,7 @@ export default function PrincipalDriverDetail() {
   if (driverQuery.isError || !driverQuery.data) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Driver" onBack={() => router.back()} />
+        <PrincipalHeader title="Driver" onBack={() => router.back()} />
         <ErrorState
           message={driverQuery.error instanceof ApiError ? driverQuery.error.message : "Couldn't load this driver."}
           onRetry={() => driverQuery.refetch()}
@@ -79,7 +79,7 @@ export default function PrincipalDriverDetail() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title={driver.fullName} subtitle={driver.phone ?? undefined} onBack={() => router.back()} />
+      <PrincipalHeader title={driver.fullName} subtitle={driver.phone ?? undefined} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={[styles.card, cardShadow, styles.headerRow]}>
           <Text style={styles.infoValue}>{driver.licenceNo}</Text>
@@ -100,7 +100,7 @@ export default function PrincipalDriverDetail() {
 
         <Text style={styles.sectionTitle}>Current assignment</Text>
         {assignmentsQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginVertical: 12 }} />
         ) : !assignment ? (
           <View style={[styles.card, cardShadow]}>
             <Text style={styles.standaloneValue}>Not currently assigned to a route.</Text>
@@ -123,15 +123,15 @@ export default function PrincipalDriverDetail() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
-  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink, marginTop: 18, marginBottom: 10 },
+  sectionTitle: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: principalColors.ink, marginTop: 18, marginBottom: 10 },
   card: { backgroundColor: '#fff', borderRadius: 14, padding: 16 },
   listCard: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 16 },
   infoRow: { paddingVertical: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 10 },
-  infoRowBorder: { borderTopWidth: 1, borderTopColor: parentColors.borderSoft },
-  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted },
-  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  standaloneValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  infoRowBorder: { borderTopWidth: 1, borderTopColor: principalColors.borderSoft },
+  infoLabel: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted },
+  infoValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  standaloneValue: { fontSize: 13.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
 });

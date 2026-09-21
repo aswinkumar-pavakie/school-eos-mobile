@@ -15,12 +15,12 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
-import { AppHeader } from '@/components/AppHeader';
+import { PrincipalHeader } from '@/components/principal/PrincipalHeader';
 import { EmptyState, ErrorState } from '@/components/ScreenStates';
 import { StatusBadge, type StatusTone } from '@/components/StatusBadge';
 import { ApiError } from '@/lib/api';
 import { formatDateTime } from '@/lib/format';
-import { parentColors } from '@/lib/theme';
+import { principalColors } from '@/lib/theme';
 import { listApprovals } from '@/lib/principal-requests-approvals-api';
 
 function humanize(code: string): string {
@@ -56,7 +56,7 @@ export default function PrincipalRequestsApprovalsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Requests & Approvals" subtitle="Requests awaiting your review" onBack={() => router.back()} />
+      <PrincipalHeader title="Requests & Approvals" subtitle="Requests awaiting your review" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.statusRow}>
           {TABS.map((t) => (
@@ -71,7 +71,7 @@ export default function PrincipalRequestsApprovalsScreen() {
         </View>
 
         {listQuery.isLoading ? (
-          <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
+          <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
         ) : listQuery.isError ? (
           <ErrorState
             message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load requests.'}
@@ -115,19 +115,19 @@ export default function PrincipalRequestsApprovalsScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: parentColors.background },
+  flex: { flex: 1, backgroundColor: principalColors.background },
   content: { padding: 16, paddingBottom: 32 },
   statusRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
   statusChip: {
     borderWidth: 1,
-    borderColor: parentColors.border,
+    borderColor: principalColors.border,
     borderRadius: 999,
     paddingVertical: 7,
     paddingHorizontal: 13,
     backgroundColor: '#fff',
   },
-  statusChipActive: { backgroundColor: parentColors.blue, borderColor: parentColors.blue },
-  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
+  statusChipActive: { backgroundColor: principalColors.primary, borderColor: principalColors.primary },
+  statusChipText: { fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
   statusChipTextActive: { color: '#fff' },
   list: { backgroundColor: '#fff', borderRadius: 14, paddingHorizontal: 14 },
   row: {
@@ -136,9 +136,9 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 12,
     borderTopWidth: 1,
-    borderTopColor: parentColors.borderSoft,
+    borderTopColor: principalColors.borderSoft,
   },
   rowFirst: { borderTopWidth: 0 },
-  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: parentColors.ink },
-  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 2 },
+  rowTitle: { fontSize: 14.5, fontFamily: 'PlusJakartaSans_700Bold', color: principalColors.ink },
+  rowMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_600SemiBold', color: principalColors.muted, marginTop: 2 },
 });
