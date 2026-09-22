@@ -6,7 +6,6 @@ import {
   fetchMyTeachingOfferings,
   fetchOnlineClassDetail,
   fetchOnlineClasses,
-  joinOnlineClass,
   rescheduleOnlineClass,
   scheduleOnlineClass,
   startOnlineClass,
@@ -104,12 +103,8 @@ export function useAddOnlineClassRecording(id: string) {
   });
 }
 
-// Join is a read (no cache invalidation needed) but still a mutation-shaped call
-// since it's user-triggered on demand rather than fetched eagerly with the detail
-// screen -- the meeting link/state should reflect the moment the parent taps Join,
-// not a possibly-stale cached detail response.
-export function useJoinOnlineClass() {
-  return useMutation({
-    mutationFn: (id: string) => joinOnlineClass(id),
-  });
-}
+// Join/Start no longer have a hook here -- they navigate straight to
+// online-class-call/[id], which requests its own LiveKit token on mount (see
+// OnlineClassCallScreen). Invalidate the list on return so a SCHEDULED row that
+// just went LIVE (or LIVE -> COMPLETED after End) reflects promptly; see each
+// screen's router focus-effect for where that invalidation happens.

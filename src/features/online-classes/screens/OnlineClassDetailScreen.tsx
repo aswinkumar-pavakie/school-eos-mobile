@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, Linking, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ApiError } from '@/lib/api';
 import { colors, fonts } from '@/lib/theme';
@@ -8,14 +8,7 @@ import { GradientHeader } from '@/components/GradientHeader';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SessionStatusPill } from '../components/SessionStatusPill';
 import { ErrorState, LoadingState } from '@/components/ScreenStates';
-import {
-  useAddOnlineClassRecording,
-  useCancelOnlineClass,
-  useCompleteOnlineClass,
-  useJoinOnlineClass,
-  useOnlineClassDetail,
-  useStartOnlineClass,
-} from '../hooks';
+import { useAddOnlineClassRecording, useCancelOnlineClass, useCompleteOnlineClass, useOnlineClassDetail } from '../hooks';
 import type { FacultyOnlineClass, OnlineClassStatus, ParentOnlineClass } from '../types';
 import { canAttemptJoin, formatClassDate, formatClassTimeRange } from '../utils';
 
@@ -46,8 +39,6 @@ export function OnlineClassDetailScreen({
   const isFaculty = hasRole(me.data?.roles, 'FACULTY');
 
   const detail = useOnlineClassDetail(id);
-  const join = useJoinOnlineClass();
-  const start = useStartOnlineClass(id);
   const complete = useCompleteOnlineClass(id);
   const cancel = useCancelOnlineClass(id);
   const addRecording = useAddOnlineClassRecording(id);
@@ -61,21 +52,8 @@ export function OnlineClassDetailScreen({
     Alert.alert('Something went wrong', err instanceof ApiError ? err.message : fallback);
   }
 
-  async function handleParentJoin() {
-    try {
-      const result = await join.mutateAsync(id);
-      await Linking.openURL(result.meetingUrl);
-    } catch (err) {
-      reportError(err, 'Unable to join this class right now.');
-    }
-  }
-
-  async function handleStart() {
-    try {
-      await start.mutateAsync();
-    } catch (err) {
-      reportError(err, 'Unable to start this class.');
-    }
+  function openCall() {
+    router.push(`/(protected)/online-class-call/${id}` as never);
   }
 
   async function handleComplete() {
@@ -162,8 +140,7 @@ export function OnlineClassDetailScreen({
         {isFaculty ? (
           <FacultyActions
             item={item as FacultyOnlineClass}
-            onStart={handleStart}
-            starting={start.isPending}
+            onOpenCall={openCall}
             onComplete={handleComplete}
             completing={complete.isPending}
             cancelMode={cancelMode}
@@ -181,7 +158,7 @@ export function OnlineClassDetailScreen({
             onReschedule={() => router.push(`${basePath}/${id}/reschedule` as never)}
           />
         ) : (
-          <ParentActions item={item as ParentOnlineClass} onJoin={handleParentJoin} joining={join.isPending} />
+          <ParentActions item={item as ParentOnlineClass} onJoin={openCall} />
         )}
       </ScrollView>
     </View>
@@ -190,8 +167,7 @@ export function OnlineClassDetailScreen({
 
 function FacultyActions(props: {
   item: FacultyOnlineClass;
-  onStart: () => void;
-  starting: boolean;
+  onOpenCall: () => void;
   onComplete: () => void;
   completing: boolean;
   cancelMode: boolean;
@@ -209,29 +185,18 @@ function FacultyActions(props: {
   onReschedule: () => void;
 }) {
   const { item } = props;
+  const router = useRouter();
   const canReschedule = item.status === 'DRAFT' || item.status === 'SCHEDULED';
   const canCancel = canReschedule;
 
   return (
     <View style={styles.actions}>
-      {item.status === 'DRAFT' ? (
-        <Text style={styles.meetingStatusText}>
-          {item.meetingCreationStatus === 'FAILED'
-            ? `Meeting setup failed: ${item.meetingCreationError ?? 'unknown error'}`
-            : 'Setting up the Google Meet link...'}
-        </Text>
+      {item.status === 'LIVE' ? (
+        <PrimaryButton label="Resume call" variant="accent" onPress={props.onOpenCall} />
       ) : null}
 
-      {item.status === 'LIVE' && item.meetingUrl ? (
-        <PrimaryButton
-          label="Join meeting"
-          variant="accent"
-          onPress={() => Linking.openURL(item.meetingUrl as string)}
-        />
-      ) : null}
-
-      {item.status === 'SCHEDULED' ? (
-        <PrimaryButton label="Start class" variant="accent" onPress={props.onStart} loading={props.starting} />
+      {item.status === 'SCHEDULED' || item.status === 'DRAFT' ? (
+        <PrimaryButton label="Start class" variant="accent" onPress={props.onOpenCall} />
       ) : null}
 
       {item.status === 'LIVE' ? (
@@ -243,7 +208,7 @@ function FacultyActions(props: {
           <PrimaryButton
             label="Open recording"
             variant="outline"
-            onPress={() => Linking.openURL(item.recordingUrl as string)}
+            onPress={() => router.push(`/(protected)/recording-player/${item.id}` as never)}
           />
         ) : props.recordingMode ? (
           <View style={styles.inlineForm}>
@@ -312,11 +277,12 @@ function FacultyActions(props: {
   );
 }
 
-function ParentActions({ item, onJoin, joining }: { item: ParentOnlineClass; onJoin: () => void; joining: boolean }) {
+function ParentActions({ item, onJoin }: { item: ParentOnlineClass; onJoin: () => void }) {
+  const router = useRouter();
   if (canAttemptJoin(item)) {
     return (
       <View style={styles.actions}>
-        <PrimaryButton label="Join class" variant="accent" onPress={onJoin} loading={joining} />
+        <PrimaryButton label="Join class" variant="accent" onPress={onJoin} />
       </View>
     );
   }
@@ -326,16 +292,18 @@ function ParentActions({ item, onJoin, joining }: { item: ParentOnlineClass; onJ
         <PrimaryButton
           label="Watch recording"
           variant="outline"
-          onPress={() => Linking.openURL(item.recordingUrl as string)}
+          onPress={() => router.push(`/(protected)/recording-player/${item.id}` as never)}
         />
       </View>
     );
   }
-  if (item.status === 'DRAFT' || item.status === 'SCHEDULED') {
+  if (item.status === 'DRAFT') {
+    // SCHEDULED is already handled by canAttemptJoin above -- only DRAFT (the
+    // teacher hasn't started this class yet) lands here.
     return (
       <View style={styles.actions}>
         <PrimaryButton label="Not open yet" variant="outline" disabled onPress={() => {}} />
-        <Text style={styles.helperText}>The meeting link is not ready yet. Check back closer to the class time.</Text>
+        <Text style={styles.helperText}>The teacher hasn&apos;t started this class yet. Check back closer to the class time.</Text>
       </View>
     );
   }

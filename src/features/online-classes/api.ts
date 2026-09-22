@@ -1,7 +1,11 @@
-// Thin typed wrappers over the 11 verified Online Classes endpoints. Every call goes
-// through authedRequest (src/lib/auth.ts) -- no separate HTTP client, no
-// client-side authorization, no constructing a meetingUrl locally. The backend
-// response envelope is always { data: T }.
+// Thin typed wrappers over the Online Classes endpoints. Every call goes through
+// authedRequest (src/lib/auth.ts) -- no separate HTTP client, no client-side
+// authorization. The backend response envelope is always { data: T }.
+//
+// Join/Start now mint an in-app LiveKit token (requestOnlineClassCallToken) instead
+// of the old GET :id/join returning an external Google Meet meetingUrl -- that
+// endpoint no longer exists on the backend (see online-class-call feature for the
+// actual call screen, shared with Faculty's Start/Resume and Parent's Join).
 
 import * as Crypto from 'expo-crypto';
 import { authedRequest } from '@/lib/auth';
@@ -9,7 +13,6 @@ import type {
   CancelOnlineClassRequest,
   FacultyOnlineClass,
   OnlineClassView,
-  ParentJoinResult,
   ParentOnlineClass,
   RecordingRequest,
   RescheduleOnlineClassRequest,
@@ -35,9 +38,37 @@ export async function fetchOnlineClassDetail(id: string): Promise<FacultyOnlineC
   return res.data;
 }
 
-export async function joinOnlineClass(id: string): Promise<ParentJoinResult> {
-  const res = await authedRequest<Envelope<ParentJoinResult>>(`/online-classes/${id}/join`);
+export interface OnlineClassCallCredentials {
+  url: string;
+  token: string;
+  roomName: string;
+}
+
+/** Faculty "Start"/"Resume" AND Parent "Join" -- same endpoint, the backend branches
+ * on the caller's role (see the website's identical online-class-call/actions.ts
+ * comment for why this MUST be one endpoint, not two, given Nest's routing). */
+export async function requestOnlineClassCallToken(id: string): Promise<OnlineClassCallCredentials> {
+  const res = await authedRequest<Envelope<OnlineClassCallCredentials>>(`/online-classes/${id}/call-token`, {
+    method: 'POST',
+  });
   return res.data;
+}
+
+/** Faculty-only -- ends the call for everyone and transitions LIVE -> COMPLETED. */
+export async function endOnlineClassCall(id: string): Promise<FacultyOnlineClass> {
+  const res = await authedRequest<Envelope<FacultyOnlineClass>>(`/online-classes/${id}/end-call`, {
+    method: 'POST',
+  });
+  return res.data;
+}
+
+/** Faculty-only roster moderation from inside the call -- identity is exactly what
+ * LiveKit reports for that participant. */
+export async function muteOnlineClassParticipant(id: string, identity: string, muted: boolean): Promise<void> {
+  await authedRequest(`/online-classes/${id}/participants/mute`, {
+    method: 'POST',
+    body: { identity, muted },
+  });
 }
 
 // Faculty-only writes below. The backend requires a fresh Idempotency-Key per new

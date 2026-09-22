@@ -1,12 +1,19 @@
 # online-classes
 
-Status: implemented (Faculty + Parent), backed entirely by the 11 verified
-`school-eos-backend` Online Classes endpoints (10 original + `GET
-/online-classes/my-subject-offerings`, added for the Schedule form's class/section
-picker below). One shared feature for both roles,
-not separate Faculty/Parent folders - screens branch on the signed-in user's roles
-(via `src/hooks/useMe.ts`), the same way `online-classes.controller.ts` branches
-server-side.
+Status: implemented (Faculty + Parent), backed by `school-eos-backend`'s Online
+Classes endpoints. One shared feature for both roles, not separate Faculty/Parent
+folders - screens branch on the signed-in user's roles (via `src/hooks/useMe.ts`),
+the same way `online-classes.controller.ts` branches server-side.
+
+**Join/Start/Resume are now an in-app LiveKit video call**, not an external Google
+Meet hand-off - see the sibling `online-class-call` feature
+(`src/features/online-class-call/screens/OnlineClassCallScreen.tsx`) for the actual
+call UI, and `POST /online-classes/:id/call-token` for the token-minting endpoint
+this feature's screens navigate to (`router.push('/(protected)/online-class-call/:id')`,
+same `as never` cast the existing `meeting-call` route already uses for a dynamic
+segment the generated typed-routes file doesn't know about). The old
+`GET /online-classes/:id/join` endpoint and its `meetingUrl`-based flow no longer
+exist on the backend.
 
 The backend remains the sole authorization source. Nothing here decides who is
 allowed to do what - `canAttemptJoin()`/status checks in `utils.ts` only pick which
@@ -16,11 +23,14 @@ endpoint and its response is authoritative even if the UI guessed wrong.
 ## Structure
 
 - `types.ts` - response/request shapes, copied verbatim from the backend's
-  `OnlineClassDetail`/`ParentOnlineClassView`/`ParentJoinResult`.
+  `OnlineClassDetail`/`ParentOnlineClassView`.
 - `api.ts` - typed wrappers over `authedRequest` (`src/lib/auth.ts`). No separate
-  HTTP client.
-- `hooks.ts` - TanStack Query hooks (list/detail/join/schedule/reschedule/cancel/
-  start/complete/addRecording), all writes invalidate the `['online-classes']` key.
+  HTTP client. Includes `requestOnlineClassCallToken`/`endOnlineClassCall`/
+  `muteOnlineClassParticipant` for the LiveKit call flow.
+- `hooks.ts` - TanStack Query hooks (list/detail/schedule/reschedule/cancel/start/
+  complete/addRecording), all writes invalidate the `['online-classes']` key. No
+  join/call-token hook here - the call screen requests its own token directly on
+  mount (same pattern as `meeting-call`'s `MeetingCallScreen`).
 - `utils.ts` - display-only formatting and join-eligibility hints.
 - `components/` - `OnlineClassCard`, `StatusPill`/`SessionStatusPill`, `PrimaryButton`,
   `SelectField` (a modal-list class/section/subject picker, styled to match this
@@ -50,7 +60,11 @@ endpoint and its response is authoritative even if the UI guessed wrong.
   `HH:mm` patterns the backend DTOs enforce.
 - **Cancel and Add Recording are inline forms** on the detail screen rather than
   separate routes, since each needs only one optional field.
-- **No teacher display name or "meeting code"** on the Parent/Faculty hub cards -
-  the backend has no faculty-name field on `ParentOnlineClassView` and no short
-  code concept at all (only a real Google Meet URL); the design's card rhythm is
-  kept but substituted with real data (grade/section, class date) instead.
+- **No teacher display name** on the Parent hub cards - the backend has no
+  faculty-name field on `ParentOnlineClassView`; the design's card rhythm is kept
+  but substituted with real data (grade/section, class date) instead.
+- **No screen share on mobile** (Phase 1 scope, matches the website build) - native
+  screen share needs ReplayKit (iOS) / a foreground service (Android), real
+  additional native config deferred rather than half-built. Roster (with raise-hand
+  + faculty mute) and in-call chat ARE built, via `@livekit/react-native`'s
+  re-exported `@livekit/components-react` hooks (`useParticipants`, `useChat`).

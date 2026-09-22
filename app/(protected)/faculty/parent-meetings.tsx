@@ -10,7 +10,7 @@ import { useRouter } from 'expo-router';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
 import { StatCards } from '@/components/faculty/StatCards';
-import { PlusIcon, TrashIcon, EditIcon, CloseIcon } from '@/components/faculty/icons';
+import { PlusIcon, TrashIcon, EditIcon, CloseIcon, VideoCallIcon } from '@/components/faculty/icons';
 import {
   listMeetingSlots,
   createMeetingSlot,
@@ -171,6 +171,7 @@ function SlotCard({
   onDecide: (bookingId: string, decision: 'APPROVED' | 'REJECTED') => void;
   deciding: string | null;
 }) {
+  const router = useRouter();
   const booking = slot.booking;
   return (
     <View style={styles.card}>
@@ -205,6 +206,14 @@ function SlotCard({
                 <Text style={styles.rejectBtnText}>Reject</Text>
               </Pressable>
             </View>
+          ) : booking.state === 'APPROVED' ? (
+            <Pressable
+              style={styles.joinCallBtn}
+              onPress={() => router.push(`/(protected)/meeting-call/${booking.id}` as never)}
+            >
+              <VideoCallIcon />
+              <Text style={styles.joinCallBtnText}>Join call</Text>
+            </Pressable>
           ) : null}
         </View>
       ) : (
@@ -238,6 +247,17 @@ const styles = StyleSheet.create({
   approveBtnText: { color: '#fff', fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold' },
   rejectBtn: { borderWidth: 1, borderColor: facultyColors.borderLight },
   rejectBtnText: { color: facultyColors.bodyMuted, fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold' },
+  joinCallBtn: {
+    marginTop: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 11,
+    borderRadius: 10,
+    backgroundColor: facultyColors.greenDark,
+  },
+  joinCallBtnText: { color: '#fff', fontSize: 13, fontFamily: 'PlusJakartaSans_700Bold' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(15,23,42,0.45)', justifyContent: 'flex-end' },
   sheet: { maxHeight: '88%', backgroundColor: '#fff', borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: 18, paddingBottom: 24 },
   sheetHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },

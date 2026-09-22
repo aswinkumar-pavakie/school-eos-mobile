@@ -95,6 +95,24 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         // build register the notification channel/permission correctly.
       },
     ],
+    // Parent-Teacher Meeting video calls (LiveKit). Native WebRTC code --
+    // requires a Development Build, NOT usable in Expo Go (see
+    // src/features/meeting-call/README.md). @config-plugins/react-native-webrtc's
+    // own version table tops out at Expo 56 as of this writing; 15.0.2 (the
+    // latest published) is what's installed -- verify at `expo prebuild`
+    // time that this still links cleanly against Expo 57/RN 0.86, and bump
+    // if a newer major has shipped by then.
+    [
+      '@config-plugins/react-native-webrtc',
+      {
+        cameraPermission: 'Camera access is needed to join a video call.',
+        microphonePermission: 'Microphone access is needed to join a video call.',
+      },
+    ],
+    '@livekit/react-native-expo-plugin',
+    // Recording playback (Online Class "Watch recording") -- plain foreground
+    // playback only, no background audio or Picture-in-Picture needed.
+    'expo-video',
   ],
   experiments: {
     typedRoutes: true,

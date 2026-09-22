@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Alert, FlatList, Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { colors, fonts } from '@/lib/theme';
@@ -7,7 +7,7 @@ import { hasRole, useMe } from '@/hooks/useMe';
 import { OnlineClassCard } from '../components/OnlineClassCard';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ScreenStates';
-import { useJoinOnlineClass, useOnlineClassesList } from '../hooks';
+import { useOnlineClassesList } from '../hooks';
 import type { FacultyOnlineClass, OnlineClassView, ParentOnlineClass } from '../types';
 import { canAttemptJoin, VIEW_TABS } from '../utils';
 import { ApiError } from '@/lib/api';
@@ -19,27 +19,23 @@ export function OnlineClassesListScreen() {
   const isFaculty = hasRole(me.data?.roles, 'FACULTY');
 
   const list = useOnlineClassesList(view);
-  const join = useJoinOnlineClass();
 
-  async function handleParentJoin(id: string) {
-    try {
-      const result = await join.mutateAsync(id);
-      await Linking.openURL(result.meetingUrl);
-    } catch (err) {
-      Alert.alert('Cannot join', err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
-    }
+  function openCall(id: string) {
+    router.push(`/(protected)/online-class-call/${id}` as never);
   }
 
-  async function handleFacultyJoin(item: FacultyOnlineClass) {
-    if (!item.meetingUrl) return;
-    await Linking.openURL(item.meetingUrl);
+  function openRecording(id: string) {
+    router.push(`/(protected)/recording-player/${id}` as never);
   }
 
   function renderActions(item: FacultyOnlineClass | ParentOnlineClass) {
     if (isFaculty) {
       const facultyItem = item as FacultyOnlineClass;
-      if (facultyItem.status === 'LIVE' && facultyItem.meetingUrl) {
-        return <PrimaryButton label="Join" size="compact" onPress={() => handleFacultyJoin(facultyItem)} />;
+      if (facultyItem.status === 'LIVE') {
+        return <PrimaryButton label="Resume" size="compact" onPress={() => openCall(facultyItem.id)} />;
+      }
+      if (facultyItem.status === 'SCHEDULED') {
+        return <PrimaryButton label="Start" size="compact" onPress={() => openCall(facultyItem.id)} />;
       }
       if (facultyItem.status === 'COMPLETED' && facultyItem.recordingUrl) {
         return (
@@ -47,7 +43,7 @@ export function OnlineClassesListScreen() {
             label="Recording"
             size="compact"
             variant="outline"
-            onPress={() => Linking.openURL(facultyItem.recordingUrl as string)}
+            onPress={() => openRecording(facultyItem.id)}
           />
         );
       }
@@ -56,14 +52,7 @@ export function OnlineClassesListScreen() {
 
     const parentItem = item as ParentOnlineClass;
     if (canAttemptJoin(parentItem)) {
-      return (
-        <PrimaryButton
-          label="Join"
-          size="compact"
-          loading={join.isPending && join.variables === parentItem.id}
-          onPress={() => handleParentJoin(parentItem.id)}
-        />
-      );
+      return <PrimaryButton label="Join" size="compact" onPress={() => openCall(parentItem.id)} />;
     }
     if (parentItem.status === 'COMPLETED' && parentItem.recordingUrl) {
       return (
@@ -71,7 +60,7 @@ export function OnlineClassesListScreen() {
           label="Recording"
           size="compact"
           variant="outline"
-          onPress={() => Linking.openURL(parentItem.recordingUrl as string)}
+          onPress={() => openRecording(parentItem.id)}
         />
       );
     }

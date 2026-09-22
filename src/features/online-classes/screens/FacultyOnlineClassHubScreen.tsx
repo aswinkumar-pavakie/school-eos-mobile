@@ -9,7 +9,7 @@
 // tapping a card in "Today classes" navigates there.
 
 import { useMemo, useState, type ReactNode } from 'react';
-import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ApiError } from '@/lib/api';
@@ -19,7 +19,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SelectField } from '@/components/SelectField';
 import { SessionStatusPill } from '../components/SessionStatusPill';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ScreenStates';
-import { useMyTeachingOfferings, useOnlineClassesList, useScheduleOnlineClass, useStartOnlineClass } from '../hooks';
+import { useMyTeachingOfferings, useOnlineClassesList, useScheduleOnlineClass } from '../hooks';
 import type { FacultyOnlineClass } from '../types';
 import { formatClassDate, formatClassTimeRange, isToday, isValidDateInput, isValidTimeInput } from '../utils';
 
@@ -155,14 +155,10 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function SessionCard({ item, onPress }: { item: FacultyOnlineClass; onPress: () => void }) {
   const { label } = cardTone(item);
-  const start = useStartOnlineClass(item.id);
+  const router = useRouter();
 
-  async function handleStart() {
-    try {
-      await start.mutateAsync();
-    } catch (err) {
-      Alert.alert('Something went wrong', err instanceof ApiError ? err.message : 'Please try again.');
-    }
+  function openCall() {
+    router.push(`/(protected)/online-class-call/${item.id}` as never);
   }
 
   return (
@@ -181,27 +177,16 @@ function SessionCard({ item, onPress }: { item: FacultyOnlineClass; onPress: () 
       <View style={styles.cardDivider} />
       <View style={styles.cardFooterRow}>
         <Text style={styles.cardCode}>{formatClassDate(item.scheduledDate)}</Text>
-        {item.status === 'LIVE' && item.meetingUrl ? (
-          <PrimaryButton
-            label="Join"
-            size="compact"
-            variant="accent"
-            onPress={() => Linking.openURL(item.meetingUrl as string)}
-          />
+        {item.status === 'LIVE' ? (
+          <PrimaryButton label="Resume" size="compact" variant="accent" onPress={openCall} />
         ) : item.status === 'SCHEDULED' ? (
-          <PrimaryButton
-            label="Start class"
-            size="compact"
-            variant="accent"
-            loading={start.isPending}
-            onPress={handleStart}
-          />
+          <PrimaryButton label="Start class" size="compact" variant="accent" onPress={openCall} />
         ) : item.status === 'COMPLETED' && item.recordingUrl ? (
           <PrimaryButton
             label="Recording"
             size="compact"
             variant="outline"
-            onPress={() => Linking.openURL(item.recordingUrl as string)}
+            onPress={() => router.push(`/(protected)/recording-player/${item.id}` as never)}
           />
         ) : item.status === 'DRAFT' ? (
           <PrimaryButton label="Setting up" size="compact" variant="outline" disabled onPress={() => {}} />
@@ -212,6 +197,7 @@ function SessionCard({ item, onPress }: { item: FacultyOnlineClass; onPress: () 
 }
 
 function RecordingRow({ item, isLast }: { item: FacultyOnlineClass; isLast: boolean }) {
+  const router = useRouter();
   return (
     <View style={[styles.recordingRow, !isLast && styles.recordingRowDivider]}>
       <View style={styles.playCircle}>
@@ -223,7 +209,10 @@ function RecordingRow({ item, isLast }: { item: FacultyOnlineClass; isLast: bool
         </Text>
         <Text style={styles.recordingMeta}>{formatClassDate(item.scheduledDate)}</Text>
       </View>
-      <Text style={styles.watchLink} onPress={() => Linking.openURL(item.recordingUrl as string)}>
+      <Text
+        style={styles.watchLink}
+        onPress={() => router.push(`/(protected)/recording-player/${item.id}` as never)}
+      >
         Watch
       </Text>
     </View>
