@@ -6,6 +6,7 @@ import { useRegisterPushToken } from '@/services/notifications/push-token';
 import { useE2eeBootstrap } from '@/services/messaging/bootstrap';
 import { useMessagingSocket } from '@/services/messaging/socket';
 import { BottomTabBar } from '@/components/BottomTabBar';
+import { AskAiFab } from '@/components/ai-chat/AskAiFab';
 import { parentColors } from '@/lib/theme';
 
 // Real navigation shell: whichever screen matched (Home/My class-or-ERP/Academics/
@@ -50,6 +51,7 @@ export default function ProtectedLayout() {
       <View style={styles.content}>
         <Slot />
       </View>
+      <AskAiFab />
       <BottomTabBar />
     </View>
   );

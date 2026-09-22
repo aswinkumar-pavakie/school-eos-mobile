@@ -6,6 +6,8 @@ import { GradientHeader } from '@/components/GradientHeader';
 import { accent, colors, fonts } from '@/lib/theme';
 import { AiBotError, AiBotUnreachableError, askAssistant } from '@/lib/ai-bot-api';
 import { AuthExpiredError } from '@/lib/auth';
+import { DotGridBackground } from '@/components/ai-chat/DotGridBackground';
+import { PavakieLogo3D } from '@/components/ai-chat/PavakieLogo3D';
 
 interface ChatMessage {
   id: string;
@@ -70,24 +72,31 @@ export function AiChatScreen() {
     >
       <GradientHeader title="Ask the Assistant" onBack={() => router.back()} />
 
-      <FlatList
-        ref={listRef}
-        style={styles.list}
-        contentContainerStyle={styles.listContent}
-        data={messages}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>Ask a question about school records, policies or anything else.</Text>
-        }
-        renderItem={({ item }) => (
-          <View style={[styles.row, item.role === 'user' && styles.rowOwn]}>
-            <View style={[styles.bubble, item.role === 'user' ? styles.bubbleOwn : styles.bubbleOther]}>
-              <Text style={[styles.text, item.role === 'user' && styles.textOwn]}>{item.text}</Text>
+      <View style={styles.listWrap}>
+        <DotGridBackground />
+        <FlatList
+          ref={listRef}
+          style={styles.list}
+          contentContainerStyle={messages.length === 0 ? styles.listContentEmpty : styles.listContent}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          ListEmptyComponent={
+            <View style={styles.emptyState}>
+              <PavakieLogo3D size={104} />
+              <Text style={styles.emptyTitle}>Ask the Assistant</Text>
+              <Text style={styles.emptyText}>Ask a question about school records, policies or anything else — the assistant will help.</Text>
             </View>
-          </View>
-        )}
-        onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
-      />
+          }
+          renderItem={({ item }) => (
+            <View style={[styles.row, item.role === 'user' && styles.rowOwn]}>
+              <View style={[styles.bubble, item.role === 'user' ? styles.bubbleOwn : styles.bubbleOther]}>
+                <Text style={[styles.text, item.role === 'user' && styles.textOwn]}>{item.text}</Text>
+              </View>
+            </View>
+          )}
+          onContentSizeChange={() => listRef.current?.scrollToEnd({ animated: true })}
+        />
+      </View>
 
       {sending ? (
         <View style={styles.thinkingRow}>
@@ -117,9 +126,13 @@ export function AiChatScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.background },
+  listWrap: { flex: 1 },
   list: { flex: 1 },
   listContent: { padding: 16, paddingBottom: 8, flexGrow: 1 },
-  emptyText: { fontFamily: fonts.regular, fontSize: 14, color: colors.textMuted, textAlign: 'center', marginTop: 24 },
+  listContentEmpty: { flexGrow: 1 },
+  emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 16, paddingHorizontal: 32 },
+  emptyTitle: { fontFamily: fonts.bold, fontSize: 16, color: colors.text },
+  emptyText: { fontFamily: fonts.regular, fontSize: 14, color: colors.textMuted, textAlign: 'center', lineHeight: 20 },
   row: { alignSelf: 'flex-start', maxWidth: '82%', marginBottom: 12 },
   rowOwn: { alignSelf: 'flex-end' },
   bubble: { borderRadius: 16, paddingHorizontal: 14, paddingVertical: 10 },

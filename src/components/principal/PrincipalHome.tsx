@@ -97,9 +97,6 @@ export function PrincipalHome({ personName }: { personName: string }) {
               </Text>
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
-              <Pressable onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-                <Ionicons name="chatbubble-ellipses-outline" size={20} color="rgba(255,255,255,0.85)" />
-              </Pressable>
               <Pressable onPress={() => router.push('/(protected)/messaging' as never)} hitSlop={8} style={{ position: 'relative' }}>
                 <ChatIcon size={27} color="#fff" />
                 {unreadCount > 0 ? <View style={styles.unreadDot} /> : null}

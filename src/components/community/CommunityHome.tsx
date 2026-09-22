@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -89,9 +88,6 @@ export function CommunityHome({ personName, communityId }: { personName: string;
               </View>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-                <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
-              </Pressable>
               <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/community/announcements' as never)}>
                 <BellIcon />
               </Pressable>

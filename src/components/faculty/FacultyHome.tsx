@@ -8,7 +8,6 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
@@ -65,9 +64,6 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
               <Text style={styles.schoolName}>Pavakie Public School</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-                <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
-              </Pressable>
               <View style={styles.bellWrap}>
                 <BellIcon />
                 <View style={styles.bellDot} />
@@ -78,7 +74,7 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
       </LinearGradient>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-        <View style={styles.greetingCard}>
+        <Pressable style={styles.greetingCard} onPress={() => router.push('/(protected)/faculty/profile' as never)}>
           <View style={styles.avatar}>
             <PersonIcon />
           </View>
@@ -86,7 +82,7 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
             <Text style={styles.greetingName}>Hi, {facultyName}</Text>
             <Text style={styles.greetingMeta} numberOfLines={1}>{facultyMeta}</Text>
           </View>
-        </View>
+        </Pressable>
 
         <View style={styles.sectionHeaderRow}>
           <View style={styles.sectionHeaderLeft}>

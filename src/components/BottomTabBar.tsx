@@ -25,7 +25,7 @@ import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { HostelIcon } from '@/components/hostel-warden/icons';
 import { parentColors } from '@/lib/theme';
 
-type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate';
+type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'dashboard' | 'ledger' | 'history';
 
 // Sports Admin's own real tab set, pixel-matched to Sports Staff Mobile
 // App.dc.html's own `const TABS = [['home','Home','⌂'],['sports','Sports','◎'],
@@ -41,6 +41,28 @@ const SPORTS_TABS: { key: TabKey; label: string; href: '/' | '/sports' | '/my-bu
   { key: 'school', label: 'Sports', href: '/sports', Icon: ({ color }) => <GlyphIcon glyph="◎" color={color} /> },
   { key: 'bus', label: 'Bus', href: '/my-bus', Icon: ({ color }) => <GlyphIcon glyph="⊟" color={color} /> },
 ];
+
+// Canteen counter's own tab set -- exactly the two real screens this role
+// has (see school-eos-backend/src/modules/canteen/'s own two-endpoint-group
+// surface: charge, history), no dedicated design reference so plain glyph
+// icons like Sports Admin's own SPORTS_TABS above, not a hub/Home tab at
+// all -- there's nothing else for this login to land on.
+const CANTEEN_TABS: {
+  key: TabKey;
+  label: string;
+  href: '/(protected)/canteen' | '/(protected)/canteen/ledger' | '/(protected)/canteen/history';
+  Icon: typeof HomeIcon;
+}[] = [
+  { key: 'dashboard', label: 'Dashboard', href: '/(protected)/canteen', Icon: ({ color }) => <GlyphIcon glyph="◫" color={color} /> },
+  { key: 'ledger', label: 'Ledger', href: '/(protected)/canteen/ledger', Icon: ({ color }) => <GlyphIcon glyph="₹" color={color} /> },
+  { key: 'history', label: 'History', href: '/(protected)/canteen/history', Icon: ({ color }) => <GlyphIcon glyph="▤" color={color} /> },
+];
+
+function activeTabForCanteen(pathname: string): TabKey {
+  if (pathname.startsWith('/canteen/history')) return 'history';
+  if (pathname.startsWith('/canteen/ledger')) return 'ledger';
+  return 'dashboard';
+}
 
 // Hostel Warden's own real tab set, pixel-matched to Warden App.dc.html's
 // own `NAV = [['home','Home',...],['hostel','Hostel',...],['gate','Gate',...]]`
@@ -152,17 +174,24 @@ export function BottomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin } = useCurrentRoles();
-  const TABS = isSportsAdmin
-    ? SPORTS_TABS
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isCanteenVendor } =
+    useCurrentRoles();
+  const TABS = isCanteenVendor
+    ? CANTEEN_TABS
+    : isSportsAdmin
+      ? SPORTS_TABS
+      : isHostelWarden
+        ? HOSTEL_WARDEN_TABS
+        : tabsFor(
+            isFaculty || isPrincipal || isVicePrincipal || isCommunity,
+            isVicePrincipal || isCommunity,
+            isCommunity,
+          );
+  const active = isCanteenVendor
+    ? activeTabForCanteen(pathname)
     : isHostelWarden
-      ? HOSTEL_WARDEN_TABS
-      : tabsFor(
-          isFaculty || isPrincipal || isVicePrincipal || isCommunity,
-          isVicePrincipal || isCommunity,
-          isCommunity,
-        );
-  const active = isHostelWarden ? activeTabForHostelWarden(pathname) : activeTabFor(pathname);
+      ? activeTabForHostelWarden(pathname)
+      : activeTabFor(pathname);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
