@@ -89,7 +89,12 @@ export function HostelWardenHome({ personName }: { personName: string }) {
           <Text style={styles.logoText}>PP</Text>
         </View>
         <Text style={[styles.schoolName, { flex: 1 }]}>Pavakie Public School</Text>
-        <Pressable onPress={() => router.push('/(protected)/hostel-warden/notices' as never)} hitSlop={8}>
+        {/* Real E2EE messaging -- this icon previously (incorrectly) opened
+            Notices, which already has its own dedicated card + "View all"
+            link further down this same screen, so nothing is lost by
+            repointing the message-shaped icon to what it actually looks
+            like: messaging. */}
+        <Pressable onPress={() => router.push('/(protected)/messaging' as never)} hitSlop={8}>
           <MessageIcon />
         </Pressable>
       </LinearGradient>

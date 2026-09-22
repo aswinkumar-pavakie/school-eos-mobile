@@ -2,8 +2,11 @@
 // own `isSports` screen (SPORTS_GROUPS: TODAY / PLAYERS & SQUADS / TRAINING /
 // SPORTS CO-ORDINATOR groups, same order, same glyph icons -- unicode text,
 // exactly as the design itself renders them, not custom SVGs). The design's
-// own TODAY group includes a 4th "Message" tile -- removed entirely per
-// explicit instruction (sports has no messaging module).
+// own TODAY group includes a 4th "Message" tile -- previously removed per an
+// earlier explicit instruction that sports had no messaging module; restored
+// now that SPORTS_ADMIN is a real messaging-enabled role (see
+// messaging-roles.constant.ts), pointing at the same real E2EE messaging
+// screen every other role's tile does.
 //
 // Tiles added beyond the literal mobile mock -- Achievements and Coaches
 // (real, already-wired backend capabilities with no mobile screen at all),
@@ -36,6 +39,7 @@ const GROUPS: Group[] = [
       { glyph: '★', label: 'Trials', href: '/sports/trials' },
       { glyph: '✚', label: 'Injury Report', href: '/sports/injuries' },
       { glyph: '⌾', label: 'Ask Permissions', href: '/sports/permissions' },
+      { glyph: '✉', label: 'Message', href: '/(protected)/messaging' },
     ],
   },
   {

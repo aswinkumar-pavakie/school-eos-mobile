@@ -216,21 +216,6 @@ export const sportsColors = {
   navyBadge: '#0E1A3C',
 } as const;
 
-// Canteen module's own token set -- same values as facultyColors, per
-// explicit instruction: "same color same font same size text style text
-// size color etc design exactly same... 100 percent... like others",
-// pointing at the real, already-shipped Faculty portal (an earlier pass
-// here used the Sports Admin dashboard mockup instead; superseded).
-// gradientStart/gradientEnd match FacultyHome.tsx's own literal header
-// gradient (['#1E3FAE', '#2563EB']) -- not a facultyColors field itself,
-// added here so Canteen's own header can reference it by name instead of
-// repeating the literal hex pair.
-export const canteenColors = {
-  ...facultyColors,
-  gradientStart: '#1E3FAE',
-  gradientEnd: '#2563EB',
-} as const;
-
 // Hostel Warden mobile module -- pixel-matched to "brain/SIS Hostel Warden -
 // App/Warden App.dc.html"'s own literal hex values (BLUE/LINE constants +
 // TONE status-pill map read directly from its script block).

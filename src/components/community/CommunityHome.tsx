@@ -32,6 +32,17 @@ function BellIcon() {
     </Svg>
   );
 }
+// Real E2EE messaging entry point -- COMMUNITY is a real messaging-enabled
+// role (see messaging-roles.constant.ts), same header icon-button pattern
+// every other role's Home screen uses for this.
+function MessageIcon() {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M3 6.5h18v11H8l-4 3.5v-3.5H3z" />
+      <Path d="M7.5 11h9M7.5 14h6" />
+    </Svg>
+  );
+}
 function PersonIcon() {
   return (
     <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={parentColors.blue} strokeWidth={1.8} strokeLinecap="round">
@@ -88,6 +99,9 @@ export function CommunityHome({ personName, communityId }: { personName: string;
               </View>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
+              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/messaging' as never)}>
+                <MessageIcon />
+              </Pressable>
               <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/community/announcements' as never)}>
                 <BellIcon />
               </Pressable>

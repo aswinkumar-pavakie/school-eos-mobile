@@ -33,7 +33,7 @@
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Redirect, useRouter } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useQueryClient } from '@tanstack/react-query';
 import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleSummary } from '@/lib/auth';
 import { hasRole } from '@/hooks/useMe';
@@ -57,7 +57,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isCanteenVendor, isDriver } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -92,17 +92,6 @@ export default function ProtectedHome() {
     return <FacultyHome facultyName={me.person.firstName} facultyMeta={me.roles.map((r) => r.role_code).join(', ')} />;
   }
 
-  // Canteen has no Home screen of its own at all -- its only two real
-  // screens (Ledger, History, see BottomTabBar.tsx's own CANTEEN_TABS) are
-  // both reached directly from the tab bar, neither is "/". Redirecting
-  // straight to Ledger here is the same fix isSportsAdmin/isHostelWarden
-  // needed below (a role with no branch here silently fell through to
-  // ParentHome, the wrong login's UI entirely) -- just a redirect instead
-  // of a Home component, since there's genuinely nothing to show at "/".
-  if (me && isCanteenVendor) {
-    return <Redirect href={'/(protected)/canteen' as never} />;
-  }
-
   if (me && isCommunity) {
     const communityRole = me.roles.find((r) => r.role_code === 'COMMUNITY' && r.scope_type === 'COMMUNITY');
     if (communityRole?.scope_id) {
@@ -126,8 +115,8 @@ export default function ProtectedHome() {
     return <HostelWardenHome personName={me.person.firstName} />;
   }
 
-  // Community, Vice Principal, Principal, Sports Admin, Hostel Warden, Canteen,
-  // and Driver (checked above, before FACULTY) are all handled above (returns
+  // Community, Vice Principal, Principal, Sports Admin, Hostel Warden, and
+  // Driver (checked above, before FACULTY) are all handled above (returns
   // early); everyone else is Parent.
   if (me) {
     return <ParentHome />;
