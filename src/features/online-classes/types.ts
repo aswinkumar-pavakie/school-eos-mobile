@@ -1,11 +1,13 @@
 // Types mirror the real backend response shapes exactly (see
 // school-eos-backend/src/modules/online-classes/repositories/online-class.repository.ts
-// -- OnlineClassDetail and ParentOnlineClassView -- and
-// parent-online-classes.service.ts's ParentJoinResult). Do not add fields the backend
+// -- OnlineClassDetail and ParentOnlineClassView). Do not add fields the backend
 // doesn't send, and do not strip fields Faculty legitimately receives (Faculty's own
 // detail response includes meetingCreationStatus/Error so they can see why a meeting
 // failed to create -- the "never expose Google internals" rule is about the PARENT
 // response shape, which structurally has no such fields at all).
+//
+// The call-token response shape (OnlineClassCallCredentials: {url, token, roomName})
+// is declared in api.ts, not here -- it's not an online_class row shape at all.
 
 export type OnlineClassStatus = 'DRAFT' | 'SCHEDULED' | 'LIVE' | 'COMPLETED' | 'CANCELLED';
 export type MeetingCreationStatus = 'PENDING' | 'CREATING' | 'SUCCEEDED' | 'FAILED';
@@ -55,14 +57,6 @@ export type FacultyOnlineClassListItem = FacultyOnlineClass;
 export type ParentOnlineClass = OnlineClassCommon;
 
 export type ParentOnlineClassListItem = ParentOnlineClass;
-
-// GET /online-classes/:id/join, PARENT only. Deliberately the narrowest possible
-// response -- exactly {meetingUrl, status}, nothing else, matching
-// ParentOnlineClassesService.join's real return shape.
-export interface ParentJoinResult {
-  meetingUrl: string;
-  status: OnlineClassStatus;
-}
 
 // ---- Request bodies (Faculty writes) ----------------------------------------------
 

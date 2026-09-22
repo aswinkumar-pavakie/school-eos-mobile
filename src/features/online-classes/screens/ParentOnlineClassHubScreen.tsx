@@ -1,29 +1,31 @@
 // Pixel-matched Parent "Online class" screen per the provided design. Shares the
 // exact same data layer as the generic OnlineClassesListScreen (same hooks/api/
-// types, same real join rule) -- only the visual template differs. Two fields the
-// mockup shows have no real backend source and are NOT fabricated here:
-//   - teacher display name (ParentOnlineClass has no faculty-name field at all)
-//   - a short "meeting code" (we only ever have a real Google Meet URL)
-// Both are substituted with real, honest data instead (section context, date) --
-// see the inline comments below and the feature README's "Known gaps" section.
+// types, same real join rule) -- only the visual template differs. One field the
+// mockup shows has no real backend source and is NOT fabricated here: teacher
+// display name (ParentOnlineClass has no faculty-name field at all) -- substituted
+// with real, honest data instead (section context, date).
 //
 // "Not open yet" here uses a JOIN_SOON_WINDOW_MINUTES UI heuristic to match the
 // mockup's look (a far-future class shows disabled, a near one shows enabled) --
-// this is cosmetic only. The backend's real rule (SCHEDULED/LIVE + meetingUrl) is
-// still what actually decides whether a join attempt succeeds, and the original
-// generic list screen (reachable from Home) never applies this extra restriction.
+// this is cosmetic only. The backend's real rule (SCHEDULED/LIVE) is still what
+// actually decides whether a join attempt succeeds, and the original generic list
+// screen (reachable from Home) never applies this extra restriction.
+//
+// Join now navigates straight to online-class-call/[id] (in-app LiveKit call) --
+// it no longer opens an external meetingUrl, so there's no "in class" banner to
+// keep showing on this screen while a call is in progress; the call screen takes
+// over the whole navigation stack until the parent leaves it.
 
-import { useMemo, useState, type ReactNode } from 'react';
-import { Alert, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, type ReactNode } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { ApiError } from '@/lib/api';
 import { accent, colors, fonts } from '@/lib/theme';
 import { GradientHeader } from '@/components/GradientHeader';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { SessionStatusPill } from '../components/SessionStatusPill';
 import { EmptyState, ErrorState, LoadingState } from '@/components/ScreenStates';
-import { useJoinOnlineClass, useOnlineClassesList } from '../hooks';
+import { useOnlineClassesList } from '../hooks';
 import type { ParentOnlineClass } from '../types';
 import {
   canAttemptJoin,
@@ -59,8 +61,6 @@ export function ParentOnlineClassHubScreen() {
   const router = useRouter();
   const upcoming = useOnlineClassesList('upcoming');
   const completed = useOnlineClassesList('completed');
-  const join = useJoinOnlineClass();
-  const [inClassId, setInClassId] = useState<string | null>(null);
 
   const upcomingItems = useMemo(() => (upcoming.data as ParentOnlineClass[] | undefined) ?? [], [upcoming.data]);
   const completedItems = (completed.data as ParentOnlineClass[] | undefined) ?? [];
@@ -74,17 +74,10 @@ export function ParentOnlineClassHubScreen() {
     return { todayItems: today, laterItems: later };
   }, [upcomingItems]);
 
-  const inClassItem = upcomingItems.find((c) => c.id === inClassId) ?? null;
   const recordings = completedItems.filter((c) => c.recordingUrl);
 
-  async function handleJoin(item: ParentOnlineClass) {
-    try {
-      const result = await join.mutateAsync(item.id);
-      await Linking.openURL(result.meetingUrl);
-      if (result.status === 'LIVE') setInClassId(item.id);
-    } catch (err) {
-      Alert.alert('Cannot join', err instanceof ApiError ? err.message : 'Something went wrong. Please try again.');
-    }
+  function handleJoin(item: ParentOnlineClass) {
+    router.push(`/(protected)/online-class-call/${item.id}` as never);
   }
 
   const isLoading = upcoming.isLoading || completed.isLoading;
@@ -106,19 +99,6 @@ export function ParentOnlineClassHubScreen() {
         />
       ) : (
         <ScrollView contentContainerStyle={styles.content}>
-          {inClassItem ? (
-            <View style={styles.inClassBanner}>
-              <View style={styles.liveDotLarge} />
-              <View style={styles.inClassTextBlock}>
-                <Text style={styles.inClassTitle}>{inClassItem.subjectName} · in class</Text>
-                <Text style={styles.inClassSubtitle} numberOfLines={1}>
-                  {inClassItem.topic}
-                </Text>
-              </View>
-              <PrimaryButton label="Leave" size="compact" variant="outline" onPress={() => setInClassId(null)} />
-            </View>
-          ) : null}
-
           {upcomingItems.length === 0 && completedItems.length === 0 ? (
             <EmptyState message="No online classes yet." />
           ) : (
@@ -126,13 +106,7 @@ export function ParentOnlineClassHubScreen() {
               {todayItems.length > 0 ? (
                 <Section title="Today's sessions">
                   {todayItems.map((item) => (
-                    <SessionCard
-                      key={item.id}
-                      item={item}
-                      inClass={item.id === inClassId}
-                      joining={join.isPending && join.variables === item.id}
-                      onJoin={() => handleJoin(item)}
-                    />
+                    <SessionCard key={item.id} item={item} onJoin={() => handleJoin(item)} />
                   ))}
                 </Section>
               ) : null}
@@ -140,13 +114,7 @@ export function ParentOnlineClassHubScreen() {
               {laterItems.length > 0 ? (
                 <Section title="Upcoming">
                   {laterItems.map((item) => (
-                    <SessionCard
-                      key={item.id}
-                      item={item}
-                      inClass={item.id === inClassId}
-                      joining={join.isPending && join.variables === item.id}
-                      onJoin={() => handleJoin(item)}
-                    />
+                    <SessionCard key={item.id} item={item} onJoin={() => handleJoin(item)} />
                   ))}
                 </Section>
               ) : null}
@@ -178,17 +146,7 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-function SessionCard({
-  item,
-  inClass,
-  joining,
-  onJoin,
-}: {
-  item: ParentOnlineClass;
-  inClass: boolean;
-  joining: boolean;
-  onJoin: () => void;
-}) {
+function SessionCard({ item, onJoin }: { item: ParentOnlineClass; onJoin: () => void }) {
   const { label } = cardTone(item);
   const joinable = canJoinNow(item);
 
@@ -208,10 +166,8 @@ function SessionCard({
       <View style={styles.cardDivider} />
       <View style={styles.cardFooterRow}>
         <Text style={styles.cardCode}>{formatClassDate(item.scheduledDate)}</Text>
-        {inClass ? (
-          <PrimaryButton label="In class" size="compact" variant="outline" disabled onPress={() => {}} />
-        ) : joinable ? (
-          <PrimaryButton label="Join" size="compact" variant="accent" loading={joining} onPress={onJoin} />
+        {joinable ? (
+          <PrimaryButton label="Join" size="compact" variant="accent" onPress={onJoin} />
         ) : (
           <PrimaryButton label="Not open yet" size="compact" variant="outline" disabled onPress={() => {}} />
         )}
@@ -221,6 +177,7 @@ function SessionCard({
 }
 
 function RecordingRow({ item, isLast }: { item: ParentOnlineClass; isLast: boolean }) {
+  const router = useRouter();
   return (
     <View style={[styles.recordingRow, !isLast && styles.recordingRowDivider]}>
       <View style={styles.playCircle}>
@@ -232,7 +189,10 @@ function RecordingRow({ item, isLast }: { item: ParentOnlineClass; isLast: boole
         </Text>
         <Text style={styles.recordingMeta}>{formatClassDate(item.scheduledDate)}</Text>
       </View>
-      <Text style={styles.watchLink} onPress={() => Linking.openURL(item.recordingUrl as string)}>
+      <Text
+        style={styles.watchLink}
+        onPress={() => router.push(`/(protected)/recording-player/${item.id}` as never)}
+      >
         Watch
       </Text>
     </View>

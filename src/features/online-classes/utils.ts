@@ -44,10 +44,13 @@ export const VIEW_TABS: { key: 'upcoming' | 'completed' | 'cancelled'; label: st
 ];
 
 // Whether to render an enabled "Join" affordance for THIS user right now. This is a
-// UI hint only -- tapping it always calls the real join/detail endpoint and the
+// UI hint only -- tapping it always requests a real LiveKit call token and the
 // backend's actual response is authoritative regardless of what this function says.
-export function canAttemptJoin(item: Pick<OnlineClassCommon, 'status' | 'meetingUrl'>): boolean {
-  return (item.status === 'SCHEDULED' || item.status === 'LIVE') && item.meetingUrl !== null;
+// meetingUrl is no longer the gate -- new classes never populate it (see
+// online-class-call), only historical Google-Meet-era rows have one, and even those
+// still go through the same in-app call now.
+export function canAttemptJoin(item: Pick<OnlineClassCommon, 'status'>): boolean {
+  return item.status === 'SCHEDULED' || item.status === 'LIVE';
 }
 
 // Mirrors the backend DTOs exactly (ScheduleOnlineClassDto/RescheduleOnlineClassDto,

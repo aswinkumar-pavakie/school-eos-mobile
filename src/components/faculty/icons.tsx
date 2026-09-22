@@ -44,6 +44,15 @@ export function EditIcon({ color = '#2563EB', size = 16 }: { color?: string; siz
   );
 }
 
+export function VideoCallIcon({ color = '#fff', size = 16 }: { color?: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M3 7a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <Path d="M16 10l5-3v10l-5-3" />
+    </Svg>
+  );
+}
+
 export function SearchIcon({ color = '#94A3B8', size = 20 }: { color?: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={2} strokeLinecap="round">

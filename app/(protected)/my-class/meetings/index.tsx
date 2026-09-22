@@ -114,11 +114,12 @@ export default function MeetingsScreen() {
           ) : (
             slots.map((slot) => {
               const meta = slotStateMeta(slot);
+              const approved = slot.booking?.state === 'APPROVED';
               return (
                 <Pressable
                   key={slot.id}
-                  disabled={!meta.open}
-                  onPress={() => openComposer(slot)}
+                  disabled={!meta.open && !approved}
+                  onPress={() => (approved ? router.push(`/(protected)/meeting-call/${slot.booking!.id}` as never) : openComposer(slot))}
                   style={[styles.slotCard, { backgroundColor: meta.bg, borderColor: meta.border }, !meta.open && cardShadow]}
                 >
                   <View style={{ flex: 1, minWidth: 0 }}>
@@ -129,7 +130,13 @@ export default function MeetingsScreen() {
                       {slot.facultyName}
                     </Text>
                   </View>
-                  <Text style={[styles.slotState, { color: meta.sub }]}>{meta.label}</Text>
+                  {approved ? (
+                    <View style={styles.joinCallPill}>
+                      <Text style={styles.joinCallPillText}>Join call</Text>
+                    </View>
+                  ) : (
+                    <Text style={[styles.slotState, { color: meta.sub }]}>{meta.label}</Text>
+                  )}
                 </Pressable>
               );
             })
@@ -183,6 +190,8 @@ const styles = StyleSheet.create({
   slotTime: { fontSize: 15.5, fontFamily: 'PlusJakartaSans_800ExtraBold' },
   slotFaculty: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: parentColors.muted, marginTop: 3 },
   slotState: { fontSize: 12.5, fontFamily: 'PlusJakartaSans_700Bold' },
+  joinCallPill: { borderRadius: 999, paddingVertical: 7, paddingHorizontal: 14, backgroundColor: parentColors.greenDark },
+  joinCallPillText: { color: '#fff', fontSize: 12, fontFamily: 'PlusJakartaSans_700Bold' },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(15,23,42,0.45)', justifyContent: 'flex-end' },
   sheet: { maxHeight: '88%', backgroundColor: parentColors.white, borderTopLeftRadius: 22, borderTopRightRadius: 22, padding: 18, paddingBottom: 24 },
   sheetTitle: { fontSize: 17, fontFamily: 'PlusJakartaSans_800ExtraBold', color: parentColors.ink },
