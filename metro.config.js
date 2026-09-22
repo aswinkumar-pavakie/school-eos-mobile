@@ -20,4 +20,30 @@ config.resolver.blockList = [
   /\/__tests__\//,
 ];
 
+// Metro's unstable_enablePackageExports mis-resolves engine.io-client's own
+// internal ESM relative imports (e.g. "./contrib/parseuri.js" from its own
+// build/esm/index.js) -- the target file genuinely exists on disk, but
+// Metro's exports-map-aware resolution still reports it missing under the
+// "import" condition. socket.io-client (used by the messaging feature) pulls
+// this in transitively. Scoped workaround: for resolutions that touch this
+// package, fall back to plain (non-exports-map) resolution instead of
+// disabling package-exports resolution for every dependency.
+const { resolveRequest: defaultResolveRequest } = config.resolver;
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  const touchesEngineIoClient =
+    moduleName === 'engine.io-client' ||
+    moduleName.startsWith('engine.io-client/') ||
+    (context.originModulePath ?? '').includes('engine.io-client');
+  if (touchesEngineIoClient) {
+    return context.resolveRequest(
+      { ...context, unstable_enablePackageExports: false },
+      moduleName,
+      platform,
+    );
+  }
+  return defaultResolveRequest
+    ? defaultResolveRequest(context, moduleName, platform)
+    : context.resolveRequest(context, moduleName, platform);
+};
+
 module.exports = config;
