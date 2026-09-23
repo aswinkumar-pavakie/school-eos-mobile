@@ -67,7 +67,7 @@ export default function HrRequestsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="HR Payroll" subtitle="Payroll & HR queries" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="HR Payroll" subtitle="Payroll & HR queries" onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}

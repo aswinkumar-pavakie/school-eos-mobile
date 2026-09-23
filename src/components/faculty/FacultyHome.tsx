@@ -5,7 +5,7 @@
 // feature itself (comments, likes, etc.) is out of scope -- this is only
 // the read connection the user asked for.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,17 +15,12 @@ import { useQuery } from '@tanstack/react-query';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { listFeedAnnouncements } from '@/lib/faculty-announcements-api';
 import { listPublishedMediaPosts } from '@/lib/faculty-media-posts-api';
+import { getClassTeacherLink } from '@/lib/faculty-scope-api';
+import { getActiveIdentifier, getLinkedIdentifier, getLinkedIdentityLabel, hasLinkedIdentity, type IdentityLabel } from '@/lib/auth';
 import { formatDate } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
+import { AccountSwitcherModal } from '@/components/AccountSwitcherModal';
 
-function BellIcon() {
-  return (
-    <Svg width={21} height={21} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-      <Path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
-      <Path d="M13.7 21a2 2 0 0 1-3.4 0" />
-    </Svg>
-  );
-}
 function PersonIcon() {
   return (
     <Svg width={24} height={24} viewBox="0 0 24 24" fill="none" stroke={facultyColors.blue} strokeWidth={1.8} strokeLinecap="round">
@@ -45,9 +40,36 @@ function ChevronRightIcon() {
 export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string; facultyMeta: string }) {
   const router = useRouter();
   const [annIndex, setAnnIndex] = useState(0);
+  const [alreadyLinked, setAlreadyLinked] = useState(false);
+  const [switcherOpen, setSwitcherOpen] = useState(false);
+  const [activeIdentifier, setActiveIdentifier] = useState<string | null>(null);
+  const [linkedIdentifier, setLinkedIdentifier] = useState<string | null>(null);
+  const [linkedLabel, setLinkedLabel] = useState<IdentityLabel | null>(null);
 
   const announcementsQuery = useQuery({ queryKey: ['faculty-announcements-feed'], queryFn: listFeedAnnouncements });
   const mediaQuery = useQuery({ queryKey: ['faculty-home-media-posts'], queryFn: listPublishedMediaPosts });
+  // Only meaningful for the FACULTY identity (this screen never renders for
+  // the Class Teacher identity) -- tells the account switcher whether this
+  // faculty member actually has a Class Teacher login to switch into.
+  const classTeacherLinkQuery = useQuery({ queryKey: ['faculty-class-teacher-link'], queryFn: getClassTeacherLink });
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all([hasLinkedIdentity(), getActiveIdentifier(), getLinkedIdentifier(), getLinkedIdentityLabel()]).then(
+      ([linked, active, linkedId, linkedLbl]) => {
+        if (cancelled) return;
+        setAlreadyLinked(linked);
+        setActiveIdentifier(active);
+        setLinkedIdentifier(linkedId);
+        setLinkedLabel(linkedLbl);
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const canSwitch = alreadyLinked || classTeacherLinkQuery.data?.hasClassTeacherLogin === true;
 
   const announcements = announcementsQuery.data ?? [];
   const currentAnn = announcements[annIndex % Math.max(announcements.length, 1)];
@@ -65,13 +87,12 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
               <Text style={styles.schoolName}>Pavakie Public School</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
+              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/messaging' as never)} hitSlop={8}>
+                <Ionicons name="mail-outline" size={18} color="#fff" />
+              </Pressable>
               <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
                 <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
               </Pressable>
-              <View style={styles.bellWrap}>
-                <BellIcon />
-                <View style={styles.bellDot} />
-              </View>
             </View>
           </View>
         </SafeAreaView>
@@ -79,19 +100,39 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
         <View style={styles.greetingCard}>
-          <View style={styles.avatar}>
+          <Pressable
+            style={styles.avatar}
+            onPress={() => canSwitch && setSwitcherOpen(true)}
+            hitSlop={6}
+            disabled={!canSwitch}
+          >
             <PersonIcon />
-          </View>
+            {canSwitch ? (
+              <View style={styles.avatarCaret}>
+                <Ionicons name="chevron-down" size={11} color="#fff" />
+              </View>
+            ) : null}
+          </Pressable>
           <View style={{ flex: 1, minWidth: 0 }}>
             <Text style={styles.greetingName}>Hi, {facultyName}</Text>
             <Text style={styles.greetingMeta} numberOfLines={1}>{facultyMeta}</Text>
           </View>
         </View>
 
+        <AccountSwitcherModal
+          visible={switcherOpen}
+          onClose={() => setSwitcherOpen(false)}
+          activeLabel="FACULTY"
+          activeIdentifier={activeIdentifier}
+          linkedLabel={linkedLabel}
+          linkedIdentifier={linkedIdentifier}
+          canAddAccount={classTeacherLinkQuery.data?.hasClassTeacherLogin === true}
+        />
+
         <View style={styles.sectionHeaderRow}>
           <View style={styles.sectionHeaderLeft}>
             <Text style={styles.sectionHeaderIcon}>📣</Text>
-            <Text style={styles.sectionHeaderTitle}>Announcements</Text>
+            <Text style={styles.sectionHeaderTitle}>Notices</Text>
           </View>
           <Pressable onPress={() => router.push('/(protected)/faculty/announcements' as never)}>
             <Text style={styles.viewAll}>View All</Text>
@@ -164,9 +205,21 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 14, fontFamily: 'PlusJakartaSans_800ExtraBold', color: '#1E3FAE' },
   schoolName: { color: '#fff', fontSize: 17, fontFamily: 'PlusJakartaSans_700Bold' },
   bellWrap: { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(255,255,255,0.16)', alignItems: 'center', justifyContent: 'center' },
-  bellDot: { position: 'absolute', top: 4, right: 4, width: 9, height: 9, borderRadius: 4.5, backgroundColor: '#60A5FA', borderWidth: 2, borderColor: '#2563EB' },
   greetingCard: { backgroundColor: '#fff', paddingVertical: 14, paddingHorizontal: 18, flexDirection: 'row', alignItems: 'center', gap: 12, borderBottomWidth: 1, borderBottomColor: '#EDF0F6' },
   avatar: { width: 46, height: 46, borderRadius: 23, backgroundColor: '#DBEAFE', borderWidth: 2, borderColor: '#BFDBFE', alignItems: 'center', justifyContent: 'center' },
+  avatarCaret: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: facultyColors.blue,
+    borderWidth: 2,
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   greetingName: { fontSize: 18, fontFamily: 'PlusJakartaSans_800ExtraBold', color: facultyColors.blueDark },
   greetingMeta: { fontSize: 12, fontFamily: 'PlusJakartaSans_500Medium', color: facultyColors.mutedStrong, marginTop: 2 },
   sectionHeaderRow: { paddingHorizontal: 18, paddingTop: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

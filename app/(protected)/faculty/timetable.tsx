@@ -88,7 +88,7 @@ export default function TimetableScreen() {
       <LinearGradient colors={[parentColors.gradientStart, parentColors.gradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
         <SafeAreaView edges={['top']}>
           <View style={styles.headerRow}>
-            <Pressable onPress={() => router.replace('/academics' as never)} style={styles.backButton} hitSlop={8}>
+            <Pressable onPress={() => router.replace('/faculty/class-hub' as never)} style={styles.backButton} hitSlop={8}>
               <BackIcon />
             </Pressable>
             <View style={styles.textCol}>

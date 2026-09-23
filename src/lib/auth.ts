@@ -13,6 +13,34 @@ const ACCESS_TOKEN_KEY = 'accessToken';
 const REFRESH_TOKEN_KEY = 'refreshToken';
 const PUSH_TOKEN_KEY = 'expoPushToken';
 
+// Faculty <-> Class Teacher account switching: the ACTIVE_* keys above stay
+// exactly as they were (every existing call site -- authedRequest,
+// getValidAccessToken, etc. -- keeps working unchanged, always against
+// "whichever identity is active right now"). A second, LINKED slot holds
+// the other identity's own token pair once the user has switched at least
+// once, so switching back doesn't need the password again. ACTIVE_LABEL_KEY
+// records which identity the ACTIVE slot currently holds, purely for UI
+// ("Switch to Class Teacher" vs "Switch to Faculty").
+const LINKED_ACCESS_TOKEN_KEY = 'linkedAccessToken';
+const LINKED_REFRESH_TOKEN_KEY = 'linkedRefreshToken';
+const ACTIVE_LABEL_KEY = 'activeIdentityLabel';
+const LINKED_LABEL_KEY = 'linkedIdentityLabel';
+// Purely for display (an Instagram-style "which account" list) -- the
+// identifier (email/mobile) typed in at login time for each slot. Never
+// read for any authorization or switching decision; only the token pairs
+// above are. Written alongside the label at every point the label is
+// written/swapped, so the two can never drift apart.
+const ACTIVE_IDENTIFIER_KEY = 'activeIdentityIdentifier';
+const LINKED_IDENTIFIER_KEY = 'linkedIdentityIdentifier';
+
+export type IdentityLabel = 'FACULTY' | 'CLASS_TEACHER' | 'OTHER';
+
+function labelForRoles(roles: RoleSummary[]): IdentityLabel {
+  if (roles.some((r) => r.role_code === 'FACULTY')) return 'FACULTY';
+  if (roles.some((r) => r.role_code === 'CLASS_ADVISOR')) return 'CLASS_TEACHER';
+  return 'OTHER';
+}
+
 // expo-secure-store has no web implementation (it's a Keychain/Keystore wrapper --
 // there's no OS-level secure enclave in a browser) and throws if called there. The
 // real target platforms are iOS/Android only, per spec -- this exists solely so the
@@ -90,12 +118,44 @@ async function clearTokens(): Promise<void> {
   await Promise.all([deleteSecureItem(ACCESS_TOKEN_KEY), deleteSecureItem(REFRESH_TOKEN_KEY)]);
 }
 
+async function clearLinkedTokens(): Promise<void> {
+  await Promise.all([
+    deleteSecureItem(LINKED_ACCESS_TOKEN_KEY),
+    deleteSecureItem(LINKED_REFRESH_TOKEN_KEY),
+    deleteSecureItem(LINKED_LABEL_KEY),
+    deleteSecureItem(LINKED_IDENTIFIER_KEY),
+  ]);
+}
+
 export async function getStoredAccessToken(): Promise<string | null> {
   return getSecureItem(ACCESS_TOKEN_KEY);
 }
 
 export async function getStoredRefreshToken(): Promise<string | null> {
   return getSecureItem(REFRESH_TOKEN_KEY);
+}
+
+/** Which identity the ACTIVE slot currently holds -- 'OTHER' (or null,
+ * before any login) for every role that isn't part of the Faculty/Class
+ * Teacher switch. */
+export async function getActiveIdentityLabel(): Promise<IdentityLabel | null> {
+  return (await getSecureItem(ACTIVE_LABEL_KEY)) as IdentityLabel | null;
+}
+
+/** The OTHER identity's label, if a linked session is stored -- drives the
+ * "Switch to Class Teacher" / "Switch to Faculty" button text without
+ * needing a network call. */
+export async function getLinkedIdentityLabel(): Promise<IdentityLabel | null> {
+  return (await getSecureItem(LINKED_LABEL_KEY)) as IdentityLabel | null;
+}
+
+/** Display-only identifiers for the account-switcher list -- see
+ * ACTIVE_IDENTIFIER_KEY's own comment. */
+export async function getActiveIdentifier(): Promise<string | null> {
+  return getSecureItem(ACTIVE_IDENTIFIER_KEY);
+}
+export async function getLinkedIdentifier(): Promise<string | null> {
+  return getSecureItem(LINKED_IDENTIFIER_KEY);
 }
 
 // ---- JWT expiry (decode only, never trust for authorization) --------------------
@@ -143,7 +203,11 @@ function isExpiredOrExpiringSoon(token: string): boolean {
 // Faculty always carries the base FACULTY role_code alongside any
 // assignment-specific ones (Class Advisor, Academic Coordinator, etc.), so
 // checking for FACULTY covers every assignment without having to enumerate them.
-const MOBILE_ALLOWED_ROLES = ['FACULTY', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN', 'DRIVER'];
+// CLASS_ADVISOR is listed separately because a Class Teacher login is its
+// own, genuinely separate person/account (see backend's
+// class-teacher-login.service.ts) that carries ONLY CLASS_ADVISOR -- never
+// FACULTY -- so the FACULTY check alone wouldn't admit it.
+const MOBILE_ALLOWED_ROLES = ['FACULTY', 'CLASS_ADVISOR', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN', 'DRIVER'];
 
 /** Login succeeded against the backend, but this role has no mobile access. */
 export class PlatformNotAllowedError extends Error {
@@ -180,7 +244,13 @@ export async function login(identifier: string, password: string): Promise<Login
     throw new PlatformNotAllowedError();
   }
 
+  // A plain login (the login screen, not the switch flow) always replaces
+  // the whole session -- any previously-linked identity from a different
+  // person no longer applies.
+  await clearLinkedTokens();
   await storeTokens({ accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
+  await setSecureItem(ACTIVE_LABEL_KEY, labelForRoles(res.data.roles));
+  await setSecureItem(ACTIVE_IDENTIFIER_KEY, identifier);
   return res.data;
 }
 
@@ -191,13 +261,23 @@ export async function logout(): Promise<void> {
   // the authed unregister endpoint at all.
   await unregisterCurrentPushToken();
 
-  const refreshToken = await getStoredRefreshToken();
-  if (refreshToken) {
-    await apiRequest('/auth/logout', { method: 'POST', body: { refreshToken } }).catch(() => {
-      // Best-effort server-side revoke; tokens are cleared locally regardless.
-    });
-  }
+  // Sign out of BOTH identities, not just the active one -- "log out" on a
+  // shared/handed-back device should never leave a linked session usable.
+  const refreshTokensToRevoke = [
+    await getStoredRefreshToken(),
+    await getSecureItem(LINKED_REFRESH_TOKEN_KEY),
+  ].filter((t): t is string => !!t);
+  await Promise.all(
+    refreshTokensToRevoke.map((refreshToken) =>
+      apiRequest('/auth/logout', { method: 'POST', body: { refreshToken } }).catch(() => {
+        // Best-effort server-side revoke; tokens are cleared locally regardless.
+      }),
+    ),
+  );
   await clearTokens();
+  await clearLinkedTokens();
+  await deleteSecureItem(ACTIVE_LABEL_KEY);
+  await deleteSecureItem(ACTIVE_IDENTIFIER_KEY);
 }
 
 /** Exported so callers with their own non-header-based auth transport (e.g.
@@ -234,6 +314,91 @@ export async function getValidAccessToken(): Promise<string> {
   const refreshed = await refreshTokens();
   if (!refreshed) throw new AuthExpiredError();
   return refreshed.accessToken;
+}
+
+// ---- Faculty <-> Class Teacher account switching -----------------------------------
+
+/** True if a linked identity's session is already stored -- the caller uses
+ * this to decide whether "Switch" can happen instantly or needs to route to
+ * the credential-entry screen first. */
+export async function hasLinkedIdentity(): Promise<boolean> {
+  return (await getSecureItem(LINKED_REFRESH_TOKEN_KEY)) !== null;
+}
+
+/** Instant switch: swaps the ACTIVE and LINKED slots in place. Caller must
+ * still clear any cached ['me']/role-scoped query data afterward (same
+ * cache-bleed fix LoginForm.tsx already applies on a normal login) -- this
+ * function only moves tokens. Returns false if nothing is linked yet. */
+export async function switchToLinkedIdentity(): Promise<boolean> {
+  const [linkedAccess, linkedRefresh, linkedLabel] = await Promise.all([
+    getSecureItem(LINKED_ACCESS_TOKEN_KEY),
+    getSecureItem(LINKED_REFRESH_TOKEN_KEY),
+    getSecureItem(LINKED_LABEL_KEY),
+  ]);
+  if (!linkedAccess || !linkedRefresh || !linkedLabel) return false;
+
+  const [activeAccess, activeRefresh, activeLabel, linkedIdentifier, activeIdentifier] = await Promise.all([
+    getStoredAccessToken(),
+    getStoredRefreshToken(),
+    getActiveIdentityLabel(),
+    getLinkedIdentifier(),
+    getActiveIdentifier(),
+  ]);
+
+  await Promise.all([
+    setSecureItem(ACCESS_TOKEN_KEY, linkedAccess),
+    setSecureItem(REFRESH_TOKEN_KEY, linkedRefresh),
+    setSecureItem(ACTIVE_LABEL_KEY, linkedLabel),
+    linkedIdentifier ? setSecureItem(ACTIVE_IDENTIFIER_KEY, linkedIdentifier) : deleteSecureItem(ACTIVE_IDENTIFIER_KEY),
+    activeAccess ? setSecureItem(LINKED_ACCESS_TOKEN_KEY, activeAccess) : deleteSecureItem(LINKED_ACCESS_TOKEN_KEY),
+    activeRefresh ? setSecureItem(LINKED_REFRESH_TOKEN_KEY, activeRefresh) : deleteSecureItem(LINKED_REFRESH_TOKEN_KEY),
+    activeLabel ? setSecureItem(LINKED_LABEL_KEY, activeLabel) : deleteSecureItem(LINKED_LABEL_KEY),
+    activeIdentifier ? setSecureItem(LINKED_IDENTIFIER_KEY, activeIdentifier) : deleteSecureItem(LINKED_IDENTIFIER_KEY),
+  ]);
+  return true;
+}
+
+/** First-time switch: a real login call against the OTHER identity's own
+ * credentials (Admin communicates a Class Teacher login's email/password to
+ * the faculty member out of band -- same as the existing Academic
+ * Coordinator login). On success, the CURRENT active session moves into the
+ * LINKED slot (so switching back needs no password) and the new session
+ * becomes active. Rejects with PlatformNotAllowedError via the normal
+ * MOBILE_ALLOWED_ROLES check if the credentials somehow don't resolve to a
+ * mobile-allowed role. */
+export async function linkAndSwitchIdentity(identifier: string, password: string): Promise<LoginResult> {
+  const res = await apiRequest<LoginResponseBody>('/auth/login', {
+    method: 'POST',
+    body: { identifier, password },
+  });
+
+  const hasMobileAccess = res.data.roles.some((r) => MOBILE_ALLOWED_ROLES.includes(r.role_code));
+  if (!hasMobileAccess) {
+    await apiRequest('/auth/logout', {
+      method: 'POST',
+      body: { refreshToken: res.data.refreshToken },
+    }).catch(() => {});
+    throw new PlatformNotAllowedError();
+  }
+
+  const [previousAccess, previousRefresh, previousLabel, previousIdentifier] = await Promise.all([
+    getStoredAccessToken(),
+    getStoredRefreshToken(),
+    getActiveIdentityLabel(),
+    getActiveIdentifier(),
+  ]);
+
+  await Promise.all([
+    previousAccess ? setSecureItem(LINKED_ACCESS_TOKEN_KEY, previousAccess) : Promise.resolve(),
+    previousRefresh ? setSecureItem(LINKED_REFRESH_TOKEN_KEY, previousRefresh) : Promise.resolve(),
+    previousLabel ? setSecureItem(LINKED_LABEL_KEY, previousLabel) : Promise.resolve(),
+    previousIdentifier ? setSecureItem(LINKED_IDENTIFIER_KEY, previousIdentifier) : Promise.resolve(),
+  ]);
+  await storeTokens({ accessToken: res.data.accessToken, refreshToken: res.data.refreshToken });
+  await setSecureItem(ACTIVE_LABEL_KEY, labelForRoles(res.data.roles));
+  await setSecureItem(ACTIVE_IDENTIFIER_KEY, identifier);
+
+  return res.data;
 }
 
 /**

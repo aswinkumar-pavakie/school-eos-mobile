@@ -13,6 +13,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { useQuery } from '@tanstack/react-query';
 import { listCalendarEvents, type CalendarEvent } from '@/lib/faculty-calendar-api';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { facultyColors, parentColors, cardShadow } from '@/lib/theme';
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -63,6 +65,7 @@ const EMPTY_EVENTS: CalendarEvent[] = [];
 
 export default function AcademicCalendarScreen() {
   const router = useRouter();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const today = useMemo(() => new Date(), []);
   const [viewYear, setViewYear] = useState(today.getFullYear());
   const [viewMonth, setViewMonth] = useState(today.getMonth());
@@ -100,6 +103,14 @@ export default function AcademicCalendarScreen() {
   const firstDayOffset = new Date(viewYear, viewMonth, 1).getDay();
   const cells: (number | null)[] = [...Array(firstDayOffset).fill(null), ...Array.from({ length: daysInMonth }, (_, i) => i + 1)];
   while (cells.length % 7 !== 0) cells.push(null);
+  // Explicit weeks, not a single flexWrap'd array -- 7 cells at a
+  // percentage width (100/7 = 14.2857...%) can round up just enough in
+  // RN's layout engine for the 7th cell (Saturday) to wrap onto the next
+  // row instead of staying put, which is exactly the "Saturday has no
+  // date" bug this was built to avoid. Chunking into real week-rows makes
+  // each row's cell count exact regardless of any rounding.
+  const weeks: (number | null)[][] = [];
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
   const canGoPrev = !academicYear || monthKey(viewYear, viewMonth) > monthKey(new Date(academicYear.startDate).getFullYear(), new Date(academicYear.startDate).getMonth());
   const canGoNext = !academicYear || monthKey(viewYear, viewMonth) < monthKey(new Date(academicYear.endDate).getFullYear(), new Date(academicYear.endDate).getMonth());
@@ -120,7 +131,7 @@ export default function AcademicCalendarScreen() {
       <LinearGradient colors={[parentColors.gradientStart, parentColors.gradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
         <SafeAreaView edges={['top']}>
           <View style={styles.headerRow}>
-            <Pressable onPress={() => router.replace('/academics' as never)} style={styles.backButton} hitSlop={8}>
+            <Pressable onPress={() => router.replace(classHubHref(isClassTeacherLogin) as never)} style={styles.backButton} hitSlop={8}>
               <BackIcon />
             </Pressable>
             <View style={styles.textCol}>
@@ -158,20 +169,24 @@ export default function AcademicCalendarScreen() {
                 ))}
               </View>
 
-              <View style={styles.grid}>
-                {cells.map((day, i) => {
-                  if (day === null) return <View key={i} style={styles.dayCell} />;
-                  const key = dateKey(viewYear, viewMonth, day);
-                  const hasEvent = eventDaySet.has(key);
-                  const isToday = key === todayKey;
-                  return (
-                    <View key={i} style={styles.dayCell}>
-                      <View style={[styles.dayCircle, hasEvent && styles.dayCircleEvent, isToday && styles.dayCircleToday]}>
-                        <Text style={[styles.dayNumber, hasEvent && styles.dayNumberEvent]}>{day}</Text>
-                      </View>
-                    </View>
-                  );
-                })}
+              <View style={{ gap: 0 }}>
+                {weeks.map((week, wi) => (
+                  <View key={wi} style={styles.gridRow}>
+                    {week.map((day, di) => {
+                      if (day === null) return <View key={di} style={styles.dayCell} />;
+                      const key = dateKey(viewYear, viewMonth, day);
+                      const hasEvent = eventDaySet.has(key);
+                      const isToday = key === todayKey;
+                      return (
+                        <View key={di} style={styles.dayCell}>
+                          <View style={[styles.dayCircle, hasEvent && styles.dayCircleEvent, isToday && styles.dayCircleToday]}>
+                            <Text style={[styles.dayNumber, hasEvent && styles.dayNumberEvent]}>{day}</Text>
+                          </View>
+                        </View>
+                      );
+                    })}
+                  </View>
+                ))}
               </View>
             </View>
 
@@ -222,8 +237,8 @@ const styles = StyleSheet.create({
   monthEventCount: { fontSize: 10.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: facultyColors.muted, letterSpacing: 0.8, marginTop: 3 },
   weekdayRow: { flexDirection: 'row', marginTop: 16 },
   weekdayLabel: { flex: 1, textAlign: 'center', fontSize: 11.5, fontFamily: 'PlusJakartaSans_700Bold', color: facultyColors.muted },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 6 },
-  dayCell: { width: `${100 / 7}%`, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
+  gridRow: { flexDirection: 'row', marginTop: 6 },
+  dayCell: { flex: 1, aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
   dayCircle: { width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center' },
   dayCircleEvent: { backgroundColor: parentColors.blue },
   dayCircleToday: { borderWidth: 1.6, borderColor: parentColors.blue },

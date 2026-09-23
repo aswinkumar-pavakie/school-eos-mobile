@@ -35,3 +35,28 @@ export async function listTeachingOfferings(): Promise<TeachingOffering[]> {
   const res = await authedRequest<ApiEnvelope<TeachingOffering[]>>('/faculty/scope/teaching-offerings');
   return res.data;
 }
+
+export type ClassTeacherLink =
+  | { hasClassTeacherLogin: false }
+  | { hasClassTeacherLogin: true; gradeId: string; sectionName: string };
+
+/** Does this faculty member currently have a separate Class Teacher login to
+ * switch into? See src/lib/auth.ts's linkAndSwitchIdentity. */
+export async function getClassTeacherLink(): Promise<ClassTeacherLink> {
+  const res = await authedRequest<ApiEnvelope<ClassTeacherLink>>('/faculty/scope/class-teacher-link');
+  return res.data;
+}
+
+export interface FacultyCommutePrefs {
+  isHosteller: boolean;
+  usesSchoolTransport: boolean;
+}
+
+/** Drives BottomTabBar's conditional 5th Faculty tab -- Hostel (resides in
+ * hostel), My Bus (uses school transport), or neither (self vehicle -- nav
+ * drops to 4 tabs). Mutually exclusive by convention; isHosteller wins if
+ * a data entry error somehow sets both. */
+export async function getFacultyCommute(): Promise<FacultyCommutePrefs> {
+  const res = await authedRequest<ApiEnvelope<FacultyCommutePrefs>>('/faculty/scope/commute');
+  return res.data;
+}

@@ -13,7 +13,10 @@ import { AppHeader } from '@/components/AppHeader';
 import { ClassSwitcher } from '@/components/faculty/ClassSwitcher';
 import { StatCards } from '@/components/faculty/StatCards';
 import { TrashIcon, EditIcon, SearchIcon, CloseIcon, ChevronDownIcon } from '@/components/faculty/icons';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { listAdvisorSections } from '@/lib/faculty-scope-api';
+import { getRoster } from '@/lib/faculty-attendance-api';
 import {
   getDashboard,
   searchClassStudents,
@@ -29,6 +32,7 @@ import { facultyColors } from '@/lib/theme';
 export default function ClassTeacherScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [sectionOverride, setSectionOverride] = useState<string | null>(null);
   const [openDuty, setOpenDuty] = useState<string | null>(null);
   const [assignOpen, setAssignOpen] = useState(false);
@@ -49,6 +53,18 @@ export default function ClassTeacherScreen() {
   const dashboardQuery = useQuery({
     queryKey: ['faculty-class-teacher-dashboard', sectionKey],
     queryFn: () => getDashboard(sectionKey!),
+    enabled: !!sectionKey,
+  });
+
+  // The real, full student roster -- attendance's own roster endpoint
+  // already returns every student in the section, so it's reused here
+  // rather than a second copy of that query. Today's date, but this
+  // screen only reads the STUDENT LIST off it, never the attendance
+  // status -- Attendance itself is the tile for marking/viewing that.
+  const todayIso = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const rosterQuery = useQuery({
+    queryKey: ['faculty-class-teacher-roster', sectionKey, todayIso],
+    queryFn: () => getRoster(sectionKey!, todayIso),
     enabled: !!sectionKey,
   });
 
@@ -114,7 +130,7 @@ export default function ClassTeacherScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Class Teacher" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Class Teacher" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={dashboardQuery.isFetching} onRefresh={() => dashboardQuery.refetch()} />}
@@ -125,7 +141,17 @@ export default function ClassTeacherScreen() {
           <Text style={styles.emptyText}>You are not the class advisor for any section.</Text>
         ) : (
           <>
-            <ClassSwitcher options={options} selectedKey={sectionKey} onSelect={setSectionOverride} />
+            {/* A Class Teacher login is always exactly one section by
+                construction (one class_teacher_login per (grade, section) --
+                see backend's class-teacher-login.service.ts), so this list
+                only ever has one entry for that identity -- a switcher with
+                nothing to switch between is just confusing. Only a real
+                Faculty member directly holding multiple CLASS_ADVISOR
+                role_assignments (the old, pre-switch model) can genuinely
+                have more than one option here. */}
+            {!isClassTeacherLogin ? (
+              <ClassSwitcher options={options} selectedKey={sectionKey} onSelect={setSectionOverride} />
+            ) : null}
 
             {dashboardQuery.isLoading ? (
               <ActivityIndicator color={facultyColors.blue} style={{ marginTop: 16 }} />
@@ -138,6 +164,37 @@ export default function ClassTeacherScreen() {
                     { label: 'ON LEAVE', value: String(dashboardQuery.data.stats.onLeaveToday) },
                   ]}
                 />
+
+                <Text style={styles.sectionLabel}>STUDENTS ({dashboardQuery.data.stats.strength})</Text>
+                {rosterQuery.isLoading ? (
+                  <ActivityIndicator color={facultyColors.blue} style={{ marginTop: 8 }} />
+                ) : (rosterQuery.data?.records.length ?? 0) === 0 ? (
+                  <Text style={styles.emptyText}>No students enrolled in this class yet.</Text>
+                ) : (
+                  <View style={{ gap: 6 }}>
+                    {(rosterQuery.data?.records ?? [])
+                      .slice()
+                      .sort((a, b) => (a.rollNo ?? 999) - (b.rollNo ?? 999))
+                      .map((s) => (
+                        <Pressable
+                          key={s.studentId}
+                          style={styles.studentRow}
+                          onPress={() => router.push(`/(protected)/faculty/student-detail/${s.studentId}` as never)}
+                        >
+                          <View style={styles.studentAvatar}>
+                            <Text style={styles.studentAvatarText}>{initialsOf(s.firstName, s.lastName ?? '')}</Text>
+                          </View>
+                          <View style={{ flex: 1, minWidth: 0 }}>
+                            <Text style={styles.studentName}>{s.firstName}{s.lastName ? ` ${s.lastName}` : ''}</Text>
+                            <Text style={styles.studentMeta}>Roll {s.rollNo ?? '—'}</Text>
+                          </View>
+                          <View style={{ transform: [{ rotate: '-90deg' }] }}>
+                            <ChevronDownIcon />
+                          </View>
+                        </Pressable>
+                      ))}
+                  </View>
+                )}
 
                 <Text style={styles.sectionLabel}>CLASS DUTIES</Text>
                 <View style={{ gap: 8 }}>
@@ -291,6 +348,15 @@ const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: facultyColors.background },
   content: { padding: 14, paddingBottom: 32, gap: 12 },
   emptyText: { textAlign: 'center', color: facultyColors.muted, fontFamily: 'PlusJakartaSans_600SemiBold', marginTop: 24 },
+  studentRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    backgroundColor: facultyColors.surface, borderWidth: 1, borderColor: facultyColors.border,
+    borderRadius: 12, padding: 10,
+  },
+  studentAvatar: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#DBEAFE', alignItems: 'center', justifyContent: 'center' },
+  studentAvatarText: { fontSize: 12, fontFamily: 'PlusJakartaSans_800ExtraBold', color: facultyColors.blueDark },
+  studentName: { fontSize: 14, fontFamily: 'PlusJakartaSans_700Bold', color: facultyColors.ink },
+  studentMeta: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_600SemiBold', color: facultyColors.muted, marginTop: 1 },
   sectionLabel: { fontSize: 11.5, fontFamily: 'PlusJakartaSans_800ExtraBold', color: facultyColors.muted, letterSpacing: 1.2, marginTop: 8, marginLeft: 4 },
   rowCard: { backgroundColor: facultyColors.surface, borderWidth: 1, borderColor: facultyColors.border, borderRadius: 14, overflow: 'hidden' },
   rowTop: { padding: 12, flexDirection: 'row', alignItems: 'center', gap: 10 },

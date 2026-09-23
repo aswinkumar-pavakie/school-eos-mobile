@@ -46,7 +46,7 @@ export default function PayslipScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Payslip" subtitle={hasAccess && latest ? `${MONTH_NAMES[latest.month - 1]} ${latest.year}` : 'Request access'} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Payslip" subtitle={hasAccess && latest ? `${MONTH_NAMES[latest.month - 1]} ${latest.year}` : 'Request access'} onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={statusQuery.isFetching} onRefresh={() => statusQuery.refetch()} />}>
         {statusQuery.isLoading ? (
           <ActivityIndicator color={facultyColors.blue} style={{ marginTop: 24 }} />

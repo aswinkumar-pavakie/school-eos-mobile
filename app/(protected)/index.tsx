@@ -39,6 +39,7 @@ import { AuthExpiredError, authedRequest, logout, type PersonSummary, type RoleS
 import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
+import { ClassTeacherHome } from '@/components/class-teacher/ClassTeacherHome';
 import { CommunityHome } from '@/components/community/CommunityHome';
 import { VicePrincipalHome } from '@/components/vice-principal/VicePrincipalHome';
 import { PrincipalHome } from '@/components/principal/PrincipalHome';
@@ -57,7 +58,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver, isClassTeacherLogin } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -90,6 +91,13 @@ export default function ProtectedHome() {
 
   if (me && hasRole(me.roles, 'FACULTY')) {
     return <FacultyHome facultyName={me.person.firstName} facultyMeta={me.roles.map((r) => r.role_code).join(', ')} />;
+  }
+
+  // The separate Class Teacher login (CLASS_ADVISOR only, no FACULTY) --
+  // checked right after FACULTY since the two are mutually exclusive by
+  // construction (see backend's class-teacher-login.service.ts).
+  if (me && isClassTeacherLogin) {
+    return <ClassTeacherHome />;
   }
 
   if (me && isCommunity) {

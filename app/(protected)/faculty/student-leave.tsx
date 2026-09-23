@@ -12,6 +12,8 @@ import { AppHeader } from '@/components/AppHeader';
 import { AttachIcon, DateRangeIcon } from '@/components/faculty/icons';
 import { listStudentLeaveRequests, type StudentLeaveRequest } from '@/lib/faculty-student-leave-api';
 import { approveRequest, rejectRequest } from '@/lib/faculty-approvals-api';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { formatDate } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
 
@@ -30,6 +32,7 @@ function daysBetween(from: string, to: string): number {
 export default function StudentLeaveScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [filter, setFilter] = useState<Filter>('PENDING');
   const [busyId, setBusyId] = useState<string | null>(null);
 
@@ -52,7 +55,7 @@ export default function StudentLeaveScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Leave" subtitle="Student leave requests" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Leave" subtitle="Student leave requests" onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}

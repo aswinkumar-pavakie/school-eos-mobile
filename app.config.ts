@@ -122,9 +122,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     messagingApiBaseUrl: MESSAGING_API_BASE_URL_BY_ENV[APP_ENV],
     aiBotBaseUrl: AI_BOT_BASE_URL_BY_ENV[APP_ENV],
     environment: APP_ENV,
-    // PLACEHOLDER - company must run `eas init` and replace this with the real project ID before EAS builds.
+    // Real EAS project id (@krishnavaruns-team/school-eos-mobile), created via `eas init`.
+    // Not a secret -- just an identifier -- and `eas-cli`'s own project-linking check
+    // needs to statically find this literal value in app.config.ts; it can't resolve
+    // an env-var-sourced one (confirmed: `eas build` failed with "Cannot automatically
+    // write to dynamic config" until this was hardcoded).
     eas: {
-      projectId: process.env.EAS_PROJECT_ID ?? 'PLACEHOLDER-EAS-PROJECT-ID',
+      projectId: '56a94647-8f67-4cca-8daa-2ee8909877f0',
     },
   },
 });

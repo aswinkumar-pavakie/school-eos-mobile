@@ -104,7 +104,7 @@ export default function HomeworkScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Homework" subtitle="Assigned across my classes" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Homework" subtitle="Assigned across my classes" onBack={() => router.replace('/faculty/class-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}

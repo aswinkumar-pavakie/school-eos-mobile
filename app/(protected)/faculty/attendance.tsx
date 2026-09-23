@@ -14,6 +14,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
 import { ClassSwitcher } from '@/components/faculty/ClassSwitcher';
 import { RingStat } from '@/components/faculty/RingStat';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { ChevronLeftIcon, ChevronRightIcon, DoneAllIcon, HistoryIcon, CancelCircleIcon } from '@/components/faculty/icons';
 import { listAdvisorSections } from '@/lib/faculty-scope-api';
 import {
@@ -36,6 +38,7 @@ const DOW = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 export default function StudentAttendanceScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [sectionOverride, setSectionOverride] = useState<string | null>(null);
   const [pastOpen, setPastOpen] = useState(false);
   const [monthCursor, setMonthCursor] = useState(() => { const d = new Date(); return { year: d.getFullYear(), month: d.getMonth() }; });
@@ -100,7 +103,7 @@ export default function StudentAttendanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Student Attendance" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Student Attendance" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={rosterQuery.isFetching} onRefresh={() => rosterQuery.refetch()} />}

@@ -11,12 +11,15 @@ import { AppHeader } from '@/components/AppHeader';
 import { ClassSwitcher } from '@/components/faculty/ClassSwitcher';
 import { StatCards } from '@/components/faculty/StatCards';
 import { ChevronDownIcon } from '@/components/faculty/icons';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { listAdvisorSections } from '@/lib/faculty-scope-api';
 import { listExamsForSection, getClassResults, type TopperEntry } from '@/lib/faculty-class-results-api';
 import { facultyColors } from '@/lib/theme';
 
 export default function ClassResultsScreen() {
   const router = useRouter();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [sectionOverride, setSectionOverride] = useState<string | null>(null);
   // Keyed to the section it was picked under -- a section change naturally
   // "resets" the exam pick, no separate reset-effect needed.
@@ -46,7 +49,7 @@ export default function ClassResultsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Class Results" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Class Results" subtitle={options.find((o) => o.key === sectionKey)?.label ?? ''} onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={resultsQuery.isFetching} onRefresh={() => resultsQuery.refetch()} />}

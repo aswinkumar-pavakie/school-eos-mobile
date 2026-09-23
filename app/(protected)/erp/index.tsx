@@ -27,7 +27,7 @@ const STUDENT_TILES: ServiceItem[] = [
   { key: 'leave', label: 'Leave', href: '/(protected)/faculty/student-leave' },
   { key: 'records', label: 'Subject Records', href: '/(protected)/faculty/subject-records' },
   { key: 'marksEntry', label: 'Marks Entry', href: '/(protected)/faculty/marks-entry' },
-  { key: 'announcements', label: 'Announcements', href: '/(protected)/faculty/announcements' },
+  { key: 'announcements', label: 'Notices', href: '/(protected)/faculty/announcements' },
   { key: 'report', label: 'Class Results', href: '/(protected)/faculty/class-results' },
   { key: 'homework', label: 'Homework', href: '/(protected)/faculty/homework' },
   { key: 'classTeacher', label: 'Class Teacher', href: '/(protected)/faculty/class-teacher' },
@@ -69,7 +69,7 @@ function TileGrid({ items, router }: { items: ServiceItem[]; router: ReturnType<
 
 export default function ErpScreen() {
   const router = useRouter();
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
   // Academic Coordinator has no design reference at all (a role-conditional
   // feature, not part of the static Faculty Module design) -- its own tile
   // only ever appears for a real, currently-active coordinator, checked live
@@ -106,6 +106,14 @@ export default function ErpScreen() {
   // Same pattern for the standalone Community login -- see community/index.tsx.
   if (isCommunity) {
     return <Redirect href={'/(protected)/community' as never} />;
+  }
+
+  // Faculty no longer reaches this screen -- BottomTabBar's own FACULTY_TABS
+  // now points Class/Progress/Campus at their own real hub screens (see
+  // app/(protected)/faculty/{class,progress,campus}-hub.tsx) instead of this
+  // single combined page. Kept only as a safety net for a stale deep link.
+  if (isFaculty) {
+    return <Redirect href={'/(protected)/faculty/class-hub' as never} />;
   }
 
   return (
