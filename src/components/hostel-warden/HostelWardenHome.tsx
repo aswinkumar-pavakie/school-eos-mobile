@@ -20,7 +20,6 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -90,16 +89,18 @@ export function HostelWardenHome({ personName }: { personName: string }) {
           <Text style={styles.logoText}>PP</Text>
         </View>
         <Text style={[styles.schoolName, { flex: 1 }]}>Pavakie Public School</Text>
-        <Pressable onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-          <Ionicons name="chatbubble-ellipses-outline" size={20} color="rgba(255,255,255,0.85)" />
-        </Pressable>
-        <Pressable onPress={() => router.push('/(protected)/hostel-warden/notices' as never)} hitSlop={8}>
+        {/* Real E2EE messaging -- this icon previously (incorrectly) opened
+            Notices, which already has its own dedicated card + "View all"
+            link further down this same screen, so nothing is lost by
+            repointing the message-shaped icon to what it actually looks
+            like: messaging. */}
+        <Pressable onPress={() => router.push('/(protected)/messaging' as never)} hitSlop={8}>
           <MessageIcon />
         </Pressable>
       </LinearGradient>
 
       <View style={styles.body}>
-        <View style={styles.greetingRow}>
+        <Pressable style={styles.greetingRow} onPress={() => router.push('/(protected)/hostel-warden/profile' as never)}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>{initialsFromName(personName || 'H W')}</Text>
           </View>
@@ -107,7 +108,7 @@ export function HostelWardenHome({ personName }: { personName: string }) {
             <Text style={styles.greetingName}>Hi, {personName || 'there'}</Text>
             <Text style={styles.greetingMeta}>Hostel · Warden</Text>
           </View>
-        </View>
+        </Pressable>
 
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>

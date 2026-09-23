@@ -195,11 +195,12 @@ function isExpiredOrExpiringSoon(token: string): boolean {
 }
 
 // Faculty (every assignment), Parent, Hostel Warden, Principal's mobile half,
-// Vice Principal, and (new) the standalone Community login -- the only app
-// logins. Vice Principal moved here from web-only -- see WEB_ALLOWED_ROLES in
-// school-eos-website/src/app/(auth)/login/actions.ts. Bus Attendant/Canteen Vendor
-// use a separate device-credential flow, not this one. The backend's /auth/login
-// itself doesn't restrict by client, so the platform boundary is enforced here.
+// Vice Principal, the standalone Community login, Sports Admin, and Driver --
+// the only app logins. Canteen Vendor is explicitly web-only (the user's own
+// decision) -- it has no mobile screens at all in this app, and never should
+// again without that decision being revisited. Bus Attendant uses a separate
+// device-credential flow, not this one. The backend's /auth/login itself
+// doesn't restrict by client, so the platform boundary is enforced here.
 // Faculty always carries the base FACULTY role_code alongside any
 // assignment-specific ones (Class Advisor, Academic Coordinator, etc.), so
 // checking for FACULTY covers every assignment without having to enumerate them.

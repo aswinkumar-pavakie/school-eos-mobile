@@ -10,7 +10,6 @@
 import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -57,13 +56,6 @@ export function SportsHome({ personName }: { personName: string }) {
           <Text style={styles.logoText}>PP</Text>
         </View>
         <Text style={[styles.schoolName, { flex: 1 }]}>Pavakie Public School</Text>
-        <Pressable
-          style={{ width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(255,255,255,0.16)', alignItems: 'center', justifyContent: 'center' }}
-          onPress={() => router.push('/(protected)/ai-chat' as never)}
-          hitSlop={8}
-        >
-          <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
-        </Pressable>
       </LinearGradient>
 
       <View style={styles.body}>

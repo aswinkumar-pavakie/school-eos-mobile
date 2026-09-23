@@ -99,7 +99,7 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
       </LinearGradient>
 
       <ScrollView contentContainerStyle={{ paddingBottom: 24 }}>
-        <View style={styles.greetingCard}>
+        <Pressable style={styles.greetingCard} onPress={() => router.push('/(protected)/faculty/profile' as never)}>
           <Pressable
             style={styles.avatar}
             onPress={() => canSwitch && setSwitcherOpen(true)}
@@ -117,7 +117,7 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
             <Text style={styles.greetingName}>Hi, {facultyName}</Text>
             <Text style={styles.greetingMeta} numberOfLines={1}>{facultyMeta}</Text>
           </View>
-        </View>
+        </Pressable>
 
         <AccountSwitcherModal
           visible={switcherOpen}

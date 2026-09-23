@@ -9,7 +9,6 @@ import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -30,6 +29,17 @@ function BellIcon() {
     <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
       <Path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
       <Path d="M13.7 21a2 2 0 0 1-3.4 0" />
+    </Svg>
+  );
+}
+// Real E2EE messaging entry point -- COMMUNITY is a real messaging-enabled
+// role (see messaging-roles.constant.ts), same header icon-button pattern
+// every other role's Home screen uses for this.
+function MessageIcon() {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
+      <Path d="M3 6.5h18v11H8l-4 3.5v-3.5H3z" />
+      <Path d="M7.5 11h9M7.5 14h6" />
     </Svg>
   );
 }
@@ -89,8 +99,8 @@ export function CommunityHome({ personName, communityId }: { personName: string;
               </View>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-                <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
+              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/messaging' as never)}>
+                <MessageIcon />
               </Pressable>
               <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/community/announcements' as never)}>
                 <BellIcon />

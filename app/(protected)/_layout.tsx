@@ -2,10 +2,12 @@ import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { Redirect, Slot } from 'expo-router';
 import { useSession } from '@/lib/auth';
 import { useMe } from '@/hooks/useMe';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { useRegisterPushToken } from '@/services/notifications/push-token';
 import { useE2eeBootstrap } from '@/services/messaging/bootstrap';
 import { useMessagingSocket } from '@/services/messaging/socket';
 import { BottomTabBar } from '@/components/BottomTabBar';
+import { AskAiFab } from '@/components/ai-chat/AskAiFab';
 import { parentColors } from '@/lib/theme';
 
 // Real navigation shell: whichever screen matched (Home/My class-or-ERP/Academics/
@@ -21,6 +23,14 @@ import { parentColors } from '@/lib/theme';
 export default function ProtectedLayout() {
   const { status } = useSession();
   const me = useMe();
+  // AI chat is a real, person-directed assistant (school records, policies,
+  // "anything else") -- Driver is the one MOBILE_ALLOWED_ROLES role this
+  // doesn't apply to (a device-credential-style operational login, no
+  // person-facing school-records assistant use case, matching Canteen
+  // Vendor/Bus Attendant's exclusion on the website side -- neither of
+  // those two even has mobile access at all, per MOBILE_ALLOWED_ROLES, so
+  // Driver is the only real exclusion left to enforce here).
+  const { isDriver } = useCurrentRoles();
   // The single real "every login" hook -- fires once a real session is
   // confirmed, for every role that reaches this layout at all, whether that
   // just happened via the login form or via a persisted session on app
@@ -50,6 +60,7 @@ export default function ProtectedLayout() {
       <View style={styles.content}>
         <Slot />
       </View>
+      {!isDriver && <AskAiFab />}
       <BottomTabBar />
     </View>
   );
