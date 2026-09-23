@@ -49,7 +49,7 @@ export default function AppraisalScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Appraisal" subtitle="Self-assessment & review" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Appraisal" subtitle="Self-assessment & review" onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}

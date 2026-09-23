@@ -16,6 +16,10 @@ export function useCurrentRoles() {
     person: query.data?.person ?? null,
     roleCodes,
     isFaculty: roleCodes.includes('FACULTY'),
+    // True for the separate Class Teacher login (see src/lib/auth.ts's
+    // switchToLinkedIdentity) -- that account carries CLASS_ADVISOR alone,
+    // never FACULTY, so this is a distinct check, not implied by isFaculty.
+    isClassTeacherLogin: roleCodes.includes('CLASS_ADVISOR') && !roleCodes.includes('FACULTY'),
     isHostelWarden: roleCodes.includes('HOSTEL_WARDEN'),
     isPrincipal: roleCodes.includes('PRINCIPAL'),
     isVicePrincipal: roleCodes.includes('VICE_PRINCIPAL'),

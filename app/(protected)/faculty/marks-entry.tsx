@@ -108,7 +108,7 @@ export default function MarksEntryScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Marks Entry" subtitle={offeringOptions.find((o) => o.key === offeringKey)?.label ?? ''} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Marks Entry" subtitle={offeringOptions.find((o) => o.key === offeringKey)?.label ?? ''} onBack={() => router.replace('/faculty/class-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={rosterQuery.isFetching} onRefresh={() => rosterQuery.refetch()} />}

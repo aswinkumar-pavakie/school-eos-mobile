@@ -7,7 +7,7 @@ export default function StaffLeaveScreen() {
   const router = useRouter();
   return (
     <View style={{ flex: 1 }}>
-      <AppHeader title="Leave" subtitle="My leave requests" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Leave" subtitle="My leave requests" onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <StaffLeaveScreenBody mode="LEAVE" />
     </View>
   );

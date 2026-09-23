@@ -18,7 +18,7 @@ export default function LmsSubjectsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Current Term" subtitle="Materials, tasks & lesson plans" onBack={() => router.replace('/academics' as never)} />
+      <AppHeader title="Current Term" subtitle="Materials, tasks & lesson plans" onBack={() => router.replace('/faculty/class-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}

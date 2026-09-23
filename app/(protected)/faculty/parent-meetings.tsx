@@ -11,6 +11,8 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
 import { StatCards } from '@/components/faculty/StatCards';
 import { PlusIcon, TrashIcon, EditIcon, CloseIcon, VideoCallIcon } from '@/components/faculty/icons';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import {
   listMeetingSlots,
   createMeetingSlot,
@@ -25,6 +27,7 @@ import { facultyColors } from '@/lib/theme';
 export default function ParentMeetingsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [composerOpen, setComposerOpen] = useState(false);
   const [editing, setEditing] = useState<MeetingSlot | null>(null);
   const [meetingDate, setMeetingDate] = useState('');
@@ -102,7 +105,7 @@ export default function ParentMeetingsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Parent Meetings" subtitle="Your bookable slots" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Parent Meetings" subtitle="Your bookable slots" onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={listQuery.isFetching} onRefresh={() => listQuery.refetch()} />}>
         <StatCards items={[{ label: 'SLOTS', value: String(slots.length) }, { label: 'BOOKED', value: String(booked) }, { label: 'PENDING', value: String(pending) }]} />
 

@@ -19,12 +19,15 @@ import {
   deleteAnnouncement,
   type Announcement,
 } from '@/lib/faculty-announcements-api';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { formatDate } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
 
 export default function AnnouncementsScreen() {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [composerOpen, setComposerOpen] = useState(false);
   const [editing, setEditing] = useState<Announcement | null>(null);
   const [title, setTitle] = useState('');
@@ -79,14 +82,14 @@ export default function AnnouncementsScreen() {
       queryClient.invalidateQueries({ queryKey: ['faculty-announcements-feed'] });
       setComposerOpen(false);
     } catch (err) {
-      Alert.alert('Could not save announcement', err instanceof Error ? err.message : 'Please try again.');
+      Alert.alert('Could not save notice', err instanceof Error ? err.message : 'Please try again.');
     } finally {
       setSaving(false);
     }
   }
 
   function confirmDelete(a: Announcement) {
-    Alert.alert('Delete announcement?', `"${a.title}" will be permanently removed.`, [
+    Alert.alert('Delete notice?', `"${a.title}" will be permanently removed.`, [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
@@ -105,21 +108,21 @@ export default function AnnouncementsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Announcements" subtitle="School, role & your classes" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Notices" subtitle="School, role & your classes" onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={feedQuery.isFetching} onRefresh={() => feedQuery.refetch()} />}
       >
         <Pressable style={styles.postButton} onPress={() => openComposer()}>
           <PlusIcon />
-          <Text style={styles.postButtonText}>Post an announcement</Text>
+          <Text style={styles.postButtonText}>Post a notice</Text>
           <ChevronRightIcon color="rgba(255,255,255,.75)" />
         </Pressable>
 
         {feedQuery.isLoading ? (
           <ActivityIndicator color={facultyColors.blue} style={{ marginTop: 24 }} />
         ) : (feedQuery.data ?? []).length === 0 ? (
-          <Text style={styles.emptyText}>No announcements yet.</Text>
+          <Text style={styles.emptyText}>No notices yet.</Text>
         ) : (
           (feedQuery.data ?? []).map((a) => (
             <View key={a.id} style={styles.card}>
@@ -152,7 +155,7 @@ export default function AnnouncementsScreen() {
             <ScrollView keyboardShouldPersistTaps="handled">
               <View style={styles.sheetHeader}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.sheetTitle}>{editing ? 'Edit announcement' : 'New announcement'}</Text>
+                  <Text style={styles.sheetTitle}>{editing ? 'Edit notice' : 'New notice'}</Text>
                   <Text style={styles.sheetSubtitle}>Visible to the classes you select</Text>
                 </View>
                 <Pressable style={styles.closeBtn} onPress={() => setComposerOpen(false)}>
@@ -190,7 +193,7 @@ export default function AnnouncementsScreen() {
               </View>
 
               <Pressable style={[styles.postSubmit, !canPost && styles.postSubmitDisabled]} disabled={!canPost || saving} onPress={handlePost}>
-                {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.postSubmitText}>{editing ? 'Save changes' : 'Post announcement'}</Text>}
+                {saving ? <ActivityIndicator color="#fff" /> : <Text style={styles.postSubmitText}>{editing ? 'Save changes' : 'Post notice'}</Text>}
               </Pressable>
             </ScrollView>
           </View>

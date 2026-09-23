@@ -38,7 +38,7 @@ export default function CoordinatorHubScreen() {
       <AppHeader
         title="Academic Coordinator"
         subtitle={d ? d.stages.map((s) => STAGE_LABELS[s] ?? s).join(', ') : 'Loading scope…'}
-        onBack={() => router.replace('/erp' as never)}
+        onBack={() => router.replace('/faculty/class-hub' as never)}
       />
       <ScrollView
         contentContainerStyle={styles.content}

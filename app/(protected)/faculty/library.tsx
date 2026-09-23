@@ -42,7 +42,7 @@ export default function LibraryScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Library" subtitle="Catalogue & my books" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Library" subtitle="Catalogue & my books" onBack={() => router.replace('/faculty/campus-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={booksQuery.isFetching || issuedQuery.isFetching} onRefresh={() => (tab === 'SEARCH' ? booksQuery.refetch() : issuedQuery.refetch())} />}

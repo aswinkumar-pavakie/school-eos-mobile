@@ -39,7 +39,7 @@ export default function MyAttendanceScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="My Attendance" subtitle={`${MONTH_NAMES[cursor.month]} ${cursor.year}`} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="My Attendance" subtitle={`${MONTH_NAMES[cursor.month]} ${cursor.year}`} onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={query.isFetching} onRefresh={() => query.refetch()} />}

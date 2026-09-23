@@ -15,6 +15,8 @@ import { StatCards } from '@/components/faculty/StatCards';
 import { ChevronDownIcon } from '@/components/faculty/icons';
 import { listTeachingOfferings } from '@/lib/faculty-scope-api';
 import { getSubjectRecords, type SubjectRecordStudent } from '@/lib/faculty-subject-records-api';
+import { useCurrentRoles } from '@/hooks/useCurrentRoles';
+import { classHubHref } from '@/lib/nav';
 import { initialsOf } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
 
@@ -27,6 +29,7 @@ function gradeBadgeColors(grade: string | null) {
 
 export default function SubjectRecordsScreen() {
   const router = useRouter();
+  const { isClassTeacherLogin } = useCurrentRoles();
   const [offeringOverride, setOfferingOverride] = useState<string | null>(null);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -46,7 +49,7 @@ export default function SubjectRecordsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Subject Records" subtitle={options.find((o) => o.key === offeringKey)?.label ?? ''} onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="Subject Records" subtitle={options.find((o) => o.key === offeringKey)?.label ?? ''} onBack={() => router.replace(classHubHref(isClassTeacherLogin) as never)} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={recordsQuery.isFetching} onRefresh={() => recordsQuery.refetch()} />}

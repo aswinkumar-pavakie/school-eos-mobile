@@ -7,7 +7,7 @@ export default function StaffOdScreen() {
   const router = useRouter();
   return (
     <View style={{ flex: 1 }}>
-      <AppHeader title="OD" subtitle="On-duty requests" onBack={() => router.replace('/erp' as never)} />
+      <AppHeader title="OD" subtitle="On-duty requests" onBack={() => router.replace('/faculty/progress-hub' as never)} />
       <StaffLeaveScreenBody mode="OD" />
     </View>
   );

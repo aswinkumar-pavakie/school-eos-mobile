@@ -21,11 +21,13 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useQuery } from '@tanstack/react-query';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { HostelIcon } from '@/components/hostel-warden/icons';
+import { getFacultyCommute } from '@/lib/faculty-scope-api';
 import { parentColors } from '@/lib/theme';
 
-type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'students' | 'profile';
+type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'students' | 'profile' | 'progress' | 'campus' | 'class' | 'transportHostel';
 
 // Sports Admin's own real tab set, pixel-matched to Sports Staff Mobile
 // App.dc.html's own `const TABS = [['home','Home','⌂'],['sports','Sports','◎'],
@@ -133,6 +135,92 @@ function BusIcon({ color }: { color: string }) {
   );
 }
 
+function ProgressIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9}>
+      <Path d="M5 20V10M12 20V4M19 20v-7" />
+    </Svg>
+  );
+}
+
+function CampusIcon({ color }: { color: string }) {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth={1.9}>
+      <Path d="M3 21h18M4 21V9l8-5 8 5v12M9 21v-6h6v6" />
+    </Svg>
+  );
+}
+
+type FacultyTab = { key: TabKey; label: string; href: '/' | '/(protected)/faculty/class-hub' | '/(protected)/faculty/progress-hub' | '/(protected)/faculty/campus-hub' | '/(protected)/faculty/hostel-hub' | '/my-bus'; Icon: typeof HomeIcon };
+
+const FACULTY_BASE_TABS: FacultyTab[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
+  { key: 'class', label: 'Class', href: '/(protected)/faculty/class-hub', Icon: SchoolIcon },
+  { key: 'progress', label: 'Progress', href: '/(protected)/faculty/progress-hub', Icon: ProgressIcon },
+  { key: 'campus', label: 'Campus', href: '/(protected)/faculty/campus-hub', Icon: CampusIcon },
+];
+
+// The 5th tab slot is conditional on this faculty member's own commute/
+// residency status (staff.is_hosteller / uses_school_transport -- see
+// query.md's migration and FacultyScopeRepository.getCommutePrefs): Hostel
+// if they reside in hostel, My Bus if they use school transport, or
+// nothing at all for a self-vehicle commute -- nav genuinely drops to 4
+// tabs rather than showing an empty/irrelevant 5th one. isHosteller wins
+// if both flags are somehow set. Per the product notes' own "Hostel [Van]
+// N/A" annotation on this exact slot.
+function facultyTabsFor(commute: { isHosteller: boolean; usesSchoolTransport: boolean } | undefined): FacultyTab[] {
+  if (!commute) return FACULTY_BASE_TABS;
+  if (commute.isHosteller) {
+    return [...FACULTY_BASE_TABS, { key: 'bus', label: 'Hostel', href: '/(protected)/faculty/hostel-hub', Icon: ({ color }) => <HostelIcon name="hostel" color={color} size={22} strokeWidth={1.9} /> }];
+  }
+  if (commute.usesSchoolTransport) {
+    return [...FACULTY_BASE_TABS, { key: 'bus', label: 'My Bus', href: '/my-bus', Icon: BusIcon }];
+  }
+  return FACULTY_BASE_TABS;
+}
+
+function activeTabForFaculty(pathname: string): TabKey {
+  if (pathname === '/' || pathname === '') return 'home';
+  if (pathname.startsWith('/faculty/progress-hub')) return 'progress';
+  if (pathname.startsWith('/faculty/campus-hub')) return 'campus';
+  if (pathname.startsWith('/faculty/hostel-hub') || pathname.startsWith('/my-bus')) return 'bus';
+  // Every faculty/* screen not one of the hubs above, plus /events,
+  // /messaging, /academics (Online Class) -- all reached FROM the Class
+  // hub's own tile grid -- stays highlighted as "Class", same "still that
+  // tab" convention tabsFor's own activeTabFor already uses for Fees.
+  if (
+    pathname.startsWith('/faculty/') ||
+    pathname.startsWith('/events') ||
+    pathname.startsWith('/messaging') ||
+    pathname.startsWith('/academics')
+  )
+    return 'class';
+  return 'home';
+}
+
+// Class Teacher (Advisor) login's own real 4-tab set, matching its own
+// product notes: Home/Class/Campus/Transport-Hostel -- no Progress tab
+// (this login is a section-scoped identity, not a real staff record with
+// its own attendance/leave/payroll). See app/(protected)/class-teacher/*.
+// Just Home + Class -- per the product notes' own two-column layout, Campus
+// and Transport/Hostel/N/A are listed ONLY under the Faculty column (items
+// 4 and 5 there); the Class Teacher column stops at item 2 (Class). Not an
+// oversight -- confirmed directly against the handwritten notes.
+const CLASS_TEACHER_TABS: { key: TabKey; label: string; href: '/' | '/(protected)/class-teacher/class-hub'; Icon: typeof HomeIcon }[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: HomeIcon },
+  { key: 'class', label: 'Class', href: '/(protected)/class-teacher/class-hub', Icon: SchoolIcon },
+];
+
+function activeTabForClassTeacher(pathname: string): TabKey {
+  if (pathname === '/' || pathname === '') return 'home';
+  // Every /class-teacher/* screen (class-hub, timetable, ...) and every
+  // faculty/* screen the Class hub's tiles point at (attendance, calendar,
+  // ...) stays highlighted as "Class" -- same convention as
+  // activeTabForFaculty above.
+  if (pathname.startsWith('/class-teacher/') || pathname.startsWith('/faculty/')) return 'class';
+  return 'home';
+}
+
 type SecondTabHref = '/my-class' | '/erp';
 
 // Faculty AND Hostel Warden both get "ERP" in the second tab slot (Warden's own
@@ -191,24 +279,36 @@ export function BottomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } =
-    useCurrentRoles();
+  const { isFaculty, isClassTeacherLogin, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
+  const commuteQuery = useQuery({
+    queryKey: ['faculty-commute-prefs'],
+    queryFn: getFacultyCommute,
+    enabled: isFaculty,
+  });
   const TABS = isDriver
     ? DRIVER_TABS
     : isSportsAdmin
       ? SPORTS_TABS
       : isHostelWarden
         ? HOSTEL_WARDEN_TABS
-        : tabsFor(
-            isFaculty || isPrincipal || isVicePrincipal || isCommunity,
-            isVicePrincipal || isCommunity,
-            isCommunity,
-          );
+        : isFaculty
+          ? facultyTabsFor(commuteQuery.data)
+          : isClassTeacherLogin
+            ? CLASS_TEACHER_TABS
+            : tabsFor(
+                isPrincipal || isVicePrincipal || isCommunity,
+                isVicePrincipal || isCommunity,
+                isCommunity,
+              );
   const active = isDriver
     ? activeTabForDriver(pathname)
-    : isHostelWarden
-      ? activeTabForHostelWarden(pathname)
-      : activeTabFor(pathname);
+    : isFaculty
+      ? activeTabForFaculty(pathname)
+      : isClassTeacherLogin
+        ? activeTabForClassTeacher(pathname)
+        : isHostelWarden
+          ? activeTabForHostelWarden(pathname)
+          : activeTabFor(pathname);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
