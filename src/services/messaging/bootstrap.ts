@@ -66,6 +66,77 @@ async function ensureDeviceIdentity(): Promise<void> {
   });
 }
 
+// Module-scope: a device only ever has one live session at a time, so a
+// single in-flight promise (not keyed by anything) is enough to coalesce
+// concurrent invocations of this hook -- React Strict Mode's dev-only double
+// effect invoke, Fast Refresh remounting the screen, or `status` flapping
+// right after sign-in. Confirmed live as a real bug on the website's twin of
+// this hook (see its own comment): two overlapping runs each registered a
+// fresh device with their own keypair, and since only one device may be
+// ACTIVE per person, each new registration revoked the last -- while the
+// KeyPackage publish for whichever device ended up ACTIVE never landed
+// before it got revoked too. Net result: a real ACTIVE device with zero
+// published KeyPackages, permanently unreachable until another bootstrap
+// happens to run alone. Coalescing means only one registration/replenish
+// sequence ever runs per sign-in, so there's nothing left to race.
+let bootstrapInFlight: Promise<void> | null = null;
+
+function runBootstrap(): Promise<void> {
+  if (bootstrapInFlight) return bootstrapInFlight;
+
+  bootstrapInFlight = (async () => {
+    await ensureDeviceIdentity();
+    // Best-effort: a failed replenish just means this device's KeyPackage
+    // pool stays wherever it was, not something worth surfacing to the
+    // person signing in -- the same posture push-token.ts takes. Still
+    // logged (never a bare swallow) -- a brand-new device stuck at zero
+    // KeyPackages is silently unreachable by everyone until it retries on
+    // a later login, and that's worth being able to diagnose.
+    try {
+      await replenishKeyPackagesIfNeeded();
+    } catch (err) {
+      // ACCESS_DENIED is the other real code this self-scoped call can
+      // get -- devicesRepo.findById() finds nothing at all for this
+      // device's cached id (e.g. after an operator-run data reset
+      // truncates messaging_devices while this phone's storage still
+      // remembers a deviceId that no longer exists anywhere). Since this
+      // call always uses this device's own token + its own cached
+      // deviceId, ACCESS_DENIED here can never mean a real cross-user
+      // permission denial -- only "this cached identity is stale" --
+      // exactly like DEVICE_REVOKED, and self-heals the same way. Mirrors
+      // the website's own fix.
+      if (
+        err instanceof MessagingApiError &&
+        (err.code === 'DEVICE_REVOKED' || err.code === 'ACCESS_DENIED')
+      ) {
+        // Locally-restored identity is stale -- the server will never
+        // accept it again. Wipe it and register a fresh device on this
+        // same login, so a revoked/vanished device self-heals in one
+        // login instead of failing the same way forever.
+        await clearDeviceIdentity();
+        await ensureDeviceIdentity();
+        await replenishKeyPackagesIfNeeded().catch((retryErr) => {
+          console.error('[e2ee bootstrap] KeyPackage replenish failed after re-registering device:', retryErr);
+        });
+      } else {
+        console.error('[e2ee bootstrap] KeyPackage replenish failed:', err);
+      }
+    }
+  })()
+    .catch((err) => {
+      // Unlike the replenish above, a failed ensureDeviceIdentity() means
+      // this person has NO registered device at all -- every message sent
+      // to them will fail. Never swallow this silently; at minimum it must
+      // be visible in the Metro/device logs for diagnosis.
+      console.error('[e2ee bootstrap] device identity setup failed:', err);
+    })
+    .finally(() => {
+      bootstrapInFlight = null;
+    });
+
+  return bootstrapInFlight;
+}
+
 /** The one real "for every login" E2EE bootstrap hook -- see
  * push-token.ts's useRegisterPushToken for the exact pattern this mirrors. */
 export function useE2eeBootstrap(status: SessionStatus): void {
@@ -96,37 +167,6 @@ export function useE2eeBootstrap(status: SessionStatus): void {
     // KeyPackage publish that makes the device actually reachable -- that
     // previously left a real, ACTIVE device with zero usable key material,
     // forever, until another login happened to win the race.
-    (async () => {
-      await ensureDeviceIdentity();
-      // Best-effort: a failed replenish just means this device's KeyPackage
-      // pool stays wherever it was, not something worth surfacing to the
-      // person signing in -- the same posture push-token.ts takes. Still
-      // logged (never a bare swallow) -- a brand-new device stuck at zero
-      // KeyPackages is silently unreachable by everyone until it retries on
-      // a later login, and that's worth being able to diagnose.
-      try {
-        await replenishKeyPackagesIfNeeded();
-      } catch (err) {
-        if (err instanceof MessagingApiError && err.code === 'DEVICE_REVOKED') {
-          // Locally-restored identity is stale -- the server will never
-          // accept it again. Wipe it and register a fresh device on this
-          // same login, so a revoked device self-heals in one login instead
-          // of failing the same way forever. Mirrors the website's own fix.
-          await clearDeviceIdentity();
-          await ensureDeviceIdentity();
-          await replenishKeyPackagesIfNeeded().catch((retryErr) => {
-            console.error('[e2ee bootstrap] KeyPackage replenish failed after re-registering device:', retryErr);
-          });
-        } else {
-          console.error('[e2ee bootstrap] KeyPackage replenish failed:', err);
-        }
-      }
-    })().catch((err) => {
-      // Unlike the replenish above, a failed ensureDeviceIdentity() means
-      // this person has NO registered device at all -- every message sent
-      // to them will fail. Never swallow this silently; at minimum it must
-      // be visible in the Metro/device logs for diagnosis.
-      console.error('[e2ee bootstrap] device identity setup failed:', err);
-    });
+    runBootstrap();
   }, [status]);
 }

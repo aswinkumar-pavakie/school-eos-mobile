@@ -123,9 +123,11 @@ export function DriverHome({ personName, onSignOut }: { personName: string; onSi
               <Text style={styles.schoolName}>Pavakie Public School</Text>
             </View>
             <View style={{ flexDirection: 'row', gap: 8 }}>
-              <Pressable style={styles.bellWrap} onPress={() => router.push('/(protected)/ai-chat' as never)} hitSlop={8}>
-                <Ionicons name="chatbubble-ellipses-outline" size={18} color="#fff" />
-              </Pressable>
+              {/* AI chat entry point removed here -- Driver is deliberately
+                  excluded from the AI assistant (a device-credential-style
+                  operational login, no person-facing school-records
+                  assistant use case), matching the global AskAiFab's own
+                  exclusion in app/(protected)/_layout.tsx. */}
               <View style={styles.bellWrap}>
                 <BellIcon />
                 <View style={styles.bellDot} />
