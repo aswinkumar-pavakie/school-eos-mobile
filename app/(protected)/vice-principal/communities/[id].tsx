@@ -147,7 +147,7 @@ export default function VicePrincipalCommunityDetail() {
         tabs={[
           { key: 'activities', label: 'Activities' },
           { key: 'members', label: 'Members' },
-          { key: 'announcements', label: 'Announcements' },
+          { key: 'announcements', label: 'Notices' },
         ]}
         value={tab}
         onChange={setTab}
@@ -260,11 +260,11 @@ function AnnouncementsTab({ communityId }: { communityId: string }) {
         <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
       ) : announcementsQuery.isError ? (
         <ErrorState
-          message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load announcements.'}
+          message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load notices.'}
           onRetry={() => announcementsQuery.refetch()}
         />
       ) : announcements.length === 0 ? (
-        <EmptyState message="No announcements posted in this community." />
+        <EmptyState message="No notices posted in this community." />
       ) : (
         <View style={styles.list}>
           {announcements.map((announcement, index) => (

@@ -3,6 +3,7 @@
 // direction one-way (auth.ts -> api.ts) avoids a circular import between the two.
 
 import Constants from 'expo-constants';
+import { getDeviceId } from './device-id';
 
 // EXPO_PUBLIC_API_BASE_URL (see .env.example) is wired into app.config.ts's `extra`
 // block and read back out via expo-constants here -- the project's existing
@@ -40,10 +41,13 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
 
   let res: Response;
+  const deviceId = await getDeviceId();
   try {
     res = await fetch(`${API_BASE_URL}${path}`, {
       ...rest,
-      headers: isFormData ? { ...headers } : { 'Content-Type': 'application/json', ...headers },
+      headers: isFormData
+        ? { 'X-Device-Id': deviceId, ...headers }
+        : { 'Content-Type': 'application/json', 'X-Device-Id': deviceId, ...headers },
       body: isFormData ? (body as FormData) : body !== undefined ? JSON.stringify(body) : undefined,
     });
   } catch (err) {

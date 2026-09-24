@@ -85,10 +85,10 @@ export default function PrincipalAnnouncementsScreen() {
 
   return (
     <View style={styles.flex}>
-      <PrincipalHeader title="Announcements" subtitle="School-wide announcements" onBack={() => router.back()} />
+      <PrincipalHeader title="Notices" subtitle="School-wide notices" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Pressable style={styles.createButton} onPress={() => router.push('/(protected)/principal/announcements/create' as never)}>
-          <Text style={styles.createButtonText}>+ New announcement</Text>
+          <Text style={styles.createButtonText}>+ New notice</Text>
         </Pressable>
 
         <TextInput
@@ -132,11 +132,11 @@ export default function PrincipalAnnouncementsScreen() {
           <ActivityIndicator color={principalColors.primary} style={{ marginTop: 16 }} />
         ) : announcementsQuery.isError ? (
           <ErrorState
-            message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load announcements.'}
+            message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load notices.'}
             onRetry={() => announcementsQuery.refetch()}
           />
         ) : filtered.length === 0 ? (
-          <EmptyState message="No announcements match your search or filters." />
+          <EmptyState message="No notices match your search or filters." />
         ) : (
           <View style={styles.list}>
             {filtered.map((announcement, index) => {

@@ -79,7 +79,7 @@ const SECTIONS: NavSection[] = [
     title: 'COMMUNICATION',
     items: [
       { key: 'communityProfile', label: 'Communities', slug: 'communities' },
-      { key: 'announcements', label: 'Announcements', slug: 'announcements' },
+      { key: 'announcements', label: 'Notices', slug: 'announcements' },
       { key: 'messages', label: 'Messages', slug: 'messages', href: '/(protected)/messaging' },
     ],
   },

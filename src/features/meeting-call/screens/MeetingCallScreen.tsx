@@ -41,7 +41,10 @@ registerGlobals();
 export function MeetingCallScreen() {
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const router = useRouter();
-  const { isFaculty, isLoading: rolesLoading } = useCurrentRoles();
+  const { isFaculty: isFacultyRole, isClassTeacherLogin, isLoading: rolesLoading } = useCurrentRoles();
+  // A Class Teacher login hosts parent meetings too (the backend's faculty
+  // call-token endpoint accepts CLASS_ADVISOR), so it takes the host side.
+  const isFaculty = isFacultyRole || isClassTeacherLogin;
 
   const [credentials, setCredentials] = useState<MeetingCallCredentials | null>(null);
   const [error, setError] = useState<string | null>(null);

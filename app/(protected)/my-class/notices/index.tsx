@@ -86,7 +86,7 @@ export default function NoticesScreen() {
   if (childLoading || !selected) {
     return (
       <View style={styles.flex}>
-        <AppHeader title="Announcements" onBack={() => router.back()} />
+        <AppHeader title="Notices" onBack={() => router.back()} />
         <View style={styles.center}>
           <ActivityIndicator color={parentColors.blue} />
         </View>
@@ -101,7 +101,7 @@ export default function NoticesScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Announcements" subtitle={subtitle} onBack={() => router.back()} />
+      <AppHeader title="Notices" subtitle={subtitle} onBack={() => router.back()} />
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={
@@ -113,7 +113,7 @@ export default function NoticesScreen() {
         ) : announcementsQuery.isError ? (
           <View style={styles.errorBox}>
             <Text style={styles.errorText}>
-              {extractErrorMessage(announcementsQuery.error, 'Unable to load announcements.')}
+              {extractErrorMessage(announcementsQuery.error, 'Unable to load notices.')}
             </Text>
             <Pressable style={styles.retryButton} onPress={() => announcementsQuery.refetch()}>
               <Text style={styles.retryText}>Try again</Text>
@@ -121,7 +121,7 @@ export default function NoticesScreen() {
           </View>
         ) : announcements.length === 0 ? (
           <View style={styles.noMatchCard}>
-            <Text style={styles.noMatchTitle}>No announcements yet</Text>
+            <Text style={styles.noMatchTitle}>No notices yet</Text>
             <Text style={styles.noMatchSubtitle}>School notices for this child will appear here.</Text>
           </View>
         ) : (

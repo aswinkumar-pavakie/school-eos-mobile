@@ -187,7 +187,7 @@ export function CommunityHome({ personName, communityId }: { personName: string;
             <Text style={styles.annDate}>{formatDate(latestAnnouncement.publishedAt)}</Text>
           </View>
         ) : (
-          <Text style={styles.emptyText}>No announcements yet.</Text>
+          <Text style={styles.emptyText}>No notices yet.</Text>
         )}
 
         <View style={styles.sectionHeaderRow}>

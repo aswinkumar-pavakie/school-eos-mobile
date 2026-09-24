@@ -17,7 +17,7 @@
 // opens the account switcher for now, same as Faculty's own avatar; a real
 // Bio Data page is a separate, not-yet-built feature.
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,7 +28,6 @@ import Svg, { Path, Circle } from 'react-native-svg';
 import { listAdvisorSections } from '@/lib/faculty-scope-api';
 import { listFeedAnnouncements } from '@/lib/faculty-announcements-api';
 import { listPublishedMediaPosts } from '@/lib/faculty-media-posts-api';
-import { getActiveIdentifier, getLinkedIdentifier } from '@/lib/auth';
 import { formatDate } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
 import { AccountSwitcherModal } from '@/components/AccountSwitcherModal';
@@ -53,8 +52,6 @@ export function ClassTeacherHome() {
   const router = useRouter();
   const [annIndex, setAnnIndex] = useState(0);
   const [switcherOpen, setSwitcherOpen] = useState(false);
-  const [activeIdentifier, setActiveIdentifier] = useState<string | null>(null);
-  const [linkedIdentifier, setLinkedIdentifier] = useState<string | null>(null);
 
   const sectionsQuery = useQuery({ queryKey: ['class-teacher-advisor-sections'], queryFn: listAdvisorSections });
   const announcementsQuery = useQuery({ queryKey: ['class-teacher-notices-feed'], queryFn: listFeedAnnouncements });
@@ -63,17 +60,6 @@ export function ClassTeacherHome() {
   const section = sectionsQuery.data?.[0];
   const sectionLabel = section ? `${section.gradeName} - ${section.sectionName}` : 'Class Advisor';
 
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all([getActiveIdentifier(), getLinkedIdentifier()]).then(([active, linked]) => {
-      if (cancelled) return;
-      setActiveIdentifier(active);
-      setLinkedIdentifier(linked);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const announcements = announcementsQuery.data ?? [];
   const currentAnn = announcements[annIndex % Math.max(announcements.length, 1)];
@@ -120,10 +106,6 @@ export function ClassTeacherHome() {
           visible={switcherOpen}
           onClose={() => setSwitcherOpen(false)}
           activeLabel="CLASS_TEACHER"
-          activeIdentifier={activeIdentifier}
-          linkedLabel="FACULTY"
-          linkedIdentifier={linkedIdentifier}
-          canAddAccount
         />
 
         <View style={styles.sectionHeaderRow}>

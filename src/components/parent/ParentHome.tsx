@@ -122,7 +122,7 @@ export function ParentHome() {
         <View style={styles.sectionHeaderRow}>
           <View style={styles.sectionHeaderLeft}>
             <AnnouncementsIcon />
-            <Text style={styles.sectionHeaderTitle}>Announcements</Text>
+            <Text style={styles.sectionHeaderTitle}>Notices</Text>
           </View>
           <Pressable onPress={goNotices}>
             <Text style={styles.viewAll}>View All</Text>
@@ -132,7 +132,7 @@ export function ParentHome() {
         {announcementsQuery.isLoading ? (
           <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
         ) : announcements.length === 0 ? (
-          <Text style={styles.emptyText}>No announcements yet.</Text>
+          <Text style={styles.emptyText}>No notices yet.</Text>
         ) : currentAnn ? (
           <>
             <Pressable style={styles.annCard} onPress={goNotices}>

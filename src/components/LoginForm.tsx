@@ -5,6 +5,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { ApiError } from '@/lib/api';
 import { login, PlatformNotAllowedError } from '@/lib/auth';
 import { colors, fonts } from '@/lib/theme';
+import { goHome } from '@/lib/go-home';
 
 export function LoginForm() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export function LoginForm() {
       queryClient.clear();
       // Per-role home destinations aren't built yet (feature teams own those screens
       // individually); every role lands on the single protected placeholder for now.
-      router.replace('/(protected)');
+      goHome(router);
     } catch (err) {
       if (err instanceof PlatformNotAllowedError) {
         setError(err.message);

@@ -35,10 +35,18 @@ export function useMyTeachingOfferings() {
   });
 }
 
+// A class going Live (or being cancelled/rescheduled) has to show up on the other
+// side without a manual pull-to-refresh: a parent waiting to join must see
+// "Live now" as soon as the teacher starts. React Query only polls while the
+// app is in the foreground.
+const LIVE_REFRESH_MS = 15_000;
+
 export function useOnlineClassesList(view: OnlineClassView) {
   return useQuery({
     queryKey: onlineClassKeys.list(view),
     queryFn: () => fetchOnlineClasses(view),
+    refetchInterval: LIVE_REFRESH_MS,
+    refetchOnMount: 'always',
   });
 }
 
@@ -47,6 +55,8 @@ export function useOnlineClassDetail(id: string | undefined) {
     queryKey: onlineClassKeys.detail(id ?? ''),
     queryFn: () => fetchOnlineClassDetail(id as string),
     enabled: !!id,
+    refetchInterval: LIVE_REFRESH_MS,
+    refetchOnMount: 'always',
   });
 }
 

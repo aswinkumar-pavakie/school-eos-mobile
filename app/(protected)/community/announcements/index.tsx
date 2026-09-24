@@ -47,7 +47,7 @@ function NewAnnouncementTab({ communityId }: { communityId: string }) {
       setBody('');
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Could not send the announcement.');
+      setError(err instanceof ApiError ? err.message : 'Could not send the notice.');
     } finally {
       setSubmitting(false);
     }
@@ -79,10 +79,10 @@ function NewAnnouncementTab({ communityId }: { communityId: string }) {
         </View>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        {success ? <Text style={styles.success}>Announcement sent. Check the History tab.</Text> : null}
+        {success ? <Text style={styles.success}>Notice sent. Check the History tab.</Text> : null}
 
         <Pressable style={[styles.submitButton, submitting && styles.submitButtonDisabled]} onPress={handleSubmit} disabled={submitting}>
-          {submitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.submitButtonText}>Send announcement</Text>}
+          {submitting ? <ActivityIndicator color="#fff" /> : <Text style={styles.submitButtonText}>Send notice</Text>}
         </Pressable>
       </View>
     </ScrollView>
@@ -113,11 +113,11 @@ function HistoryTab({ communityId }: { communityId: string }) {
         <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
       ) : listQuery.isError ? (
         <ErrorState
-          message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load announcements.'}
+          message={listQuery.error instanceof ApiError ? listQuery.error.message : 'Unable to load notices.'}
           onRetry={() => listQuery.refetch()}
         />
       ) : (listQuery.data ?? []).length === 0 ? (
-        <EmptyState message="No announcements yet. Send one from the New tab." />
+        <EmptyState message="No notices yet. Send one from the New tab." />
       ) : (
         (listQuery.data ?? []).map((announcement) => {
           const meta = announcementStatusMeta(announcement.state);
@@ -164,7 +164,7 @@ export default function AnnouncementsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Announcements" subtitle="Send notices to your community" onBack={() => router.back()} />
+      <AppHeader title="Notices" subtitle="Send notices to your community" onBack={() => router.back()} />
       <SegmentedTabs
         tabs={[
           { key: 'history', label: 'History' },

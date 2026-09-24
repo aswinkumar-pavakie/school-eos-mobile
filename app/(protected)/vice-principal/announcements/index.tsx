@@ -92,7 +92,7 @@ export default function VicePrincipalAnnouncementsScreen() {
 
   return (
     <View style={styles.flex}>
-      <AppHeader title="Announcements" subtitle="School-wide announcements" onBack={() => router.back()} />
+      <AppHeader title="Notices" subtitle="School-wide notices" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <TextInput
           value={search}
@@ -135,11 +135,11 @@ export default function VicePrincipalAnnouncementsScreen() {
           <ActivityIndicator color={parentColors.blue} style={{ marginTop: 16 }} />
         ) : announcementsQuery.isError ? (
           <ErrorState
-            message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load announcements.'}
+            message={announcementsQuery.error instanceof ApiError ? announcementsQuery.error.message : 'Unable to load notices.'}
             onRetry={() => announcementsQuery.refetch()}
           />
         ) : filtered.length === 0 ? (
-          <EmptyState message="No announcements match your search or filters." />
+          <EmptyState message="No notices match your search or filters." />
         ) : (
           <View style={styles.list}>
             {filtered.map((announcement, index) => {
