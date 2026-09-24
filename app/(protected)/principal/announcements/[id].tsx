@@ -60,7 +60,7 @@ export default function PrincipalAnnouncementDetail() {
   if (allQuery.isLoading) {
     return (
       <View style={styles.flex}>
-        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
+        <PrincipalHeader title="Notice" onBack={() => router.back()} />
         <ActivityIndicator color={principalColors.primary} style={{ marginTop: 40 }} />
       </View>
     );
@@ -69,9 +69,9 @@ export default function PrincipalAnnouncementDetail() {
   if (allQuery.isError) {
     return (
       <View style={styles.flex}>
-        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
+        <PrincipalHeader title="Notice" onBack={() => router.back()} />
         <ErrorState
-          message={allQuery.error instanceof ApiError ? allQuery.error.message : "Couldn't load this announcement."}
+          message={allQuery.error instanceof ApiError ? allQuery.error.message : "Couldn't load this notice."}
           onRetry={() => allQuery.refetch()}
         />
       </View>
@@ -81,8 +81,8 @@ export default function PrincipalAnnouncementDetail() {
   if (!announcement) {
     return (
       <View style={styles.flex}>
-        <PrincipalHeader title="Announcement" onBack={() => router.back()} />
-        <ErrorState message="This announcement could not be found." onRetry={() => allQuery.refetch()} />
+        <PrincipalHeader title="Notice" onBack={() => router.back()} />
+        <ErrorState message="This notice could not be found." onRetry={() => allQuery.refetch()} />
       </View>
     );
   }

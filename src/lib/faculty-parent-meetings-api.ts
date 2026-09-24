@@ -4,6 +4,7 @@
 // wires.
 
 import { authedRequest } from './auth';
+import { withResolvedLiveKitUrl } from '@/lib/livekit-url';
 
 interface ApiEnvelope<T> {
   data: T;
@@ -80,7 +81,7 @@ export async function requestFacultyCallToken(bookingId: string): Promise<Meetin
     `/faculty/parent-meetings/bookings/${bookingId}/call-token`,
     { method: 'POST' },
   );
-  return res.data;
+  return withResolvedLiveKitUrl(res.data);
 }
 
 // ============================================================
@@ -105,5 +106,5 @@ export async function requestParentCallToken(bookingId: string): Promise<Meeting
     `/parent/meeting-bookings/${bookingId}/call-token`,
     { method: 'POST' },
   );
-  return res.data;
+  return withResolvedLiveKitUrl(res.data);
 }

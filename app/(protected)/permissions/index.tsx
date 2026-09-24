@@ -7,6 +7,8 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, T
 import { useRouter } from 'expo-router';
 import { useQuery } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
+import { ChildSwitchButton } from '@/components/parent/ChildSwitchButton';
+import { useSelectedChild } from '@/hooks/useSelectedChild';
 import { formatDate } from '@/lib/format';
 import {
   listPermissionRequests,
@@ -38,6 +40,10 @@ function StatePill({ state }: { state: PermissionRequestState }) {
 export default function PermissionsScreen() {
   const router = useRouter();
   const requestsQuery = useQuery({ queryKey: ['permission-requests'], queryFn: listPermissionRequests });
+  const { selected } = useSelectedChild();
+  // The endpoint returns every request across all of this parent's children;
+  // show only the currently-selected child's.
+  const requests = (requestsQuery.data ?? []).filter((r) => !selected || r.studentId === selected.studentId);
 
   return (
     <View style={styles.flex}>
@@ -45,6 +51,7 @@ export default function PermissionsScreen() {
         title="Permissions"
         subtitle="Event participation requests"
         onBack={() => router.replace('/my-class')}
+        right={<ChildSwitchButton />}
       />
       <ScrollView
         contentContainerStyle={styles.content}
@@ -54,10 +61,10 @@ export default function PermissionsScreen() {
       >
         {requestsQuery.isLoading ? (
           <ActivityIndicator color={parentColors.blue} style={{ marginTop: 24 }} />
-        ) : (requestsQuery.data ?? []).length === 0 ? (
+        ) : requests.length === 0 ? (
           <Text style={styles.emptyText}>No permission requests yet.</Text>
         ) : (
-          (requestsQuery.data ?? []).map((r: PermissionRequestListItem) => (
+          requests.map((r: PermissionRequestListItem) => (
             <Pressable
               key={r.id}
               style={[styles.card, cardShadow]}

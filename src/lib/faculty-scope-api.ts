@@ -38,7 +38,13 @@ export async function listTeachingOfferings(): Promise<TeachingOffering[]> {
 
 export type ClassTeacherLink =
   | { hasClassTeacherLogin: false }
-  | { hasClassTeacherLogin: true; gradeId: string; sectionName: string };
+  | {
+      hasClassTeacherLogin: true;
+      gradeId: string;
+      sectionName: string;
+      /** Every class this faculty member advises, each with its own login email. */
+      classes: { gradeId: string; gradeName: string; sectionName: string; email: string | null }[];
+    };
 
 /** Does this faculty member currently have a separate Class Teacher login to
  * switch into? See src/lib/auth.ts's linkAndSwitchIdentity. */

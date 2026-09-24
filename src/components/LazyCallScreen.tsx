@@ -13,30 +13,53 @@
 // as a rejected promise when this component actually mounts, which this
 // wrapper catches and turns into an honest, non-crashing message instead
 // of taking down the whole app.
+//
+// `Fallback` is what to show instead when the native screen can't load: a
+// WebView-based call room that works in Expo Go (see features/call-webview).
+// Without one, the honest "needs the full app build" message is shown.
 
 import { useEffect, useState, type ComponentType } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, NativeModules, StyleSheet, Text, View } from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { colors, fonts } from '@/lib/theme';
 
+// Whether this app build actually contains the native WebRTC module. Checked
+// BEFORE importing the native call screen: in development, Metro reports a
+// module that throws while loading as a fatal error (the red "Uncaught Error"
+// screen) even when a promise catch handles it afterwards, so in Expo Go the
+// native screen must never be imported at all.
+function nativeCallsSupported(): boolean {
+  if (Constants.executionEnvironment === ExecutionEnvironment.StoreClient) return false;
+  return NativeModules.WebRTCModule != null;
+}
+
 export function LazyCallScreen({
   load,
+  Fallback,
 }: {
   load: () => Promise<{ default: ComponentType }>;
+  Fallback?: ComponentType;
 }) {
   const router = useRouter();
   const [Comp, setComp] = useState<ComponentType | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [nativeUnavailable, setNativeUnavailable] = useState(false);
+  const skipNative = !!Fallback && !nativeCallsSupported();
 
   useEffect(() => {
+    if (skipNative) return;
     let cancelled = false;
     load()
       .then((mod) => {
         if (!cancelled) setComp(() => mod.default);
       })
       .catch(() => {
-        if (!cancelled) {
+        if (cancelled) return;
+        if (Fallback) {
+          setNativeUnavailable(true);
+        } else {
           setError(
             'Video calling needs the full app build with native video support -- it isn’t available in this preview.',
           );
@@ -45,7 +68,9 @@ export function LazyCallScreen({
     return () => {
       cancelled = true;
     };
-  }, [load]);
+  }, [load, Fallback, skipNative]);
+
+  if ((skipNative || nativeUnavailable) && Fallback) return <Fallback />;
 
   if (error) {
     return (

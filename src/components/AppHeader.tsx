@@ -4,6 +4,7 @@
 // block: linear-gradient(135deg,#2A62F0,#1636A4), 44px rounded-back-button,
 // 21px/800 title, 13px/600 subtitle at 78% white.
 
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -22,10 +23,13 @@ export function AppHeader({
   title,
   subtitle,
   onBack,
+  right,
 }: {
   title: string;
   subtitle?: string;
   onBack: () => void;
+  /** Optional control on the far right of the header row (e.g. a child switcher). */
+  right?: ReactNode;
 }) {
   return (
     <LinearGradient colors={[parentColors.gradientStart, parentColors.gradientEnd]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
@@ -44,6 +48,7 @@ export function AppHeader({
               </Text>
             ) : null}
           </View>
+          {right ?? null}
         </View>
       </SafeAreaView>
     </LinearGradient>

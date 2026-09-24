@@ -96,7 +96,7 @@ export default function PrincipalAnnouncementCreate() {
       queryClient.invalidateQueries({ queryKey: ['principal-announcements'] });
       router.back();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Unable to publish this announcement.');
+      setError(err instanceof ApiError ? err.message : 'Unable to publish this notice.');
     } finally {
       setSubmitting(false);
     }
@@ -107,7 +107,7 @@ export default function PrincipalAnnouncementCreate() {
 
   return (
     <View style={styles.flex}>
-      <PrincipalHeader title="New Announcement" subtitle={subtitle} onBack={() => router.back()} />
+      <PrincipalHeader title="New Notice" subtitle={subtitle} onBack={() => router.back()} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <Text style={styles.label}>Title *</Text>
         <TextInput
@@ -122,7 +122,7 @@ export default function PrincipalAnnouncementCreate() {
         <TextInput
           value={body}
           onChangeText={setBody}
-          placeholder="Full announcement text"
+          placeholder="Full notice text"
           placeholderTextColor={principalColors.disabled}
           style={[styles.input, styles.textArea]}
           multiline
@@ -194,7 +194,7 @@ export default function PrincipalAnnouncementCreate() {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         <Pressable style={[styles.submitButton, submitting && styles.submitButtonDisabled]} onPress={handleSubmit} disabled={submitting}>
-          <Text style={styles.submitButtonText}>{submitting ? 'Publishing…' : 'Publish announcement'}</Text>
+          <Text style={styles.submitButtonText}>{submitting ? 'Publishing…' : 'Publish notice'}</Text>
         </Pressable>
       </ScrollView>
     </View>

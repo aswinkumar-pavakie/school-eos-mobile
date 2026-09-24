@@ -20,6 +20,10 @@ import { parentColors } from '@/lib/theme';
 // signed-out visitor never reaches a screen under this group. Gate on stored-
 // refresh-token presence (see useSession) -- expiry itself is handled per-request
 // by authedRequest.
+// Home is the default screen of this group: with no deeper path, the navigator
+// opens on `index` (Home), never on a feature screen.
+export const unstable_settings = { initialRouteName: 'index' };
+
 export default function ProtectedLayout() {
   const { status } = useSession();
   const me = useMe();

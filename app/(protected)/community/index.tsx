@@ -21,7 +21,7 @@ interface FeatureItem {
 const ITEMS: FeatureItem[] = [
   { key: 'proposal', label: 'Proposals', href: '/(protected)/community/proposals' },
   { key: 'activity', label: 'Activities', href: '/(protected)/community/activities' },
-  { key: 'announcements', label: 'Announcements', href: '/(protected)/community/announcements' },
+  { key: 'announcements', label: 'Notices', href: '/(protected)/community/announcements' },
   { key: 'communityProfile', label: 'Profile', href: '/(protected)/community/profile' },
 ];
 

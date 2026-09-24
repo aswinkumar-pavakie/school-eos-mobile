@@ -110,7 +110,7 @@ const QUICK_ACTIONS: { label: string; slug: string }[] = [
   { label: 'Academics', slug: 'academics' },
   { label: 'Examinations', slug: 'examinations' },
   { label: 'Requests & Approvals', slug: 'requests-approvals' },
-  { label: 'Announcements', slug: 'announcements' },
+  { label: 'Notices', slug: 'announcements' },
 ];
 
 export function VicePrincipalHome({ personName }: { personName: string }) {
@@ -288,12 +288,12 @@ export function VicePrincipalHome({ personName }: { personName: string }) {
         )}
 
         <View style={styles.sectionHeaderRow}>
-          <Text style={styles.sectionTitle}>Announcements</Text>
+          <Text style={styles.sectionTitle}>Notices</Text>
         </View>
         {announcementsQuery.isLoading ? (
           <ActivityIndicator color={parentColors.blue} style={{ marginVertical: 12 }} />
         ) : recentAnnouncements.length === 0 ? (
-          <EmptyState message="No announcements yet." />
+          <EmptyState message="No notices yet." />
         ) : (
           <View style={[styles.listCard, cardShadow]}>
             {recentAnnouncements.map((announcement, index) => (

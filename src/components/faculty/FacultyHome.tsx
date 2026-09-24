@@ -5,7 +5,7 @@
 // feature itself (comments, likes, etc.) is out of scope -- this is only
 // the read connection the user asked for.
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,8 +15,6 @@ import { useQuery } from '@tanstack/react-query';
 import Svg, { Path, Circle } from 'react-native-svg';
 import { listFeedAnnouncements } from '@/lib/faculty-announcements-api';
 import { listPublishedMediaPosts } from '@/lib/faculty-media-posts-api';
-import { getClassTeacherLink } from '@/lib/faculty-scope-api';
-import { getActiveIdentifier, getLinkedIdentifier, getLinkedIdentityLabel, hasLinkedIdentity, type IdentityLabel } from '@/lib/auth';
 import { formatDate } from '@/lib/format';
 import { facultyColors } from '@/lib/theme';
 import { AccountSwitcherModal } from '@/components/AccountSwitcherModal';
@@ -40,36 +38,16 @@ function ChevronRightIcon() {
 export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string; facultyMeta: string }) {
   const router = useRouter();
   const [annIndex, setAnnIndex] = useState(0);
-  const [alreadyLinked, setAlreadyLinked] = useState(false);
   const [switcherOpen, setSwitcherOpen] = useState(false);
-  const [activeIdentifier, setActiveIdentifier] = useState<string | null>(null);
-  const [linkedIdentifier, setLinkedIdentifier] = useState<string | null>(null);
-  const [linkedLabel, setLinkedLabel] = useState<IdentityLabel | null>(null);
 
   const announcementsQuery = useQuery({ queryKey: ['faculty-announcements-feed'], queryFn: listFeedAnnouncements });
   const mediaQuery = useQuery({ queryKey: ['faculty-home-media-posts'], queryFn: listPublishedMediaPosts });
   // Only meaningful for the FACULTY identity (this screen never renders for
   // the Class Teacher identity) -- tells the account switcher whether this
   // faculty member actually has a Class Teacher login to switch into.
-  const classTeacherLinkQuery = useQuery({ queryKey: ['faculty-class-teacher-link'], queryFn: getClassTeacherLink });
 
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all([hasLinkedIdentity(), getActiveIdentifier(), getLinkedIdentifier(), getLinkedIdentityLabel()]).then(
-      ([linked, active, linkedId, linkedLbl]) => {
-        if (cancelled) return;
-        setAlreadyLinked(linked);
-        setActiveIdentifier(active);
-        setLinkedIdentifier(linkedId);
-        setLinkedLabel(linkedLbl);
-      },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const canSwitch = alreadyLinked || classTeacherLinkQuery.data?.hasClassTeacherLogin === true;
+  // Always offered: with no class mapped yet the sheet says so, and it is ready the moment one is.
+  const canSwitch = true;
 
   const announcements = announcementsQuery.data ?? [];
   const currentAnn = announcements[annIndex % Math.max(announcements.length, 1)];
@@ -123,10 +101,6 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
           visible={switcherOpen}
           onClose={() => setSwitcherOpen(false)}
           activeLabel="FACULTY"
-          activeIdentifier={activeIdentifier}
-          linkedLabel={linkedLabel}
-          linkedIdentifier={linkedIdentifier}
-          canAddAccount={classTeacherLinkQuery.data?.hasClassTeacherLogin === true}
         />
 
         <View style={styles.sectionHeaderRow}>
@@ -142,7 +116,7 @@ export function FacultyHome({ facultyName, facultyMeta }: { facultyName: string;
         {announcementsQuery.isLoading ? (
           <ActivityIndicator color={facultyColors.blue} style={{ marginTop: 16 }} />
         ) : announcements.length === 0 ? (
-          <Text style={styles.emptyText}>No announcements yet.</Text>
+          <Text style={styles.emptyText}>No notices yet.</Text>
         ) : currentAnn ? (
           <>
             <View style={styles.annCard}>

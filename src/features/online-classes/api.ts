@@ -9,6 +9,7 @@
 
 import * as Crypto from 'expo-crypto';
 import { authedRequest } from '@/lib/auth';
+import { withResolvedLiveKitUrl } from '@/lib/livekit-url';
 import type {
   CancelOnlineClassRequest,
   FacultyOnlineClass,
@@ -51,7 +52,7 @@ export async function requestOnlineClassCallToken(id: string): Promise<OnlineCla
   const res = await authedRequest<Envelope<OnlineClassCallCredentials>>(`/online-classes/${id}/call-token`, {
     method: 'POST',
   });
-  return res.data;
+  return withResolvedLiveKitUrl(res.data);
 }
 
 /** Faculty-only -- ends the call for everyone and transitions LIVE -> COMPLETED. */
