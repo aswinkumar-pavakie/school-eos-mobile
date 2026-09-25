@@ -267,3 +267,50 @@ export const hostelWardenColors = {
   dotInactive: '#CFD6E2',
   hairline: '#EDEFF3',
 } as const;
+
+// Health In-charge app -- new role, no design mock exists for it (unlike Faculty/
+// Parent/Hostel Warden's own *.dc.html references), so this token set is built by
+// the same structural convention as hostelWardenColors above (identical key shape:
+// header gradient, surface/ink/body/muted text ramp, TONE pair backgrounds, tints)
+// with its own distinct accent -- teal, the one primary color no other role palette
+// in this file already uses (parent/faculty/principal/hostel-warden are all blue),
+// so the infirmary console reads as its own place, not a recolored Hostel Warden.
+export const healthInchargeColors = {
+  primary: '#0E7C74',
+  primaryDark: '#0B5F59',
+  headerGradientFrom: '#0B5F59',
+  headerGradientTo: '#0E7C74',
+  background: '#F5FAF9',
+  surface: '#FFFFFF',
+  ink: '#0F2622',
+  body: '#4A5B58',
+  bodyStrong: '#3C4F4C',
+  muted: '#7E938F',
+  mutedStrong: '#6C817D',
+  tertiary: '#8FA29E',
+  faint: '#6B7A77',
+  border: '#E3EDEB',
+  borderSoft: '#EEF5F4',
+  borderDashed: '#D9EAE7',
+  inputBorder: '#E3EDEB',
+  selectedBorder: '#B9DEDA',
+  tint: '#EAF6F4',
+  tint2: '#DFF0EE',
+  tint3: '#D9EAE7',
+  tint4: '#CBE5E1',
+  tint5: '#F2F7F6',
+  tint6: '#F3F8F7',
+  tint7: '#F6FBFA',
+  green: '#1C6B3F',
+  greenBg: '#E7F4EC',
+  amber: '#8A5B18',
+  amberBg: '#FDF1E0',
+  red: '#9B2323',
+  redBg: '#FDEAEA',
+  infoText: '#0B5F59',
+  infoBg: '#EAF6F4',
+  toastBg: '#0F2622',
+  toastDismiss: '#9FD8D0',
+  subtleText: '#6C817D',
+  hairline: '#EAF1F0',
+} as const;

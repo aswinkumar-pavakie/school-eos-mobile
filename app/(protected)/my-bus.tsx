@@ -181,7 +181,7 @@ export default function MyBusRoute() {
   // Sports Admin is now a real exception: faculty-bus.controller.ts was
   // widened to SPORTS_ADMIN (same "am I personally a driver/attendant"
   // lookup Faculty already had), so it gets its own real screen instead.
-  const { isFaculty, isPrincipal, isVicePrincipal, isHostelWarden, isCommunity, isSportsAdmin, isLoading } = useCurrentRoles();
+  const { isFaculty, isPrincipal, isVicePrincipal, isHostelWarden, isSportsAdmin, isHealthIncharge, isLoading } = useCurrentRoles();
   if (isLoading) {
     return (
       <View style={[styles.flex, styles.body]}>
@@ -191,7 +191,7 @@ export default function MyBusRoute() {
   }
   if (isFaculty) return <FacultyBusScreen />;
   if (isSportsAdmin) return <SportsBusScreen />;
-  if (isPrincipal || isVicePrincipal || isHostelWarden || isCommunity) return <NoBusForRoleScreen />;
+  if (isPrincipal || isVicePrincipal || isHostelWarden || isHealthIncharge) return <NoBusForRoleScreen />;
   return <ParentMyBusScreen />;
 }
 

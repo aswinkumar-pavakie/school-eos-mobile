@@ -69,19 +69,19 @@ function TileGrid({ items, router }: { items: ServiceItem[]; router: ReturnType<
 
 export default function ErpScreen() {
   const router = useRouter();
-  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity } = useCurrentRoles();
+  const { isFaculty, isHostelWarden, isPrincipal, isVicePrincipal, isHealthIncharge } = useCurrentRoles();
   // Academic Coordinator has no design reference at all (a role-conditional
   // feature, not part of the static Faculty Module design) -- its own tile
   // only ever appears for a real, currently-active coordinator, checked live
   // on every load, never assumed from a cached flag. Called unconditionally
-  // (Rules of Hooks) even though a Hostel Warden/Principal/Vice Principal/
-  // Community redirects away below before ever rendering anything that uses
-  // it -- but `enabled: false` for those roles, confirmed live as a real
-  // bug otherwise: useQuery's queryFn fires on mount regardless of what JSX
-  // the component eventually returns, so Principal was getting a real 403
-  // from this FACULTY-only endpoint on every single visit to this tab
-  // before the redirect below ever ran.
-  const isRedirectingAway = isHostelWarden || isPrincipal || isVicePrincipal || isCommunity;
+  // (Rules of Hooks) even though a Hostel Warden/Principal/Vice Principal
+  // redirects away below before ever rendering anything that uses it -- but
+  // `enabled: false` for those roles, confirmed live as a real bug otherwise:
+  // useQuery's queryFn fires on mount regardless of what JSX the component
+  // eventually returns, so Principal was getting a real 403 from this
+  // FACULTY-only endpoint on every single visit to this tab before the
+  // redirect below ever ran.
+  const isRedirectingAway = isHostelWarden || isPrincipal || isVicePrincipal || isHealthIncharge;
   const meQuery = useQuery({
     queryKey: ['faculty-academic-coordinator-me'],
     queryFn: getCoordinatorMe,
@@ -103,9 +103,11 @@ export default function ErpScreen() {
   if (isVicePrincipal) {
     return <Redirect href={'/(protected)/vice-principal' as never} />;
   }
-  // Same pattern for the standalone Community login -- see community/index.tsx.
-  if (isCommunity) {
-    return <Redirect href={'/(protected)/community' as never} />;
+  // Same pattern for Health In-charge -- its own BottomTabBar tab set already
+  // points straight at /health-incharge, never through here; this is only a
+  // safety net for a stale deep link, same as the Faculty note below.
+  if (isHealthIncharge) {
+    return <Redirect href={'/(protected)/health-incharge' as never} />;
   }
 
   // Faculty no longer reaches this screen -- BottomTabBar's own FACULTY_TABS

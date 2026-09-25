@@ -1,8 +1,6 @@
 // Home tab -- real signed-in person, role-branched. Faculty gets its own real
 // Home screen (see FacultyHome.tsx), pixel-matched to "ERP screen choice/
-// Faculty Module - 2"'s own Home screen. Community gets its own real Home
-// screen (see CommunityHome.tsx), resolved from the COMMUNITY-scoped role
-// assignment's own scope_id. Vice Principal gets its own real Home screen
+// Faculty Module - 2"'s own Home screen. Vice Principal gets its own real Home screen
 // (see VicePrincipalHome.tsx) -- the exact same leadership-dashboard content
 // that used to sit behind the ERP menu's own "Dashboard" tile, now shown
 // directly here instead (that tile was removed from vice-principal/index.tsx
@@ -40,13 +38,13 @@ import { hasRole } from '@/hooks/useMe';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { FacultyHome } from '@/components/faculty/FacultyHome';
 import { ClassTeacherHome } from '@/components/class-teacher/ClassTeacherHome';
-import { CommunityHome } from '@/components/community/CommunityHome';
 import { VicePrincipalHome } from '@/components/vice-principal/VicePrincipalHome';
 import { PrincipalHome } from '@/components/principal/PrincipalHome';
 import { ParentHome } from '@/components/parent/ParentHome';
 import { SportsHome } from '@/components/sports/SportsHome';
 import { HostelWardenHome } from '@/components/hostel-warden/HostelWardenHome';
 import { DriverHome } from '@/components/driver/DriverHome';
+import { HealthInchargeHome } from '@/components/health-incharge/HealthInchargeHome';
 import { parentColors } from '@/lib/theme';
 
 interface MeResponse {
@@ -58,7 +56,7 @@ export default function ProtectedHome() {
   const queryClient = useQueryClient();
   const [me, setMe] = useState<MeResponse['data'] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const { isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver, isClassTeacherLogin } = useCurrentRoles();
+  const { isHostelWarden, isPrincipal, isVicePrincipal, isSportsAdmin, isDriver, isClassTeacherLogin, isHealthIncharge } = useCurrentRoles();
 
   useEffect(() => {
     authedRequest<MeResponse>('/auth/me')
@@ -100,13 +98,6 @@ export default function ProtectedHome() {
     return <ClassTeacherHome />;
   }
 
-  if (me && isCommunity) {
-    const communityRole = me.roles.find((r) => r.role_code === 'COMMUNITY' && r.scope_type === 'COMMUNITY');
-    if (communityRole?.scope_id) {
-      return <CommunityHome personName={me.person.firstName} communityId={communityRole.scope_id} />;
-    }
-  }
-
   if (me && isVicePrincipal) {
     return <VicePrincipalHome personName={me.person.firstName} />;
   }
@@ -123,8 +114,12 @@ export default function ProtectedHome() {
     return <HostelWardenHome personName={me.person.firstName} />;
   }
 
-  // Community, Vice Principal, Principal, Sports Admin, Hostel Warden, and
-  // Driver (checked above, before FACULTY) are all handled above (returns
+  if (me && isHealthIncharge) {
+    return <HealthInchargeHome personName={me.person.firstName} />;
+  }
+
+  // Vice Principal, Principal, Sports Admin, Hostel Warden, Health In-charge,
+  // and Driver (checked above, before FACULTY) are all handled above (returns
   // early); everyone else is Parent.
   if (me) {
     return <ParentHome />;

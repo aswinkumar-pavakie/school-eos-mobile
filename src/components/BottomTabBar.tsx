@@ -24,10 +24,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { useCurrentRoles } from '@/hooks/useCurrentRoles';
 import { HostelIcon } from '@/components/hostel-warden/icons';
+import { HealthIcon } from '@/components/health-incharge/icons';
 import { getFacultyCommute } from '@/lib/faculty-scope-api';
 import { parentColors } from '@/lib/theme';
 
-type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'students' | 'profile' | 'progress' | 'campus' | 'class' | 'transportHostel';
+type TabKey = 'home' | 'school' | 'academics' | 'bus' | 'hostel' | 'gate' | 'students' | 'profile' | 'progress' | 'campus' | 'class' | 'transportHostel' | 'health' | 'alerts';
 
 // Sports Admin's own real tab set, pixel-matched to Sports Staff Mobile
 // App.dc.html's own `const TABS = [['home','Home','⌂'],['sports','Sports','◎'],
@@ -59,6 +60,26 @@ function activeTabForHostelWarden(pathname: string): TabKey {
   if (pathname.startsWith('/hostel-warden/gate')) return 'gate';
   if (pathname.startsWith('/hostel-warden') || pathname.startsWith('/erp')) return 'hostel';
   return 'hostel';
+}
+
+// Health In-charge's own real tab set -- same 3-tab shape as Hostel
+// Warden/Sports above (no Academics/My Bus for this role either), own icon
+// set via HealthIcon (no design mock exists for this role to port path data
+// from -- see that file's own header comment). "Alerts" gets its own tab
+// (not just a hub tile) since open alerts are the one thing on this
+// console's own dashboard that's explicitly time-sensitive ("awaiting
+// acknowledgement"), the same reasoning Hostel Warden's own "Gate" tab has.
+const HEALTH_INCHARGE_TABS: { key: TabKey; label: string; href: '/' | '/(protected)/health-incharge' | '/(protected)/health-incharge/alerts'; Icon: typeof HomeIcon }[] = [
+  { key: 'home', label: 'Home', href: '/', Icon: ({ color }) => <HealthIcon name="home" color={color} size={22} strokeWidth={1.9} /> },
+  { key: 'health', label: 'Health', href: '/(protected)/health-incharge', Icon: ({ color }) => <HealthIcon name="health" color={color} size={22} strokeWidth={1.9} /> },
+  { key: 'alerts', label: 'Alerts', href: '/(protected)/health-incharge/alerts', Icon: ({ color }) => <HealthIcon name="alerts" color={color} size={22} strokeWidth={1.9} /> },
+];
+
+function activeTabForHealthIncharge(pathname: string): TabKey {
+  if (pathname === '/' || pathname === '') return 'home';
+  if (pathname.startsWith('/health-incharge/alerts')) return 'alerts';
+  if (pathname.startsWith('/health-incharge')) return 'health';
+  return 'health';
 }
 
 // Driver's own real 4-tab set -- Home, My Students, My Bus, My Profile are
@@ -227,8 +248,6 @@ type SecondTabHref = '/my-class' | '/erp';
 // operational launcher lives behind /erp -- see erp/index.tsx's redirect); only
 // Parent sees "My class" there.
 //
-// Community drops Academics/My Bus entirely -- neither concept exists for a
-// standalone Community login (no academic record, no transport enrollment).
 // Vice Principal drops ONLY Academics -- its own Academics now lives inside
 // its ERP shell (vice-principal/index.tsx's ACADEMICS section) instead of
 // this bottom-tab placeholder; My Bus is left as-is for VP, scope limited to
@@ -279,7 +298,7 @@ export function BottomTabBar() {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
-  const { isFaculty, isClassTeacherLogin, isHostelWarden, isPrincipal, isVicePrincipal, isCommunity, isSportsAdmin, isDriver } = useCurrentRoles();
+  const { isFaculty, isClassTeacherLogin, isHostelWarden, isPrincipal, isVicePrincipal, isSportsAdmin, isDriver, isHealthIncharge } = useCurrentRoles();
   const commuteQuery = useQuery({
     queryKey: ['faculty-commute-prefs'],
     queryFn: getFacultyCommute,
@@ -291,15 +310,13 @@ export function BottomTabBar() {
       ? SPORTS_TABS
       : isHostelWarden
         ? HOSTEL_WARDEN_TABS
-        : isFaculty
-          ? facultyTabsFor(commuteQuery.data)
-          : isClassTeacherLogin
-            ? CLASS_TEACHER_TABS
-            : tabsFor(
-                isPrincipal || isVicePrincipal || isCommunity,
-                isVicePrincipal || isCommunity,
-                isCommunity,
-              );
+        : isHealthIncharge
+          ? HEALTH_INCHARGE_TABS
+          : isFaculty
+            ? facultyTabsFor(commuteQuery.data)
+            : isClassTeacherLogin
+              ? CLASS_TEACHER_TABS
+              : tabsFor(isPrincipal || isVicePrincipal, isVicePrincipal, false);
   const active = isDriver
     ? activeTabForDriver(pathname)
     : isFaculty
@@ -308,7 +325,9 @@ export function BottomTabBar() {
         ? activeTabForClassTeacher(pathname)
         : isHostelWarden
           ? activeTabForHostelWarden(pathname)
-          : activeTabFor(pathname);
+          : isHealthIncharge
+            ? activeTabForHealthIncharge(pathname)
+            : activeTabFor(pathname);
 
   return (
     <View style={[styles.bar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
