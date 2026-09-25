@@ -59,7 +59,10 @@ const SECTIONS: NavSection[] = [
   },
   {
     title: 'ATTENDANCE',
-    items: [{ key: 'attendance', label: 'Attendance', slug: 'attendance' }],
+    items: [
+      { key: 'attendance', label: 'Attendance', slug: 'attendance' },
+      { key: 'attendance', label: 'Attendance Diary', slug: 'attendance-diary' },
+    ],
   },
   {
     title: 'SCHOOL OPERATIONS',

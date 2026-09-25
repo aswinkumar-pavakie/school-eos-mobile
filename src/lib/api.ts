@@ -3,6 +3,7 @@
 // direction one-way (auth.ts -> api.ts) avoids a circular import between the two.
 
 import Constants from 'expo-constants';
+import NetInfo from '@react-native-community/netinfo';
 import { getDeviceId } from './device-id';
 
 // EXPO_PUBLIC_API_BASE_URL (see .env.example) is wired into app.config.ts's `extra`
@@ -57,7 +58,17 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     // being independently confirmed reachable. Revert to the generic message
     // once root-caused.
     const detail = __DEV__ ? ` [${API_BASE_URL}${path}] ${err instanceof Error ? err.message : String(err)}` : '';
-    throw new ApiError(0, `Unable to reach the server. Check your connection.${detail}`);
+    // Distinguish "this device has no connectivity at all" from "the fetch
+    // itself failed for some other reason" (server unreachable, TLS error,
+    // etc.) -- previously both looked identical to the user. NetInfo.fetch()
+    // is a quick, already-installed, previously-unused check (no new
+    // dependency), not a broad offline-mode feature.
+    const netState = await NetInfo.fetch().catch(() => null);
+    const isOffline = netState !== null && netState.isConnected === false;
+    const message = isOffline
+      ? 'No internet connection. Check your connection and try again.'
+      : `Unable to reach the server. Please try again.${detail}`;
+    throw new ApiError(0, message);
   }
 
   const json = await res.json().catch(() => null);
@@ -67,4 +78,14 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   }
 
   return json as T;
+}
+
+/** Centralizes the `err instanceof ApiError ? err.message : '<fallback>'`
+ * idiom already duplicated 67+ times across the app (Alert.alert bodies,
+ * ErrorState messages) -- same displayed output for every existing case,
+ * just one place to read/change it instead of many. `fallback` covers a
+ * non-ApiError throw (a genuinely unexpected error, not a normal API/network
+ * failure -- those always come back as ApiError already). */
+export function getErrorMessage(err: unknown, fallback = 'Something went wrong. Please try again.'): string {
+  return err instanceof ApiError ? err.message : fallback;
 }

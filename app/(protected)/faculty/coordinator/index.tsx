@@ -24,6 +24,7 @@ const TILES = [
   { key: 'records' as const, label: 'Academic Structure', href: '/(protected)/faculty/coordinator/structure' },
   { key: 'classTeacher' as const, label: 'Faculty & Workload', href: '/(protected)/faculty/coordinator/offerings' },
   { key: 'attendance' as const, label: 'Class Timetable', href: '/(protected)/faculty/coordinator/timetable' },
+  { key: 'attendance' as const, label: 'Attendance Diary', href: '/(protected)/faculty/attendance-diary' },
   { key: 'exams' as const, label: 'Examinations', href: '/(protected)/faculty/coordinator/exams' },
   { key: 'meetings' as const, label: 'Academic Calendar', href: '/(protected)/faculty/coordinator/calendar' },
 ];

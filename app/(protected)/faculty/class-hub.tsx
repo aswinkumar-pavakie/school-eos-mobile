@@ -24,6 +24,7 @@ interface ServiceItem {
 
 const CLASS_TILES: ServiceItem[] = [
   { key: 'attendance', label: 'Student Attendance', href: '/(protected)/faculty/attendance' },
+  { key: 'attendance', label: 'Attendance Diary', href: '/(protected)/faculty/attendance-diary' },
   { key: 'onlineclass', label: 'Online Class', href: '/(protected)/academics/online-class' },
   { key: 'announcements', label: 'Notices', href: '/(protected)/faculty/announcements' },
   { key: 'timetable', label: 'Timetable', href: '/(protected)/faculty/timetable' },

@@ -58,6 +58,7 @@ interface ServiceItem {
 const CLASS_TEACHER_TILES: ServiceItem[] = [
   { key: 'classTeacher', label: 'Student Data', href: '/(protected)/faculty/class-teacher' },
   { key: 'attendance', label: 'Attendance', href: '/(protected)/faculty/attendance' },
+  { key: 'attendance', label: 'Attendance Diary', href: '/(protected)/faculty/attendance-diary' },
   { key: 'timetable', label: 'Time Table', href: '/(protected)/class-teacher/timetable' },
   { key: 'events', label: 'Calendar', href: '/(protected)/faculty/calendar' },
   { key: 'exams', label: 'Exams', href: '/(protected)/class-teacher/exams' },

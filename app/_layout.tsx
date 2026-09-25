@@ -14,6 +14,7 @@ import {
 // phone numbers and codes -- same additive font-load pattern as Plus Jakarta
 // Sans above, no other role's fonts touched.
 import { IBMPlexMono_400Regular, IBMPlexMono_500Medium } from '@expo-google-fonts/ibm-plex-mono';
+import { RootErrorBoundary } from '@/components/RootErrorBoundary';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -53,8 +54,10 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <Stack screenOptions={{ headerShown: false }} />
-    </QueryClientProvider>
+    <RootErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </QueryClientProvider>
+    </RootErrorBoundary>
   );
 }

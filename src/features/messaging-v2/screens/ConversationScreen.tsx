@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -15,6 +16,8 @@ import { GradientHeader } from '@/components/GradientHeader';
 import { ErrorState, LoadingState } from '@/components/ScreenStates';
 import { accent, colors, fonts } from '@/lib/theme';
 import { useMe } from '@/hooks/useMe';
+import { getErrorMessage } from '@/lib/api';
+import { getSendMessageErrorMessage } from '@/services/e2ee/error-messages';
 import {
   useAcceptRequest,
   useConversationDetail,
@@ -74,7 +77,15 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     const trimmed = draft.trim();
     if (!trimmed) return;
     setDraft('');
-    await sendMessage.mutateAsync(trimmed);
+    try {
+      await sendMessage.mutateAsync(trimmed);
+    } catch (err) {
+      // Previously uncaught -- a send failure (network, or an E2EE state
+      // error) propagated with no user feedback at all, silently losing the
+      // draft text.
+      Alert.alert('Message not sent', getSendMessageErrorMessage(err, getErrorMessage(err, 'Please try again.')));
+      setDraft(trimmed);
+    }
   }
 
   if (conversation.isLoading || me.isLoading) return <LoadingState />;

@@ -23,7 +23,8 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { ApiError } from '@/lib/api';
+import { getErrorMessage } from '@/lib/api';
+import { getSendMessageErrorMessage } from '@/services/e2ee/error-messages';
 import { hasRole, useMe } from '@/hooks/useMe';
 import { accent, colors, fonts } from '@/lib/theme';
 import { GradientHeader } from '@/components/GradientHeader';
@@ -84,7 +85,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     try {
       await send.mutateAsync(text);
     } catch (err) {
-      Alert.alert('Message not sent', err instanceof ApiError ? err.message : 'Please try again.');
+      Alert.alert('Message not sent', getSendMessageErrorMessage(err, getErrorMessage(err, 'Please try again.')));
       setDraft(text);
     }
   }
@@ -130,7 +131,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
       <View style={styles.screen}>
         <GradientHeader title="Message" subtitle="Conversation" onBack={() => router.back()} />
         <ErrorState
-          message={detail.error instanceof ApiError ? detail.error.message : 'Unable to load this conversation.'}
+          message={getErrorMessage(detail.error, 'Unable to load this conversation.')}
           onRetry={() => detail.refetch()}
         />
       </View>

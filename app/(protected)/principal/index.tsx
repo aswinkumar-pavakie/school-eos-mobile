@@ -78,6 +78,7 @@ const SECTIONS: NavSection[] = [
       // attendance" above -- full feature parity with the website's own
       // /principal/attendance-sessions page, previously mobile-missing.
       { label: 'Attendance sessions', slug: 'attendance-sessions', icon: (p) => <AttendanceIcon {...p} /> },
+      { label: 'Attendance diary', slug: 'attendance-diary', icon: (p) => <AttendanceIcon {...p} /> },
       // Full feature parity with the website's own subject-mapping page,
       // previously mobile-missing.
       { label: 'Subjects & mapping', slug: 'subject-mapping', icon: (p) => <AcademicCapIcon {...p} /> },
