@@ -294,7 +294,7 @@ function isExpiredOrExpiringSoon(token: string): boolean {
 // own, genuinely separate person/account (see backend's
 // class-teacher-login.service.ts) that carries ONLY CLASS_ADVISOR -- never
 // FACULTY -- so the FACULTY check alone wouldn't admit it.
-const MOBILE_ALLOWED_ROLES = ['FACULTY', 'CLASS_ADVISOR', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'COMMUNITY', 'SPORTS_ADMIN', 'DRIVER'];
+const MOBILE_ALLOWED_ROLES = ['FACULTY', 'CLASS_ADVISOR', 'PARENT', 'HOSTEL_WARDEN', 'PRINCIPAL', 'VICE_PRINCIPAL', 'SPORTS_ADMIN', 'DRIVER', 'HEALTH_INCHARGE'];
 
 /** Login succeeded against the backend, but this role has no mobile access. */
 export class PlatformNotAllowedError extends Error {

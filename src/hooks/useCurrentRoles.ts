@@ -23,9 +23,9 @@ export function useCurrentRoles() {
     isHostelWarden: roleCodes.includes('HOSTEL_WARDEN'),
     isPrincipal: roleCodes.includes('PRINCIPAL'),
     isVicePrincipal: roleCodes.includes('VICE_PRINCIPAL'),
-    isCommunity: roleCodes.includes('COMMUNITY'),
     isSportsAdmin: roleCodes.includes('SPORTS_ADMIN'),
     isDriver: roleCodes.includes('DRIVER'),
+    isHealthIncharge: roleCodes.includes('HEALTH_INCHARGE'),
     isLoading: query.isLoading,
   };
 }
